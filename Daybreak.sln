@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.vcxproj", "{F83A3033-A4C7-4BFA-B15D-ACEA834672C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{767AD2AF-4C42-4911-BBEE-4A7B9A9C2CDE} = {767AD2AF-4C42-4911-BBEE-4A7B9A9C2CDE}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Daybreak", "Daybreak\Daybreak.vcxproj", "{767AD2AF-4C42-4911-BBEE-4A7B9A9C2CDE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F83A3033-A4C7-4BFA-B15D-ACEA834672C0}.Debug|x64.ActiveCfg = Debug|x64
+		{F83A3033-A4C7-4BFA-B15D-ACEA834672C0}.Debug|x64.Build.0 = Debug|x64
+		{F83A3033-A4C7-4BFA-B15D-ACEA834672C0}.Release|x64.ActiveCfg = Release|x64
+		{F83A3033-A4C7-4BFA-B15D-ACEA834672C0}.Release|x64.Build.0 = Release|x64
+		{767AD2AF-4C42-4911-BBEE-4A7B9A9C2CDE}.Debug|x64.ActiveCfg = Debug|x64
+		{767AD2AF-4C42-4911-BBEE-4A7B9A9C2CDE}.Debug|x64.Build.0 = Debug|x64
+		{767AD2AF-4C42-4911-BBEE-4A7B9A9C2CDE}.Release|x64.ActiveCfg = Release|x64
+		{767AD2AF-4C42-4911-BBEE-4A7B9A9C2CDE}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06C279EB-C0D0-410E-BAE3-6E070384678B}
+	EndGlobalSection
+EndGlobal
