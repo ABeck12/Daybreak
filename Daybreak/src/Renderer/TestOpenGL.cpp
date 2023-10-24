@@ -50,6 +50,7 @@
 //        return -1;
 //    }
 //
+//    std::cout<<glGetString(GL_VERSION);
 //    // render loop
 //    // -----------
 //    while (!glfwWindowShouldClose(window))
@@ -68,7 +69,6 @@
 //        glfwSwapBuffers(window);
 //        glfwPollEvents();
 //    }
-//    std::cout<<glGetString(GL_VERSION);
 //
 //    // glfw: terminate, clearing all previously allocated GLFW resources.
 //    // ------------------------------------------------------------------
