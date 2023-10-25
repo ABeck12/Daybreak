@@ -9,9 +9,9 @@
 namespace Daybreak
 {
 	#ifdef DB_PLATFORM_WINDOWS
-	Window* Window::Create(const WindowProps& props)
+	Scope<Window> Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindow(props);
+		return CreateScope<WindowsWindow>(props);
 	}
 	#endif
 }

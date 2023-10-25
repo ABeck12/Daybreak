@@ -18,13 +18,13 @@ public:
 	void OnEvent(Daybreak::Event& event) override
 	{
 		//DB_LOG("{0}", event);
-		if (event.GetEventType() == Daybreak::EventType::KeyPressed)
-		{
-			Daybreak::KeyPressedEvent& e = (Daybreak::KeyPressedEvent&)event;
-			if (e.GetKeyCode() == DB_KEY_TAB)
-				DB_LOG("Tab key is pressed (event)!");
-			DB_LOG("{0}", (char)e.GetKeyCode());
-		}
+		//if (event.GetEventType() == Daybreak::EventType::KeyPressed)
+		//{
+		//	Daybreak::KeyPressedEvent& e = (Daybreak::KeyPressedEvent&)event;
+		//	if (e.GetKeyCode() == DB_KEY_TAB)
+		//		DB_LOG("Tab key is pressed (event)!");
+		//	DB_LOG("{0}", (char)e.GetKeyCode());
+		//}
 	}
 
 };
