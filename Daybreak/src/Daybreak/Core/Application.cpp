@@ -3,7 +3,6 @@
 #include "Daybreak/Core/Application.h"
 #include "Daybreak/Core/Input.h"
 #include "Daybreak/Core/Window.h"
-#include <GLFW/glfw3.h>
 
 namespace Daybreak
 {
@@ -17,6 +16,7 @@ namespace Daybreak
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(DB_BIND_EVENT_FN(Application::OnEvent));
+
 	}
 
 	Application::~Application()
@@ -52,8 +52,8 @@ namespace Daybreak
 	{
 		while (m_Running)
 		{
-			glClearColor(1, 0, 1, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			//glClearColor(1, 0, 1, 1);
+			//glClear(GL_COLOR_BUFFER_BIT);
 			m_Window->OnUpdate();
 
 			for (Layer* layer : m_LayerStack)

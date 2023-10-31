@@ -15,6 +15,7 @@
 #define DB_CORE_ASSERT(x, ...)
 #endif
 
+#define DB_FORCE_INLINE __forceinline
 
 #define DB_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
