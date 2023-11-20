@@ -16,21 +16,8 @@
     <ClCompile Include="src\Daybreak\Core\LayerStack.cpp" />
     <ClCompile Include="src\Daybreak\Core\Log.cpp" />
     <ClCompile Include="src\Daybreak\Core\Window.cpp" />
-    <ClCompile Include="src\Daybreak\Math\2nd try\CommonFunc.cpp" />
-    <ClCompile Include="src\Daybreak\Math\MathLibraryTest.cpp" />
-    <ClCompile Include="src\TestRenderer\IndexBuffer.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\OpenGLApplication.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\Renderer.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\Shader.cpp">
+    <ClCompile Include="src\Daybreak\Math\CoreMathFunctions.cpp" />
+    <ClCompile Include="src\Daybreak\Math\MathLibraryTest.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -38,19 +25,35 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\TestRenderer\Texture.cpp">
+    <ClCompile Include="src\TestRenderer\UsingMyMath\IndexBuffer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\TestRenderer\UsingMyMath\OpenGLApplicationMyMath.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\TestRenderer\UsingMyMath\Renderer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\TestRenderer\UsingMyMath\Shader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\TestRenderer\UsingMyMath\Texture.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\TestRenderer\UsingMyMath\VertexArray.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\TestRenderer\UsingMyMath\VertexBuffer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\TestRenderer\vendor\stb_image\stb_image.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\VertexArray.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\VertexBuffer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -113,30 +116,31 @@
     <ClInclude Include="src\Daybreak\Core\LayerStack.h" />
     <ClInclude Include="src\Daybreak\Core\Log.h" />
     <ClInclude Include="src\Daybreak\Core\Window.h" />
-    <ClInclude Include="src\Daybreak\Math\2nd try\CommonFunc.h" />
-    <ClInclude Include="src\Daybreak\Math\2nd try\Matrix.h" />
-    <ClInclude Include="src\Daybreak\Math\2nd try\Quaternion.h" />
-    <ClInclude Include="src\Daybreak\Math\2nd try\Vector.h" />
+    <ClInclude Include="src\Daybreak\Math\CoreMathFunctions.h" />
+    <ClInclude Include="src\Daybreak\Math\Math.h" />
+    <ClInclude Include="src\Daybreak\Math\Matrix.h" />
+    <ClInclude Include="src\Daybreak\Math\Quaternion.h" />
+    <ClInclude Include="src\Daybreak\Math\Vector.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\dbpch.h" />
     <ClInclude Include="src\Daybreak\Core\EntryPoint.h" />
-    <ClInclude Include="src\TestRenderer\ErrorTest.h" />
-    <ClInclude Include="src\TestRenderer\IndexBuffer.h" />
-    <ClInclude Include="src\TestRenderer\Renderer.h" />
-    <ClInclude Include="src\TestRenderer\Shader.h" />
     <ClInclude Include="src\TestRenderer\Test\Camera.h" />
     <ClCompile Include="src\TestRenderer\Test\TestSpriteRender.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClInclude Include="src\TestRenderer\Test\TestSpriteRender.h" />
-    <ClInclude Include="src\TestRenderer\Texture.h" />
-    <ClInclude Include="src\TestRenderer\VecToString.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\ErrorTest.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\IndexBuffer.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\Renderer.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\Shader.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\Texture.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\VecToString.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\VertexArray.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\VertexBuffer.h" />
+    <ClInclude Include="src\TestRenderer\UsingMyMath\VertexBufferLayout.h" />
     <ClInclude Include="src\TestRenderer\vendor\stb_image\stb_image.h" />
-    <ClInclude Include="src\TestRenderer\VertexArray.h" />
-    <ClInclude Include="src\TestRenderer\VertexBuffer.h" />
-    <ClInclude Include="src\TestRenderer\VertexBufferLayout.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="vendor\glm\common.hpp" />

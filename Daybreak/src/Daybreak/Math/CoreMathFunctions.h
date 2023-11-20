@@ -4,6 +4,15 @@
 
 namespace Daybreak::Math
 {
+	inline const float Pi = 3.14159265358979323846f;
+	inline const float Epsilon = 1.192092896e-07f;
+	inline const float Sqrt2 = 1.41421356237309504880f;
+	inline const float Sqrt3 = 1.73205080756887729352f;
+	inline const float OneOverSqrt2 = 0.70710678118654752440f;
+	inline const float OneOverSqrt3 = 0.57735026918962576450f;
+
+
+
 	float Min(const float value1, const float value2);
 	float Max(const float value1, const float value2);
 	
@@ -12,6 +21,9 @@ namespace Daybreak::Math
 	float Abs(const float value);
 	
 	float Sqrt(const float value);
+
+	float Radians(const float value);
+	float Degrees(const float value);
 	
 	float Sin(const float value);
 	float Cos(const float value);

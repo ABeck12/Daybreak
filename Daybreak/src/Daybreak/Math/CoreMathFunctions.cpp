@@ -1,6 +1,6 @@
 #include "dbpch.h"
 
-#include "Daybreak/Math/2nd try/CommonFunc.h"
+#include "Daybreak/Math/CoreMathFunctions.h"
 
 #include <math.h>
 
@@ -20,6 +20,9 @@ namespace Daybreak::Math
 
 	float Sqrt(const float value) { return std::sqrtf(value); }
 
+	float Radians(const float value) { return value * Pi / 180.0f; }
+	float Degrees(const float value) { return value * 180.0f / Pi; }
+
 	float Sin(const float value) { return std::sinf(value); }
 	float Cos(const float value) { return std::cosf(value); }
 	float Tan(const float value) { return std::tanf(value); }
@@ -36,5 +39,9 @@ namespace Daybreak::Math
 	float ACosh(const float value) { return std::acoshf(value); }
 	float ATanh(const float value) { return std::atanhf(value); }
 
+	//int Rand()
+	//int RandInRange(int min, int max);
 
+	//float Randf();
+	//float RandfInRange(float min, float max);
 }

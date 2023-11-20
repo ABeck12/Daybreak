@@ -20,6 +20,8 @@
 #include <iostream>
 #include <string>
 
+#include "Daybreak/Math/Math.h"
+
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -31,10 +33,47 @@ const unsigned int SCR_HEIGHT = 720;
 const unsigned int PIX_PER_UNIT = 20;
 
 
+inline std::string TestToString(Daybreak::Mat4 in)
+{
+    std::string out;
+    out += "Mat4x4 ((";
+    out += std::to_string(in.data[0]) + ",";
+    out += std::to_string(in.data[1]) + ",";
+    out += std::to_string(in.data[2]) + ",";
+    out += std::to_string(in.data[3]) + ") (";
+    out += std::to_string(in.data[4]) + ",";
+    out += std::to_string(in.data[5]) + ",";
+    out += std::to_string(in.data[6]) + ",";
+    out += std::to_string(in.data[7]) + ") (";
+    out += std::to_string(in.data[8]) + ",";
+    out += std::to_string(in.data[9]) + ",";
+    out += std::to_string(in.data[10]) + ",";
+    out += std::to_string(in.data[11]) + ") (";
+    out += std::to_string(in.data[12]) + ",";
+    out += std::to_string(in.data[13]) + ",";
+    out += std::to_string(in.data[14]) + ",";
+    out += std::to_string(in.data[15]) + "))";
+
+    return out;
+    //os << "|" << mat.data[0] << "," << mat.data[1] << "," << mat.data[2] << "," << mat.data[3] << "|\n";
+    //os << "|" << mat.data[4] << "," << mat.data[5] << "," << mat.data[6] << "," << mat.data[7] << "|\n";
+    //os << "|" << mat.data[8] << "," << mat.data[9] << "," << mat.data[10] << "," << mat.data[11] << "|\n";
+    //os << "|" << mat.data[12] << "," << mat.data[13] << "," << mat.data[14] << "," << mat.data[15] << "|\n";
+}
+
 
 
 int main()
 {
+    //auto test = Daybreak::Mat4::Rotation(Daybreak::Mat4(1.0f), Daybreak::Math::Radians(40.0f), Daybreak::Vec3(0.0f, 0.0f, 1.0f));
+    //auto testglm = glm::rotate(glm::mat4(1.0f), glm::radians(40.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    auto test = Daybreak::Mat4::Translation(Daybreak::Mat4(1.0f), Daybreak::Vec3(0.5f, 1.1f, 3.0f));
+    auto testglm = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 1.1f, 3.0f));
+    
+    //LOG(test);
+    //LOG(glm::to_string(testglm));
+    //return 0;
 
 #pragma region Init
     glfwInit();
@@ -139,7 +178,8 @@ int main()
 
 
 
-    glm::mat4 proj;
+    glm::mat4 projglm;
+    Daybreak::Mat4 proj;
     //glm::mat4 proj = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT, -100.0f, 100.0f); //transforms from screen space to NDC
     
     
@@ -171,14 +211,18 @@ int main()
 
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-    glm::vec3 viewTranslation((float)SCR_WIDTH / 2, (float)SCR_HEIGHT / 2, 0);// this is a vec3 from screen corner to middle
-    //glm::vec3 viewTranslation(200, 200, 0); 
+    Daybreak::Vec3 viewTranslation((float)SCR_WIDTH / 2.0f, (float)SCR_HEIGHT / 2.0f, 0.0f);
+    glm::vec3 viewTranslationglm((float)SCR_WIDTH / 2, (float)SCR_HEIGHT / 2, 0);// this is a vec3 from screen corner to middle
 
+    Daybreak::Vec3 CameraPosition(0.0f, 0.0f, 10.0f);
+    glm::vec3 CameraPositionglm(0.0f, 0.0f, 10.0f);
 
-    glm::vec3 CameraPosition(0.0f, 0.0f, 10.0f);
+    Daybreak::Vec3 modelLocation(0.0f);
+    glm::vec3 modelLocationglm(0.0f);
 
-    glm::vec3 modelLocation(0.0f);
-    glm::vec3 modelScale(1.0f);
+    Daybreak::Vec3 modelScale(1.0f);
+    glm::vec3 modelScaleglm(1.0f);
+
     float modelZRotation = 0.0f;
 
     float fov = 90.0f;
@@ -186,10 +230,24 @@ int main()
     float far = 10.0f;
     bool usePerspective = false;
     bool addOffset = false;
+    bool useGLM = true;
 
     float theta = 0.0f;
     float radius = 75.0f;
-    glm::vec3 imageoffsetvec(0.0f);
+    bool rotate = true;
+
+    Daybreak::Vec3 imageoffsetvec(0.0f);
+    glm::vec3 imageoffsetvecglm(0.0f);
+
+    glm::mat4 viewglm;
+    Daybreak::Mat4 view;
+
+    Daybreak::Mat4 mvp(0.0f);
+    glm::mat4 mvpglm(0.0f);
+
+    glm::mat4 modelglm;
+    Daybreak::Mat4 model;
+
 #pragma region Loop
     while (!glfwWindowShouldClose(window))
     {
@@ -203,9 +261,20 @@ int main()
             theta = 0.0f;
         theta += 0.05f;
 
-        imageoffsetvec.x = radius* glm::cos(theta);
-        imageoffsetvec.y = radius* glm::sin(theta);
-        imageoffsetvec.z = -glm::abs(5.0f * radius * glm::sin(theta / 3.0f) * glm::sin(theta / 3.0f));
+        //imageoffsetvec.x = radius* glm::cos(theta);
+        //imageoffsetvec.y = radius* glm::sin(theta);
+        //imageoffsetvec.z = -glm::abs(5.0f * radius * glm::sin(theta / 3.0f) * glm::sin(theta / 3.0f));
+
+        if (rotate)
+        {
+            imageoffsetvec.x = radius * Daybreak::Math::Cos(theta);
+            imageoffsetvec.y = radius * Daybreak::Math::Sin(theta);
+            imageoffsetvec.z = -Daybreak::Math::Abs(5.0f * radius * Daybreak::Math::Sin(theta / 3.0f) * Daybreak::Math::Sin(theta / 3.0f));
+
+            imageoffsetvecglm.x = radius * Daybreak::Math::Cos(theta);
+            imageoffsetvecglm.y = radius * Daybreak::Math::Sin(theta);
+            imageoffsetvecglm.z = -Daybreak::Math::Abs(5.0f * radius * glm::sin(theta / 3.0f) * glm::sin(theta / 3.0f));
+        }
 
 
 
@@ -215,9 +284,9 @@ int main()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-
             ImGui::Begin("Camera Debug");
             ImGui::Checkbox("Use perspective", &usePerspective);
+            ImGui::Checkbox("Use glm", &useGLM);
             //ImGui::Checkbox("Add offset", &addOffset);
             ImGui::SliderFloat("Fov", &fov, 0.f, 180.0f);
             //ImGui::SliderFloat("Near", &near, -30.0f, 0.0);
@@ -226,18 +295,18 @@ int main()
             ImGui::SliderFloat("Pos Z", &CameraPosition.z, 0.0f, 1000.0f);
             //ImGui::SliderFloat2("View Translation", &viewTranslation.x, 0.0f, 800.0f);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            //ImGui::Text(glm::to_string(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 1.0f, 0.33f))).c_str());
             ImGui::End();
 
 
 
-            ImGui::Begin("Image Debug");
-            //ImGui::SliderFloat3("test", &test.x, -100.0f, 100.0f);
-
-            ImGui::SliderFloat3("Scale", &modelScale.x, 0.0f, 50.0f);
-            ImGui::SliderFloat2("Pos XY", &modelLocation.x, 0.0f, 900.f);
-            ImGui::SliderFloat("Pos Z", &modelLocation.z, -10.0f, 100.0f);
-            ImGui::SliderFloat("Radius", &radius, 0.0f, 1000.0f);
-            ImGui::End();
+            //ImGui::Begin("Image Debug");
+            ////ImGui::SliderFloat3("test", &test.x, -100.0f, 100.0f);
+            //ImGui::SliderFloat3("Scale", &modelScale.x, 0.0f, 50.0f);
+            //ImGui::SliderFloat2("Pos XY", &modelLocation.x, 0.0f, 900.f);
+            //ImGui::SliderFloat("Pos Z", &modelLocation.z, -10.0f, 100.0f);
+            //ImGui::SliderFloat("Radius", &radius, 0.0f, 1000.0f);
+            //ImGui::End();
         }
         // This is for the rainbow shader
         //shader.Bind();
@@ -250,32 +319,71 @@ int main()
         //shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
         //shader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
         //glm::mat4 model(1.0f);
-        if (usePerspective)
-            proj = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.0f, far); //transforms from screen space to NDC
-        else
-            proj = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT, -100000.0f, 10000.0f);
-        
-        glm::mat4 view;
-        if (!usePerspective)
-            view = glm::translate(glm::mat4(1.0f), viewTranslation-CameraPosition);
-        else
-            view = glm::translate(glm::mat4(1.0f), -CameraPosition);
 
+        //usePerspective = false;
+        if (usePerspective)
+            projglm = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.0f, far); //transforms from screen space to NDC
+        else
+            projglm = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT, -100000.0f, 10000.0f);
         
+        if (!usePerspective)
+            viewglm = glm::translate(glm::mat4(1.0f), viewTranslationglm-CameraPositionglm);
+        else
+            viewglm = glm::translate(glm::mat4(1.0f), -CameraPositionglm);
+
+
+
+        if (usePerspective)
+            proj = Daybreak::Mat4::Perspective(Daybreak::Math::Radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.0f, far); //transforms from screen space to NDC
+        else
+            proj = Daybreak::Mat4::Orthographic(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT, -100000.0f, 10000.0f);
+
+        if (!usePerspective)
+            view = Daybreak::Mat4::Translation(Daybreak::Mat4(1.0f), viewTranslation - CameraPosition);
+        else
+            view = Daybreak::Mat4::Translation(Daybreak::Mat4(1.0f), -CameraPosition);
+
+        //proj = Daybreak::Mat4::Transpose(proj);
         //glm::mat4 model = glm::translate(glm::mat4(1.0f), viewTranslation);
-        glm::mat4 model;
-        model = glm::translate(glm::mat4(1.0f), modelLocation+ imageoffsetvec);
-        model = glm::rotate(model, glm::radians(modelZRotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, modelScale);
+        modelglm = glm::translate(glm::mat4(1.0f), modelLocationglm + imageoffsetvecglm);
+        modelglm = glm::rotate(modelglm, glm::radians(modelZRotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        modelglm = glm::scale(modelglm, modelScaleglm);
+
+        model = Daybreak::Mat4::Translation(Daybreak::Mat4(1.0f), modelLocation+ imageoffsetvec);
+        model = Daybreak::Mat4::Rotation(model, Daybreak::Math::Radians(modelZRotation), Daybreak::Vec3(0.0f, 0.0f, 1.0f));
+        model = Daybreak::Mat4::Scale(model, modelScale);
+
+        //LOG(glm::to_string(modelglm));
+        //LOG(model);
+        // 
+        
+        //return 0;
+
 
         //glm::mat4 toWorldPos= glm::scale(glm::mat4(1.0f), glm::vec3((float)PIX_PER_UNIT));
         //glm::mat4 mvp = proj * view * worldScale * model;
-        glm::mat4 mvp = proj * view * model;
+        //mvp = Daybreak::Mat4::Transpose(proj * view * model);
+        mvp = (proj * (view * model));
+        mvpglm = projglm * viewglm * modelglm;
 
+        mvp = model * view;
+        mvp = mvp * proj;
 
-        shader.SetUniformMat4f("u_MVP", mvp);
+        //LOG(glm::to_string(mvpglm));
+        //LOG(mvp);
+        
+        if (useGLM)
+            shader.SetUniformMat4f("u_MVP", mvpglm);
+        else if (!useGLM)
+            shader.SetUniformMat4f("u_MVP", mvp);
 
         //LOG(mvp * glm::vec4(50.f, 50.f, 0.f, 0.f));
+        //LOG(glm::to_string(modelglm));
+        //LOG(model);
+        //return 0;
+
+        //mvpout = mvp;
+        //mvpoutglm = mvpglm;
 
         GLCall(renderer.Draw(va, ib, shader));
         

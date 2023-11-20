@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Daybreak/Math/2nd try/Vector.h"
-#include <iostream>
+#include "Daybreak/Math/Vector.h"
+//#include <iostream>
 
 namespace Daybreak
 {
 	//typedef Vec4 Quat;
 
-	struct Quat : public Vec4
-	{
-		void Test() { std::cin; }
-	};
+	//struct Quat : public Vec4
+	//{
+	//	//void Test() { std::cin; }
+	//};
 
 
 	//struct Quat
