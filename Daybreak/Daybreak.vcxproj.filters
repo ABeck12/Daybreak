@@ -78,12 +78,6 @@
     <ClCompile Include="src\TestRenderer\Test\TestSpriteRender.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Daybreak\Math\CoreMathFunctions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Daybreak\Math\MathLibraryTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\TestRenderer\UsingMyMath\IndexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -103,6 +97,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\TestRenderer\UsingMyMath\VertexBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Daybreak\ImGui\ImGuiLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1067,21 +1064,6 @@
     <ClInclude Include="src\TestRenderer\Test\TestSpriteRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\CoreMathFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\Matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\Quaternion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\Math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\TestRenderer\UsingMyMath\ErrorTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1107,6 +1089,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\TestRenderer\UsingMyMath\VertexBufferLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Daybreak\ImGui\ImGuiLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

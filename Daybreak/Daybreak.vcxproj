@@ -16,11 +16,7 @@
     <ClCompile Include="src\Daybreak\Core\LayerStack.cpp" />
     <ClCompile Include="src\Daybreak\Core\Log.cpp" />
     <ClCompile Include="src\Daybreak\Core\Window.cpp" />
-    <ClCompile Include="src\Daybreak\Math\CoreMathFunctions.cpp" />
-    <ClCompile Include="src\Daybreak\Math\MathLibraryTest.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="src\Daybreak\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\TestRenderer\Test\Camera.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -116,11 +112,7 @@
     <ClInclude Include="src\Daybreak\Core\LayerStack.h" />
     <ClInclude Include="src\Daybreak\Core\Log.h" />
     <ClInclude Include="src\Daybreak\Core\Window.h" />
-    <ClInclude Include="src\Daybreak\Math\CoreMathFunctions.h" />
-    <ClInclude Include="src\Daybreak\Math\Math.h" />
-    <ClInclude Include="src\Daybreak\Math\Matrix.h" />
-    <ClInclude Include="src\Daybreak\Math\Quaternion.h" />
-    <ClInclude Include="src\Daybreak\Math\Vector.h" />
+    <ClInclude Include="src\Daybreak\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\dbpch.h" />
