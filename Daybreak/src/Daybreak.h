@@ -11,6 +11,8 @@
 #include "Daybreak/Core/KeyCodes.h"
 #include "Daybreak/Core/MouseCodes.h"
 
+#include "Daybreak/ImGui/ImGuiLayer.h"
+
 
 //-----------------------------------
 #include "Daybreak/Core/EntryPoint.h"

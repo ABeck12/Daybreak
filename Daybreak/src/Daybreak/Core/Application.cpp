@@ -4,6 +4,9 @@
 #include "Daybreak/Core/Input.h"
 #include "Daybreak/Core/Window.h"
 
+//TEMPORARY
+#include <GLFW/glfw3.h>
+
 namespace Daybreak
 {
 
@@ -27,11 +30,13 @@ namespace Daybreak
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
 		m_LayerStack.PushOverlay(layer);
+		layer->OnAttach();
 	}
 
 	void Application::OnEvent(Event& e)
@@ -53,11 +58,12 @@ namespace Daybreak
 		while (m_Running)
 		{
 			//glClearColor(1, 0, 1, 1);
-			//glClear(GL_COLOR_BUFFER_BIT);
-			m_Window->OnUpdate();
+			glClear(GL_COLOR_BUFFER_BIT); //TEMPORARY
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+
+			m_Window->OnUpdate();
 		}
 	}
 
