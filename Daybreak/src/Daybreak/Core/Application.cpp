@@ -74,7 +74,7 @@ namespace Daybreak
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		m_Running = false;
+		Application::Close();
 		return true;
 	}
 }
