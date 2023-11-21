@@ -17,42 +17,6 @@
     <ClCompile Include="src\Daybreak\Core\Log.cpp" />
     <ClCompile Include="src\Daybreak\Core\Window.cpp" />
     <ClCompile Include="src\Daybreak\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\TestRenderer\Test\Camera.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\UsingMyMath\IndexBuffer.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\UsingMyMath\OpenGLApplicationMyMath.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\UsingMyMath\Renderer.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\UsingMyMath\Shader.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\UsingMyMath\Texture.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\UsingMyMath\VertexArray.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\UsingMyMath\VertexBuffer.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\TestRenderer\vendor\stb_image\stb_image.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\dbpch.cpp" />
@@ -117,22 +81,6 @@
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\dbpch.h" />
     <ClInclude Include="src\Daybreak\Core\EntryPoint.h" />
-    <ClInclude Include="src\TestRenderer\Test\Camera.h" />
-    <ClCompile Include="src\TestRenderer\Test\TestSpriteRender.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClInclude Include="src\TestRenderer\Test\TestSpriteRender.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\ErrorTest.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\IndexBuffer.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\Renderer.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\Shader.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\Texture.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\VecToString.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\VertexArray.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\VertexBuffer.h" />
-    <ClInclude Include="src\TestRenderer\UsingMyMath\VertexBufferLayout.h" />
-    <ClInclude Include="src\TestRenderer\vendor\stb_image\stb_image.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="vendor\glm\common.hpp" />
@@ -434,8 +382,6 @@
     <ClInclude Include="vendor\imgui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\TestRenderer\res\RainbowTest.glsl" />
-    <None Include="src\TestRenderer\res\TextureShader.glsl" />
     <None Include="vendor\glm\detail\func_common.inl" />
     <None Include="vendor\glm\detail\func_common_simd.inl" />
     <None Include="vendor\glm\detail\func_exponential.inl" />
@@ -575,10 +521,6 @@
     <None Include="vendor\glm\gtx\vector_angle.inl" />
     <None Include="vendor\glm\gtx\vector_query.inl" />
     <None Include="vendor\glm\gtx\wrap.inl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="src\TestRenderer\res\Textures\Test.png" />
-    <Image Include="src\TestRenderer\res\Textures\TestTexture.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
