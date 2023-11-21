@@ -20,6 +20,8 @@ namespace Daybreak
 
 		void Run();
 
+		void Close();
+
 		void OnEvent(Event& e);
 
 		void PushLayer(Layer* layer);

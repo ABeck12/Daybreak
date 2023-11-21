@@ -17,6 +17,14 @@ public:
 
 	void OnEvent(Daybreak::Event& event) override
 	{
+		if (event.GetEventType() == Daybreak::EventType::KeyPressed)
+		{
+			Daybreak::KeyPressedEvent& e = (Daybreak::KeyPressedEvent&)event;
+			if (e.GetKeyCode() == DB_KEY_ESCAPE)
+			{
+				Daybreak::Application::Get().Close();
+			}
+		}
 		//DB_LOG("{0}", event);
 		//if (event.GetEventType() == Daybreak::EventType::KeyPressed)
 		//{
