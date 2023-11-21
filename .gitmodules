@@ -1,0 +1,3 @@
+[submodule "Daybreak/vendor/spdlog"]
+	path = Daybreak/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
