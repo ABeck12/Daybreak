@@ -50,7 +50,7 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Daybreak::ImGuiLayer());
+		//PushOverlay(new Daybreak::ImGuiLayer());
 	}
 	~Sandbox()
 	{
