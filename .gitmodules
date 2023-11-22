@@ -1,3 +1,6 @@
 [submodule "Daybreak/vendor/spdlog"]
 	path = Daybreak/vendor/spdlog
 	url = https://github.com/ABeck12/spdlog.git
+[submodule "Daybreak/vendor/glfw"]
+	path = Daybreak/vendor/glfw
+	url = https://github.com/ABeck12/glfw.git
