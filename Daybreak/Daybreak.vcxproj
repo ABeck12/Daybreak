@@ -110,11 +110,6 @@
     <ClInclude Include="src\Daybreak\Events\KeyEvent.h" />
     <ClInclude Include="src\Daybreak\Events\MouseEvent.h" />
     <ClInclude Include="src\Daybreak\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="src\Daybreak\Math\CoreMathFunctions.h" />
-    <ClInclude Include="src\Daybreak\Math\Math.h" />
-    <ClInclude Include="src\Daybreak\Math\Matrix.h" />
-    <ClInclude Include="src\Daybreak\Math\Quaternion.h" />
-    <ClInclude Include="src\Daybreak\Math\Vector.h" />
     <ClInclude Include="src\Daybreak\Renderer\Buffer.h" />
     <ClInclude Include="src\Daybreak\Renderer\Renderer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
@@ -131,8 +126,6 @@
     <ClCompile Include="src\Daybreak\Core\Window.cpp" />
     <ClCompile Include="src\Daybreak\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Daybreak\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Daybreak\Math\CoreMathFunctions.cpp" />
-    <ClCompile Include="src\Daybreak\Math\MathLibraryTest.cpp" />
     <ClCompile Include="src\Daybreak\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Daybreak\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />

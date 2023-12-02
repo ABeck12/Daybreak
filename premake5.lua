@@ -32,6 +32,12 @@ project "Daybreak"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
+	-- TEMPORARY
+	removefiles
+	{ 
+		"%{prj.name}/src/TestRenderer/**.cpp", "%{prj.name}/src/TestRenderer/**.h",
+		"%{prj.name}/src/Daybreak/Math/**.cpp", "%{prj.name}/src/Daybreak/Math/**.h",
+	}
 	
 	includedirs
 	{

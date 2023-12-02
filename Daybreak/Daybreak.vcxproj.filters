@@ -13,9 +13,6 @@
     <Filter Include="Daybreak\ImGui">
       <UniqueIdentifier>{52215BF3-3EEF-4EF9-2783-BF1F13F02A5E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Daybreak\Math">
-      <UniqueIdentifier>{012C98E0-6DEC-1317-3627-5D94A2A658F3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Daybreak\Renderer">
       <UniqueIdentifier>{CE5E044C-3A75-02E2-83EC-8D03EF41D369}</UniqueIdentifier>
     </Filter>
@@ -27,21 +24,6 @@
     </Filter>
     <Filter Include="Platform\Windows">
       <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestRenderer">
-      <UniqueIdentifier>{BCD5E5B2-A838-7557-51BE-AD0D3D0041DA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestRenderer\Test">
-      <UniqueIdentifier>{AB17DFDE-172E-DD74-60A5-6896CCFAADFC}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestRenderer\UsingMyMath">
-      <UniqueIdentifier>{41CBA6A4-2DF0-F524-563B-DBB442BFF442}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestRenderer\vendor">
-      <UniqueIdentifier>{99205062-0582-2D70-8EEF-7322FA4F642F}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TestRenderer\vendor\stb_image">
-      <UniqueIdentifier>{73241B4E-DF3C-0278-A8E9-911114C19611}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -91,21 +73,6 @@
     <ClInclude Include="src\Daybreak\ImGui\ImGuiLayer.h">
       <Filter>Daybreak\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\CoreMathFunctions.h">
-      <Filter>Daybreak\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\Math.h">
-      <Filter>Daybreak\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\Matrix.h">
-      <Filter>Daybreak\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\Quaternion.h">
-      <Filter>Daybreak\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Daybreak\Math\Vector.h">
-      <Filter>Daybreak\Math</Filter>
-    </ClInclude>
     <ClInclude Include="src\Daybreak\Renderer\Buffer.h">
       <Filter>Daybreak\Renderer</Filter>
     </ClInclude>
@@ -147,12 +114,6 @@
     </ClCompile>
     <ClCompile Include="src\Daybreak\ImGui\ImGuiLayer.cpp">
       <Filter>Daybreak\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Daybreak\Math\CoreMathFunctions.cpp">
-      <Filter>Daybreak\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Daybreak\Math\MathLibraryTest.cpp">
-      <Filter>Daybreak\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Daybreak\Renderer\Buffer.cpp">
       <Filter>Daybreak\Renderer</Filter>
