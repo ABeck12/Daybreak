@@ -109,7 +109,7 @@
     <ClInclude Include="src\Daybreak\Renderer\Buffer.h">
       <Filter>Daybreak\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Daybreak\Renderer\DaybreakRenderer.h">
+    <ClInclude Include="src\Daybreak\Renderer\Renderer.h">
       <Filter>Daybreak\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
@@ -157,7 +157,7 @@
     <ClCompile Include="src\Daybreak\Renderer\Buffer.cpp">
       <Filter>Daybreak\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Daybreak\Renderer\DaybreakRenderer.cpp">
+    <ClCompile Include="src\Daybreak\Renderer\Renderer.cpp">
       <Filter>Daybreak\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
