@@ -5,9 +5,11 @@ workspace "Daybreak"
 	configurations
 	{
 		"Debug",
-		"Release"
+		"Release",
+		-- "Dist"
 	}
 
+outputloc = _WORKING_DIR 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDirs = {}
@@ -45,8 +47,6 @@ project "Daybreak"
 		"%{prj.name}/vendor/glad/include",
 		"%{prj.name}/vendor/glfw/include",
 		"%{prj.name}/vendor/imgui",
-		-- "%{IncludeDir["glfw"]}",
-		-- "Daybreak/vendor/glfw/include",
 		"%{prj.name}/src"
 	}
 
@@ -75,6 +75,7 @@ project "Daybreak"
 			"DB_ENABLE_ASSERTS"
 		}
 		symbols "On"
+		runtime "Debug"
 
 	filter "configurations:Release"
 		defines 
@@ -83,18 +84,20 @@ project "Daybreak"
 			"DB_ENABLE_ASSERTS"
 		}
 		symbols "On"
+		runtime "Release"
 
 	-- filter "configurations:Dist"
 	-- 	defines
 	-- 	{
 	-- 		"DB_DIST",
 	-- 	}
+	-- 	symbols "On"
 	
 
-	buildoptions
-	{
-        "/MT"
-    }
+	-- buildoptions
+	-- {
+    --     "/MT"
+    -- }
 
 project "Sandbox"
 	location "Sandbox"
@@ -122,7 +125,6 @@ project "Sandbox"
 	links
 	{
 		"Daybreak",
-		-- "imgui",
 	}
 
 	filter "system:windows"
@@ -142,6 +144,7 @@ project "Sandbox"
 			"DB_ENABLE_ASSERTS"
 		}
 		symbols "On"
+		runtime "Debug"
 
 
 	filter "configurations:Release"
@@ -150,3 +153,16 @@ project "Sandbox"
 			"DB_RELEASE"
 		}
 		symbols "On"
+		runtime "Release"
+
+	-- filter "configurations:Dist"
+	-- 	defines 
+	-- 	{
+	-- 		"DB_DIST"
+	-- 	}
+	-- 	symbols "On"
+
+	-- buildoptions
+	-- {
+    --     "/MT"
+    -- }

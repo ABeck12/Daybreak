@@ -4,7 +4,7 @@
 
 #ifdef DB_PLATFORM_WINDOWS
 #else
-//#error "Only Windows Supported"
+#error "Only Windows Supported"
 #endif
 
 #ifdef DB_ENABLE_ASSERTS
