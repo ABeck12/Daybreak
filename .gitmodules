@@ -4,3 +4,6 @@
 [submodule "Daybreak/vendor/glfw"]
 	path = Daybreak/vendor/glfw
 	url = https://github.com/ABeck12/glfw.git
+[submodule "Daybreak/vendor/imgui"]
+	path = Daybreak/vendor/imgui
+	url = https://github.com/ABeck12/imgui.git
