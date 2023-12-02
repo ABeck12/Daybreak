@@ -1,5 +1,6 @@
 workspace "Daybreak"
 	architecture "x64"
+	startproject "Sandbox"
 
 	configurations
 	{
@@ -12,9 +13,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDirs = {}
 IncludeDirs["glfw"] = "Daybreak/vendor/glfw/include"
 IncludeDirs["glad"] = "Daybreak/vendor/glad/include"
+IncludeDirs["imgui"] = "Daybreak/vendor/imgui"
 
 include "Daybreak/vendor/glfw"
 include "Daybreak/vendor/glad"
+include "Daybreak/vendor/imgui"
 
 project "Daybreak"
 	location "Daybreak"
@@ -35,6 +38,7 @@ project "Daybreak"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/vendor/glad/include",
 		"%{prj.name}/vendor/glfw/include",
+		"%{prj.name}/vendor/imgui",
 		-- "%{IncludeDir["glfw"]}",
 		-- "Daybreak/vendor/glfw/include",
 		"%{prj.name}/src"
@@ -44,6 +48,7 @@ project "Daybreak"
 	{
 		"glad",
 		"glfw",
+		"Imgui",
 		"opengl32.lib"
 	}
 
@@ -65,13 +70,20 @@ project "Daybreak"
 		}
 		symbols "On"
 
-
 	filter "configurations:Release"
 		defines 
 		{
-			"DB_RELEASE"
+			"DB_RELEASE",
+			"DB_ENABLE_ASSERTS"
 		}
 		symbols "On"
+
+	-- filter "configurations:Dist"
+	-- 	defines
+	-- 	{
+	-- 		"DB_DIST",
+	-- 	}
+	
 
 	buildoptions
 	{
@@ -98,11 +110,13 @@ project "Sandbox"
 		"Daybreak/vendor/spdlog/include",
 		"Daybreak/vendor/glad/include",
 		"Daybreak/vendor/glfw/include",
+		"Daybreak/vendor/imgui",
 	}
 
 	links
 	{
-		"Daybreak"
+		"Daybreak",
+		-- "imgui",
 	}
 
 	filter "system:windows"
