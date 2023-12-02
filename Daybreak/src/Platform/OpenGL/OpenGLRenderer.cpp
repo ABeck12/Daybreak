@@ -2,7 +2,7 @@
 
 #include "Platform/OpenGL/OpenGLRenderer.h"
 
-#include "Daybreak/Renderer/DaybreakRenderer.h"
+#include "Daybreak/Renderer/Renderer.h"
 
 namespace Daybreak
 {
