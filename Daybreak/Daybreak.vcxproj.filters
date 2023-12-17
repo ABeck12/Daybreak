@@ -73,17 +73,8 @@
     <ClInclude Include="src\Daybreak\ImGui\ImGuiLayer.h">
       <Filter>Daybreak\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Daybreak\Renderer\Buffer.h">
-      <Filter>Daybreak\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Daybreak\Renderer\Renderer.h">
       <Filter>Daybreak\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
-      <Filter>Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLRenderer.h">
-      <Filter>Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>Platform\Windows</Filter>
@@ -92,6 +83,13 @@
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\dbpch.h" />
+    <ClInclude Include="src\Daybreak\Renderer\RenderAPI.h" />
+    <ClInclude Include="src\Daybreak\Renderer\RenderCommand.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRenderAPI.h" />
+    <ClInclude Include="src\Daybreak\Renderer\Shader.h" />
+    <ClInclude Include="src\Daybreak\Renderer\Buffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="src\Daybreak\Renderer\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Daybreak\Core\Application.cpp">
@@ -115,17 +113,8 @@
     <ClCompile Include="src\Daybreak\ImGui\ImGuiLayer.cpp">
       <Filter>Daybreak\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Daybreak\Renderer\Buffer.cpp">
-      <Filter>Daybreak\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\Daybreak\Renderer\Renderer.cpp">
       <Filter>Daybreak\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
-      <Filter>Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLRenderer.cpp">
-      <Filter>Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>Platform\Windows</Filter>
@@ -134,5 +123,12 @@
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\dbpch.cpp" />
+    <ClCompile Include="src\Daybreak\Renderer\RenderAPI.cpp" />
+    <ClCompile Include="src\Daybreak\Renderer\RenderCommand.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRenderAPI.cpp" />
+    <ClCompile Include="src\Daybreak\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Daybreak\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Daybreak\Renderer\VertexArray.cpp" />
   </ItemGroup>
 </Project>

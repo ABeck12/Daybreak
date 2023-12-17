@@ -6,25 +6,37 @@
 
 namespace Daybreak
 {
-	//class OpenGLVertexBuffer : public VertexBuffer
-	//{
-	//public:
-	//	virtual ~OpenGLVertexBuffer() = default;
+	class OpenGLVertexBuffer : public VertexBuffer
+	{
+	public:
+		OpenGLVertexBuffer(const void* vertices, unsigned int size);
+		OpenGLVertexBuffer(unsigned int size);
 
-	//	virtual void Bind() const = 0;
-	//	virtual void Unbind() const = 0;
+		virtual ~OpenGLVertexBuffer() = default;
 
-	//	static Ref<VertexBuffer> Create(uint32_t size);
-	//};
+		//virtual void Bind() override;
+		//virtual void Unbind() override;
+		// 
+		//virtual void SetData(const void* data, uint32_t size) override;
 
-	//class IndexBuffer
-	//{
-	//public:
-	//	virtual ~IndexBuffer() = default;
+	private:
+		uint32_t m_RendererID;
+	};
 
-	//	virtual void Bind() const = 0;
-	//	virtual void Unbind() const = 0;
+	class OpenGLIndexBuffer : public IndexBuffer
+	{
+	public:
+		OpenGLIndexBuffer(const void* indeces, unsigned int size);
+		OpenGLIndexBuffer(unsigned int size);
 
-	//	static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
-	//};
+		virtual ~OpenGLIndexBuffer() = default;
+
+		//virtual void Bind() override;
+		//virtual void Unbind() override;
+
+		//virtual void SetData(const void* data, uint32_t size) override;
+
+	private:
+		uint32_t m_RendererID;
+	};
 }

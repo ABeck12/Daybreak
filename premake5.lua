@@ -16,6 +16,7 @@ IncludeDirs = {}
 IncludeDirs["glfw"] = "Daybreak/vendor/glfw/include"
 IncludeDirs["glad"] = "Daybreak/vendor/glad/include"
 IncludeDirs["imgui"] = "Daybreak/vendor/imgui"
+IncludeDirs["glm"] = "Daybreak/vendor/glm"
 
 include "Daybreak/vendor/glfw"
 include "Daybreak/vendor/glad"
@@ -47,6 +48,7 @@ project "Daybreak"
 		"%{prj.name}/vendor/glad/include",
 		"%{prj.name}/vendor/glfw/include",
 		"%{prj.name}/vendor/imgui",
+		"%{prj.name}/vendor/glm",
 		"%{prj.name}/src"
 	}
 
@@ -120,6 +122,7 @@ project "Sandbox"
 		"Daybreak/vendor/glad/include",
 		"Daybreak/vendor/glfw/include",
 		"Daybreak/vendor/imgui",
+		"Daybreak/vendor/glm",
 	}
 
 	links

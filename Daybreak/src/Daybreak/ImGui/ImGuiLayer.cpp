@@ -11,9 +11,6 @@
 
 // FIXME: Temporary
 #include <GLFW/glfw3.h>
-#ifdef __glad_h_
-#include <glad/glad.h>
-#endif
 
 namespace Daybreak
 {

@@ -3,6 +3,7 @@
 #include "Daybreak/Core/Application.h"
 #include "Daybreak/Core/Input.h"
 #include "Daybreak/Core/Window.h"
+#include "Daybreak/Renderer/Renderer.h"
 
 //TEMPORARY
 #include <GLFW/glfw3.h>
@@ -20,11 +21,13 @@ namespace Daybreak
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(DB_BIND_EVENT_FN(Application::OnEvent));
 
+
+		Renderer::Init();
 	}
 
 	Application::~Application()
 	{
-
+		Renderer::Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -58,7 +61,7 @@ namespace Daybreak
 		while (m_Running)
 		{
 			glClear(GL_COLOR_BUFFER_BIT); //TEMPORARY
-			glClearColor(1, 0, 1, 1);
+			glClearColor(1, 0, 1, 1); //TEMPORARY
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
