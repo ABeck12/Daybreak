@@ -13,7 +13,11 @@
 
 #include "Daybreak/ImGui/ImGuiLayer.h"
 
+//--Renderer--
+#include "Daybreak/Renderer/Renderer.h"
+#include "Daybreak/Renderer/RenderCommand.h"
 
-//-----------------------------------
-#include "Daybreak/Core/EntryPoint.h"
-//-----------------------------------
+#include "Daybreak/Renderer/Buffer.h"
+#include "Daybreak/Renderer/Shader.h"
+#include "Daybreak/Renderer/VertexArray.h"
+//------------

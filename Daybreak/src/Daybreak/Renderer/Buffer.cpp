@@ -16,13 +16,8 @@ namespace Daybreak
 		return CreateRef<OpenGLVertexBuffer>(vertices, size);
 	}
 
-	Ref<IndexBuffer> IndexBuffer::Create(uint32_t size)
+	Ref<IndexBuffer> IndexBuffer::Create(const void* indices, uint32_t count)
 	{
-		return CreateRef<OpenGLIndexBuffer>(size);
-	}
-
-	Ref<IndexBuffer> IndexBuffer::Create(const void* indices, uint32_t size)
-	{
-		return CreateRef<OpenGLIndexBuffer>(indices, size);
+		return CreateRef<OpenGLIndexBuffer>(indices, count);
 	}
 }

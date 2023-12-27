@@ -5,8 +5,6 @@
 #include "Daybreak/Core/Window.h"
 #include "Daybreak/Renderer/Renderer.h"
 
-//TEMPORARY
-#include <GLFW/glfw3.h>
 
 namespace Daybreak
 {
@@ -60,9 +58,6 @@ namespace Daybreak
 	{
 		while (m_Running)
 		{
-			glClear(GL_COLOR_BUFFER_BIT); //TEMPORARY
-			glClearColor(1, 0, 1, 1); //TEMPORARY
-
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 

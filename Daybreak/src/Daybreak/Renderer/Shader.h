@@ -2,6 +2,8 @@
 
 #include "dbpch.h"
 
+#include "glm/glm.hpp"
+
 namespace Daybreak
 {
 	class Shader
@@ -9,10 +11,25 @@ namespace Daybreak
 	public:
 		virtual ~Shader() = default;
 
-		Ref<Shader> Create(const std::string& filepath);
+		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
 
-		virtual void Bind() = 0;
-		virtual void Unbind() = 0;
+		virtual const std::string& GetName() const = 0;
 
+		virtual void SetVec2(glm::vec2 vec) const = 0;
+		virtual void SetVec3(glm::vec3 vec) const = 0;
+		virtual void SetVec4(glm::vec4 vec) const = 0;
+		virtual void SetMat3(glm::mat3 mat) const = 0;
+		virtual void SetMat4(glm::mat4 mat) const = 0;
+
+		static Ref<Shader> Create(const std::string& name, const std::string& filepath);
+		static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
 	};
+
+	//class ShaderLibrary
+	//{
+	//public:
+	//private:
+	//	std::unordered_map <std::string, Ref<Shader>&> m_Shaders;
+	//};
 }

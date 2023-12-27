@@ -2,6 +2,10 @@
 
 #include "dbpch.h"
 
+#include "Daybreak/Renderer/RenderCommand.h"
+#include "Daybreak/Renderer/Shader.h"
+#include "Daybreak/Renderer/VertexArray.h"
+
 namespace Daybreak
 {
 	class Renderer
@@ -10,7 +14,9 @@ namespace Daybreak
 	public:
 		static void Init();
 		static void Shutdown();
-		//static void Submit(shader, vertexarray, mat4 transform)
 
+		static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); }
+		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
+		
 	};
 }

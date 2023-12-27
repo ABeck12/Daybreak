@@ -20,4 +20,16 @@ namespace Daybreak
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
+
+	void OpenGLRenderAPI::SetClearColor(const glm::vec4& color)
+	{
+		glClearColor(color.r, color.g, color.b, color.a);
+	}
+
+	void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+	{
+		vertexArray->Bind();
+		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+	}
 }
