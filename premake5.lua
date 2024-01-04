@@ -60,6 +60,9 @@ project "Daybreak"
 		"opengl32.lib"
 	}
 
+	--pchheader "%{prj.name}/src/dbpch.h"
+	--pchsource "%{prj.name}/src/hzpch.cpp"
+
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"

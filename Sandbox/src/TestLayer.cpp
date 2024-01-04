@@ -1,18 +1,54 @@
 #include <Daybreak.h>
 
 #include "TestLayer.h"
-#include "glad/glad.h"
+#include <glad/glad.h> //Temporary for RenderTest() and RenderTest2()
 
 TestLayer::TestLayer() : Layer("TestLayer")
 {
-	//TestLayer::Test();
+	Daybreak::TextureSpecifications textSpec; // WARNING: Struct has hardcoded references to width,height, and format. CHANGE ASAP
+	texture = Daybreak::Texture::Create(textSpec, "../Sandbox/assets/Test.png");
+	shader = Daybreak::Shader::Create("Texture Shader", "../Sandbox/assets/TextureShader.glsl");
+
+	float vertices[] = {
+		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
+		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left 
+	};
+
+		
+	uint32_t indices[] = {  // note that we start from 0!
+		0, 1, 3,  // first Triangle
+		1, 2, 3   // second Triangle
+	};
+
+	Daybreak::BufferLayout layout{
+		{ Daybreak::RenderDataTypes::Float3, std::string("Position") },
+		{ Daybreak::RenderDataTypes::Float2, std::string("Texture Position")}
+	};
+
+	va = Daybreak::VertexArray::Create();
+
+	vb = Daybreak::VertexBuffer::Create(vertices, sizeof(vertices));
+	vb->SetLayout(layout);
+	va->AddVertexBuffer(vb);
+	ib = Daybreak::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+	va->SetIndexBuffer(ib);
+	shader->Bind();
 }
 
 void TestLayer::OnUpdate()
 {
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 	Daybreak::RenderCommand::Clear();
-	TestLayer::RenderTest2();
+
+	texture->Bind();
+	shader->Bind();
+	shader->SetInt1("u_Texture", 0);
+	shader->SetFloat4("u_Color", glm::vec4(r_color, g_color, 1.0f, 1.0f));
+	Daybreak::RenderCommand::DrawIndexed(va);
+
+	//TestLayer::RenderTest();
 	//TestLayer::Test2();
 	//DB_INFO("TestLayer::Update");
 	//if (Daybreak::Input::IsKeyPressed(DB_KEY_TAB))
@@ -44,7 +80,7 @@ void TestLayer::OnEvent(Daybreak::Event& event)
 	//}
 }
 
-void TestLayer::RenderTest()
+void TestLayer::RenderTest2()
 {
 	const char* vertexShaderSource = "#version 330 core\n"
 		"layout (location = 0) in vec3 aPos;\n"
@@ -128,24 +164,9 @@ void TestLayer::RenderTest()
 
 }
 
-void TestLayer::RenderTest2()
+void TestLayer::RenderTest()
 {
-	const char* vertexShaderSource = "#version 330 core\n"
-		"layout (location = 0) in vec3 aPos;\n"
-		"void main()\n"
-		"{\n"
-		"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-		"}\0";
-	const char* fragmentShaderSource = "#version 330 core\n"
-		"out vec4 FragColor;\n"
-		"void main()\n"
-		"{\n"
-		"   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
-		"}\n\0";
-
-	Daybreak::Ref<Daybreak::Shader> shader = Daybreak::Shader::Create("Test Shader", vertexShaderSource, fragmentShaderSource);
-
-
+	shader = Daybreak::Shader::Create("From File Shader", "../Sandbox/src/TestShader.glsl");
 	float vertices[] = {
 		 0.5f,  0.5f, 0.0f,  // top right
 		 0.5f, -0.5f, 0.0f,  // bottom right
@@ -160,22 +181,28 @@ void TestLayer::RenderTest2()
 	Daybreak::BufferLayout layout{
 		{ Daybreak::RenderDataTypes::Float3, std::string("Position") }
 	};
+	if (r_color >= 1.0f)
+		r_color = 0;
+	else
+		r_color += 0.01f;
 
-	Daybreak::Ref<Daybreak::VertexArray> va = Daybreak::VertexArray::Create();
+	if (g_color >= 1.0f)
+		g_color = 0;
+	else
+		g_color += 0.01f;
 
-	Daybreak::Ref<Daybreak::VertexBuffer> vb = Daybreak::VertexBuffer::Create(vertices, sizeof(vertices));
+
+	va = Daybreak::VertexArray::Create();
+
+	vb = Daybreak::VertexBuffer::Create(vertices, sizeof(vertices));
 	vb->SetLayout(layout);
 	va->AddVertexBuffer(vb);
-	Daybreak::Ref<Daybreak::IndexBuffer> ib = Daybreak::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+	ib = Daybreak::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 	va->SetIndexBuffer(ib);
 	shader->Bind();
+	shader->SetFloat4("u_Color", glm::vec4(r_color, g_color, 1.0f, 1.0f));
 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// This will be replaced with Render::Submit(shader, vertexArray, transform)
 	Daybreak::RenderCommand::DrawIndexed(va);
-
-	//glUseProgram(shaderProgram);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
-	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 }

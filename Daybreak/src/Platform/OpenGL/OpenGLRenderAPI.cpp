@@ -4,6 +4,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Daybreak
 {
@@ -11,6 +12,11 @@ namespace Daybreak
 	{
 		//TODO: Temporary, move to GraphicsContext->Init() inside platform window init()
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		DB_CORE_INFO("OpenGL Info:");
+		DB_CORE_INFO("  Vendor: {0}", (char*)glGetString(GL_VENDOR));
+		DB_CORE_INFO("  Renderer: {0}", (char*)glGetString(GL_RENDERER));
+		DB_CORE_INFO("  Version: {0}", (char*)glGetString(GL_VERSION));
+		//===================================================================
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -31,7 +31,7 @@ namespace Daybreak
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
 
-		DB_CORE_INFO("Creating window {0} ({1}x{2})", props.Title, props.Width, props.Height);
+		DB_CORE_INFO("Creating window \"{0}\" ({1}x{2})", props.Title, props.Width, props.Height);
 
 		if (!s_GLFWInitialized)
 		{

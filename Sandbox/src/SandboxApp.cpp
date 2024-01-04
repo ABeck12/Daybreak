@@ -9,7 +9,7 @@ public:
 	Sandbox()
 	{
 		PushLayer(new TestLayer());
-		PushOverlay(new Daybreak::ImGuiLayer());
+		//PushOverlay(new Daybreak::ImGuiLayer());
 	}
 	~Sandbox()
 	{
