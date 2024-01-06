@@ -6,8 +6,8 @@
 
 namespace Daybreak
 {
-	Ref<Texture> Texture::Create(const TextureSpecifications& textureSpecs, const std::string& filepath)
+	Ref<Texture2D> Texture2D::Create(const TextureSpecifications& textureSpecs, const std::string& filepath)
 	{
-		return CreateRef <OpenGLTexture>(textureSpecs, filepath);
+		return CreateRef <OpenGLTexture2D>(textureSpecs, filepath);
 	}
 }

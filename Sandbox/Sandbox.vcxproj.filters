@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\TestLayer.cpp">
+    <ClCompile Include="src\GameLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\SandboxApp.cpp">
@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\TestLayer.h">
+    <ClInclude Include="src\GameLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

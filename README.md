@@ -9,6 +9,14 @@ Licenses added via submodules => spdlog
 
 
 # TODO
+For Renderer:
+    Font rendering
+    Framebuffer
+    Graphics Context
+    Uniform Buffer?
+
+Update Input classes off of defines and move to enum classes
+
 Low Priority:
     Change implementation of keycodes and mousecodes to use an enum class instead of cpp defines
     Change Layerstack implemtation to match Hazel system to avoid crashing

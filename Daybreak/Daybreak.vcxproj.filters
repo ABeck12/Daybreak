@@ -22,9 +22,6 @@
     <Filter Include="Platform\OpenGL">
       <UniqueIdentifier>{1E7D2C1D-8A08-9AE1-9319-1DD6FF23F6E1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Platform\OpenGL\stb_image_temp">
-      <UniqueIdentifier>{2DDE80DC-1904-4B43-024A-D00EEE0E700F}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Platform\Windows">
       <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
     </Filter>
@@ -79,6 +76,9 @@
     <ClInclude Include="src\Daybreak\Renderer\Buffer.h">
       <Filter>Daybreak\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Daybreak\Renderer\Camera.h">
+      <Filter>Daybreak\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Daybreak\Renderer\RenderAPI.h">
       <Filter>Daybreak\Renderer</Filter>
     </ClInclude>
@@ -112,9 +112,6 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\stb_image_temp\stb_image.h">
-      <Filter>Platform\OpenGL\stb_image_temp</Filter>
-    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
@@ -122,7 +119,14 @@
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\dbpch.h" />
-    <ClInclude Include="src\Daybreak\Renderer\Camera.h" />
+    <ClInclude Include="vendor\entt\include\entt.hpp" />
+    <ClInclude Include="vendor\stb_image\stb_image.h" />
+    <ClInclude Include="src\Daybreak\Scene\Entity.h" />
+    <ClInclude Include="src\Daybreak\Scene\Components.h" />
+    <ClInclude Include="src\Daybreak\Scene\Scene.h" />
+    <ClInclude Include="src\Daybreak\Core\UUID.h" />
+    <ClInclude Include="src\Daybreak\Core\DeltaTime.h" />
+    <ClInclude Include="src\Daybreak\Math\glmToString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Daybreak\Core\Application.cpp">
@@ -182,9 +186,6 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>Platform\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\stb_image_temp\stb_image.cpp">
-      <Filter>Platform\OpenGL\stb_image_temp</Filter>
-    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
@@ -192,5 +193,10 @@
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\dbpch.cpp" />
+    <ClCompile Include="vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\Daybreak\Scene\Entity.cpp" />
+    <ClCompile Include="src\Daybreak\Scene\Scene.cpp" />
+    <ClCompile Include="src\Daybreak\Core\UUID.cpp" />
+    <ClCompile Include="src\Daybreak\Core\DeltaTime.cpp" />
   </ItemGroup>
 </Project>

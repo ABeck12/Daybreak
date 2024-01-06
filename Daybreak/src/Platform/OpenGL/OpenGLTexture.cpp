@@ -3,25 +3,32 @@
 #include "Platform/OpenGL/OpenGLTexture.h"
 
 #include <glad/glad.h>
-
-#include "stb_image_temp/stb_image.h"
+#include <stb_image.h>
 
 namespace Daybreak
 {
-	OpenGLTexture::OpenGLTexture(const TextureSpecifications& textureSpecs, const std::string& filepath) :
+	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs, const std::string& filepath) :
 		m_textureSpecs(textureSpecs), m_filepath(filepath)
 	{
 		stbi_set_flip_vertically_on_load(1);
-		int m_BPP = 0; // SUPER TEMPORARY
-		int width = 128;//(int)m_textureSpecs.width;
-		int height = 128;//(int)m_textureSpecs.height;
+		int m_BPP; // SUPER TEMPORARY
+		int width;
+		int height;
 		m_LocalBuffer = stbi_load(filepath.c_str(), &width, &height, &m_BPP, 4);
+		m_textureSpecs.height = height;
+		m_textureSpecs.width = width;
 
 		glGenTextures(1, &m_RendererID);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		int glFilterType;
+		if (textureSpecs.filter == TextureFilterType::Bilinear)
+			glFilterType = GL_LINEAR;
+		else if (textureSpecs.filter == TextureFilterType::Point)
+			glFilterType = GL_NEAREST;
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFilterType);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFilterType);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -36,18 +43,18 @@ namespace Daybreak
 		}
 	}
 
-	OpenGLTexture::~OpenGLTexture()
+	OpenGLTexture2D::~OpenGLTexture2D()
 	{
 		glDeleteTextures(1, &m_RendererID);
 	}
 
-	const void OpenGLTexture::Bind(const uint32_t& slot) const
+	const void OpenGLTexture2D::Bind(const uint32_t& slot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 	}
 
-	const void OpenGLTexture::Unbind() const
+	const void OpenGLTexture2D::Unbind() const
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

@@ -1,12 +1,19 @@
 #include <Daybreak.h>
+#include "Daybreak/Renderer/Camera.h"
 
-#include "TestLayer.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include "GameLayer.h"
 #include <glad/glad.h> //Temporary for RenderTest() and RenderTest2()
 
-TestLayer::TestLayer() : Layer("TestLayer")
+
+
+GameLayer::GameLayer() : Layer("GameLayer")
 {
-	Daybreak::TextureSpecifications textSpec; // WARNING: Struct has hardcoded references to width,height, and format. CHANGE ASAP
-	texture = Daybreak::Texture::Create(textSpec, "../Sandbox/assets/Test.png");
+	camera = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.0f, 100.0f);
+	//camera = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.0f, 100.0f);
+	cameraPos.z = -50.f;
+
+	texture = Daybreak::Texture2D::Create({ 128, 128, Daybreak::ImageFormat::RGB8, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Test.png");
 	shader = Daybreak::Shader::Create("Texture Shader", "../Sandbox/assets/TextureShader.glsl");
 
 	float vertices[] = {
@@ -37,27 +44,77 @@ TestLayer::TestLayer() : Layer("TestLayer")
 	shader->Bind();
 }
 
-void TestLayer::OnUpdate()
+void GameLayer::OnUpdate()
 {
-	Daybreak::RenderCommand::SetClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
+	//Daybreak::RenderCommand::SetClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 	Daybreak::RenderCommand::Clear();
 
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraPos);
+	view = glm::rotate(view, glm::radians(cameraRot.x), glm::vec3(1.0f, 1.0f, 0.0f));
+	view = glm::rotate(view, glm::radians(cameraRot.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	view = glm::rotate(view, glm::radians(cameraRot.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	//r = glm::mat4(1.0f);
+	//r = glm::rotate(r, glm::radians(cameraRot.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	//r = glm::rotate(r, glm::radians(cameraRot.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	//r = glm::rotate(r, glm::radians(cameraRot.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	glm::mat4 mt, mr, ms;
+	mt = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
+	mr = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ms = glm::scale(glm::mat4(1.0f), glm::vec3(10.0f));
+	glm::mat4 model = ms * mr * mt;
+	auto proj = camera.GetProjection();
+	mvp = proj * view * model;
+	//DB_LOG(mvp);
+	//DB_LOG(proj * view * model * glm::vec4(-0.5f, 0.5f, 0.0f,0.0f));
 	texture->Bind();
 	shader->Bind();
+	shader->SetMat4("u_MVP", mvp);
 	shader->SetInt1("u_Texture", 0);
 	shader->SetFloat4("u_Color", glm::vec4(r_color, g_color, 1.0f, 1.0f));
-	Daybreak::RenderCommand::DrawIndexed(va);
+	Daybreak::RenderCommand::DrawIndexed(va); //this will be replaced with Renderer::Submit
 
-	//TestLayer::RenderTest();
-	//TestLayer::Test2();
-	//DB_INFO("TestLayer::Update");
-	//if (Daybreak::Input::IsKeyPressed(DB_KEY_TAB))
-	//	DB_LOG("Tab key is pressed (poll)!");
+	float amount = 0.5f;
+	if (Daybreak::Input::IsKeyPressed(DB_KEY_S))
+	{
+		//DB_LOG("Moving camera up");
+		cameraPos.y += amount;
+		//DB_LOG(cameraPos);
+	}
+	if (Daybreak::Input::IsKeyPressed(DB_KEY_W))
+	{
+		//DB_LOG("Moving camera down");
+		cameraPos.y -= amount;
+		//DB_LOG(cameraPos);
+	}
+	if (Daybreak::Input::IsKeyPressed(DB_KEY_A))
+	{
+		//DB_LOG("Moving camera left");
+		cameraPos.x += amount;
+		//DB_LOG(cameraPos);
+	}
+	if (Daybreak::Input::IsKeyPressed(DB_KEY_D))
+	{
+		//DB_LOG("Moving camera right");
+		cameraPos.x -= amount;
+		//DB_LOG(cameraPos);
+	}
+	if (Daybreak::Input::IsKeyPressed(DB_KEY_E))
+	{
+		//DB_LOG("Moving camera in");
+		cameraPos.z += amount;
+		//DB_LOG(cameraPos);
+	}
+	if (Daybreak::Input::IsKeyPressed(DB_KEY_Q))
+	{
+		//DB_LOG("Moving camera out");
+		cameraPos.z -= amount;
+		//DB_LOG(cameraPos);
+	}
 }
 
-void TestLayer::OnEvent(Daybreak::Event& event)
+void GameLayer::OnEvent(Daybreak::Event& event)
 {
-	
 	if (event.GetEventType() == Daybreak::EventType::KeyPressed)
 	{
 		Daybreak::KeyPressedEvent& e = (Daybreak::KeyPressedEvent&)event;
@@ -65,6 +122,42 @@ void TestLayer::OnEvent(Daybreak::Event& event)
 		{
 			Daybreak::Application::Get().Close();
 		}
+	}
+	if (event.GetEventType() == Daybreak::EventType::WindowResize)
+	{
+		Daybreak::WindowResizeEvent& e = (Daybreak::WindowResizeEvent&)event;
+		camera = glm::perspective(glm::radians(45.0f), (float)e.GetWidth()/ (float)e.GetHeight(), 0.0f, 100.0f);
+		Daybreak::Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+	}
+	if (event.GetEventType() == Daybreak::EventType::KeyPressed)
+	{
+		Daybreak::KeyPressedEvent& e = (Daybreak::KeyPressedEvent&)event;
+		
+		//else if (e.GetKeyCode() == DB_KEY_UP)
+		//{
+		//	DB_LOG("Rotating camera up");
+		//	cameraRot.x += amount;
+		//	DB_LOG(cameraRot);
+		//}
+		//else if (e.GetKeyCode() == DB_KEY_DOWN)
+		//{
+		//	DB_LOG("Rotating camera down");
+		//	cameraRot.x -= amount;
+		//	DB_LOG(cameraRot);
+		//}
+		//else if (e.GetKeyCode() == DB_KEY_RIGHT)
+		//{
+		//	DB_LOG("Rotating camera up");
+		//	cameraRot.y += amount;
+		//	DB_LOG(cameraRot);
+		//}
+		//else if (e.GetKeyCode() == DB_KEY_LEFT)
+		//{
+		//	DB_LOG("Rotating camera down");
+		//	cameraRot.y -= amount;
+		//	DB_LOG(cameraRot);
+		//}
+
 	}
 	//DB_LOG("{0}", event);
 	//if (event.GetEventType() == Daybreak::EventType::KeyPressed)
@@ -80,7 +173,7 @@ void TestLayer::OnEvent(Daybreak::Event& event)
 	//}
 }
 
-void TestLayer::RenderTest2()
+void GameLayer::RenderTest2()
 {
 	const char* vertexShaderSource = "#version 330 core\n"
 		"layout (location = 0) in vec3 aPos;\n"
@@ -164,7 +257,7 @@ void TestLayer::RenderTest2()
 
 }
 
-void TestLayer::RenderTest()
+void GameLayer::RenderTest()
 {
 	shader = Daybreak::Shader::Create("From File Shader", "../Sandbox/src/TestShader.glsl");
 	float vertices[] = {

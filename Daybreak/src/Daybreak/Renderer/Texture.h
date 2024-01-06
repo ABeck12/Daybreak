@@ -8,20 +8,24 @@ namespace Daybreak
 		R8, RGB8, RGBA8
 	};
 
-	struct TextureSpecifications //FIXME: Change the hardcoding ASAP
+	enum class TextureFilterType
 	{
-		//TextureSpecifications() {};
-		//TextureSpecifications(uint32_t width, uint32_t height, ImageFormat format)
-		uint32_t width = 128;
-		uint32_t height = 128;
-		ImageFormat format = ImageFormat::RGB8;
+		Bilinear, Point
+	};
+
+	struct TextureSpecifications
+	{
+		uint32_t width;
+		uint32_t height;
+		ImageFormat format;// = ImageFormat::RGB8;
+		TextureFilterType filter;// = TextureFilterType::Point;
 	};
 
 	class Texture
 	{
 	public:
 		~Texture() = default;
-		static Ref<Texture> Create(const TextureSpecifications& textureSpecs, const std::string& filepath);
+		//static Ref<Texture> Create(const TextureSpecifications& textureSpecs, const std::string& filepath);
 
 		virtual const std::string& GetFilepath() const = 0;
 		virtual const TextureSpecifications& GetTexutreSpecifications() const = 0;
@@ -35,9 +39,9 @@ namespace Daybreak
 		
 	};
 
-	//class Texture2D : public Texture
-	//{
-	//public:
-	//	static Ref<Texture2D> Create(const std::string& name);
-	//};
+	class Texture2D : public Texture
+	{
+	public:
+		static Ref<Texture2D> Create(const TextureSpecifications& textureSpecs, const std::string& filepath);
+	};
 }

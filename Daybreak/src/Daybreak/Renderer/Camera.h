@@ -4,9 +4,15 @@
 
 namespace Daybreak
 {
+	//enum class CameraType
+	//{
+	//	Orthographic, Perspective
+	//};
+
 	class Camera
 	{
 	public:
+		Camera() = default;
 		Camera(glm::mat4 projection) : m_Projection(projection) {}
 		virtual ~Camera() = default;
 

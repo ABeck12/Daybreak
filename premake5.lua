@@ -17,6 +17,8 @@ IncludeDirs["glfw"] = "Daybreak/vendor/glfw/include"
 IncludeDirs["glad"] = "Daybreak/vendor/glad/include"
 IncludeDirs["imgui"] = "Daybreak/vendor/imgui"
 IncludeDirs["glm"] = "Daybreak/vendor/glm"
+IncludeDirs["stb_image"] = "Daybreak/vendor/stb_image"
+IncludeDirs["entt"] = "Daybreak/vendor/entt/include"
 
 include "Daybreak/vendor/glfw"
 include "Daybreak/vendor/glad"
@@ -33,7 +35,8 @@ project "Daybreak"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		-- "%{prj.name}/src/**.hpp",
 	}
 	-- TEMPORARY
 	removefiles
@@ -49,6 +52,8 @@ project "Daybreak"
 		"%{prj.name}/vendor/glfw/include",
 		"%{prj.name}/vendor/imgui",
 		"%{prj.name}/vendor/glm",
+		"%{prj.name}/vendor/stb_image",
+		"%{prj.name}/vendor/entt/include",
 		"%{prj.name}/src"
 	}
 
@@ -126,6 +131,8 @@ project "Sandbox"
 		"Daybreak/vendor/glfw/include",
 		"Daybreak/vendor/imgui",
 		"Daybreak/vendor/glm",
+		"Daybreak/vendor/stb_image",
+		"Daybreak/vendor/entt/include",
 	}
 
 	links

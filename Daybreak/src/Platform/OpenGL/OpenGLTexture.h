@@ -6,11 +6,11 @@
 
 namespace Daybreak
 {
-	class OpenGLTexture : public Texture
+	class OpenGLTexture2D : public Texture2D
 	{
 	public:
-		OpenGLTexture(const TextureSpecifications& textureSpecs, const std::string& filepath);
-		virtual ~OpenGLTexture();
+		OpenGLTexture2D(const TextureSpecifications& textureSpecs, const std::string& filepath);
+		virtual ~OpenGLTexture2D();
 
 		virtual const std::string& GetFilepath() const override { return m_filepath; }
 		virtual const TextureSpecifications& GetTexutreSpecifications() const override { return m_textureSpecs; }
@@ -27,11 +27,5 @@ namespace Daybreak
 		std::string m_filepath;
 		unsigned char* m_LocalBuffer;
 	};
-
-	//class OpenGLTexture2D : public Texture2D
-	//{
-	//public:
-	//private:
-	//	uint32_t m_RendererID;
-	//};
+	
 }

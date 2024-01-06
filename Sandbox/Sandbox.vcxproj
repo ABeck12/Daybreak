@@ -59,7 +59,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>DB_PLATFORM_WINDOWS;DB_DEBUG;DB_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Daybreak\src;..\Daybreak\vendor\spdlog\include;..\Daybreak\vendor\glad\include;..\Daybreak\vendor\glfw\include;..\Daybreak\vendor\imgui;..\Daybreak\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Daybreak\src;..\Daybreak\vendor\spdlog\include;..\Daybreak\vendor\glad\include;..\Daybreak\vendor\glfw\include;..\Daybreak\vendor\imgui;..\Daybreak\vendor\glm;..\Daybreak\vendor\stb_image;..\Daybreak\vendor\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -76,7 +76,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>DB_PLATFORM_WINDOWS;DB_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Daybreak\src;..\Daybreak\vendor\spdlog\include;..\Daybreak\vendor\glad\include;..\Daybreak\vendor\glfw\include;..\Daybreak\vendor\imgui;..\Daybreak\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Daybreak\src;..\Daybreak\vendor\spdlog\include;..\Daybreak\vendor\glad\include;..\Daybreak\vendor\glfw\include;..\Daybreak\vendor\imgui;..\Daybreak\vendor\glm;..\Daybreak\vendor\stb_image;..\Daybreak\vendor\entt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -89,11 +89,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\TestLayer.h" />
+    <ClInclude Include="src\GameLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandboxApp.cpp" />
-    <ClCompile Include="src\TestLayer.cpp" />
+    <ClCompile Include="src\GameLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Daybreak\Daybreak.vcxproj">

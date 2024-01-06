@@ -13,6 +13,7 @@
 #include <unordered_set>
 
 #include <glm/glm.hpp>
+#include <Daybreak/Math/glmToString.h>
 
 #ifdef DB_PLATFORM_WINDOWS
 #include <Windows.h>
