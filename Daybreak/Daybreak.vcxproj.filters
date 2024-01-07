@@ -119,6 +119,7 @@
     <ClInclude Include="vendor\entt\include\entt.hpp" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
     <ClInclude Include="src\Daybreak\Math\GlmToString.h" />
+    <ClInclude Include="src\Daybreak\Core\DeltaTime.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Daybreak\Core\Application.cpp">

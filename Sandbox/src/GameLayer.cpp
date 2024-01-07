@@ -45,7 +45,7 @@ GameLayer::GameLayer() : Layer("GameLayer")
 	shader->Bind();
 }
 
-void GameLayer::OnUpdate()
+void GameLayer::OnUpdate(Daybreak::DeltaTime dt)
 {
 	//Daybreak::RenderCommand::SetClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 	Daybreak::RenderCommand::Clear();
@@ -67,7 +67,7 @@ void GameLayer::OnUpdate()
 
 	}
 
-	m_CameraController.Update();
+	m_CameraController.Update(dt);
 }
 
 void GameLayer::OnEvent(Daybreak::Event& event)

@@ -4,7 +4,9 @@
 #include "Daybreak/Core/Input.h"
 #include "Daybreak/Core/Window.h"
 #include "Daybreak/Renderer/Renderer.h"
+#include "Daybreak/Core/DeltaTime.h"
 
+#include "GLFW/glfw3.h"
 
 namespace Daybreak
 {
@@ -60,10 +62,14 @@ namespace Daybreak
 	{
 		while (m_Running)
 		{
+			float time = (float)glfwGetTime();
+			DeltaTime dt = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
 			if (!m_Minimized)
 			{
 				for (Layer* layer : m_LayerStack)
-					layer->OnUpdate();
+					layer->OnUpdate(dt);
 
 				m_ImGuiLayer->Begin();
 				for (Layer* layer : m_LayerStack)

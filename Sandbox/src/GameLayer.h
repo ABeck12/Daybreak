@@ -8,7 +8,7 @@ class GameLayer : public Daybreak::Layer
 public:
 	GameLayer();
 
-	virtual void OnUpdate() override;
+	virtual void OnUpdate(Daybreak::DeltaTime dt) override;
 	virtual void OnEvent(Daybreak::Event& event) override;
 	virtual void OnImGuiRender() override;
 	//void RenderTest();

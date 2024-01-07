@@ -8,7 +8,7 @@ public:
 	CameraController() = default;
 	CameraController(const glm::mat4 projection);
 
-	void Update();
+	void Update(Daybreak::DeltaTime dt);
 	const glm::mat4& GetView() const { return m_View; }
 	const glm::mat4& GetProj() const { return m_Camera.GetProjection(); }
 	void UpdateProj(const glm::mat4& projection) { m_Camera.SetProjection(projection); }

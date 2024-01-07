@@ -3,6 +3,7 @@
 #include "dbpch.h"
 
 #include "Daybreak/Events/Event.h"
+#include "Daybreak/Core/DeltaTime.h"
 
 namespace Daybreak
 {
@@ -14,7 +15,7 @@ namespace Daybreak
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(DeltaTime dt) {}
 		virtual void OnEvent(Event& event) {}
 		virtual void OnImGuiRender() {}
 

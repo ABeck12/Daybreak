@@ -96,6 +96,7 @@
     <ClInclude Include="src\Daybreak.h" />
     <ClInclude Include="src\Daybreak\Core\Application.h" />
     <ClInclude Include="src\Daybreak\Core\Base.h" />
+    <ClInclude Include="src\Daybreak\Core\DeltaTime.h" />
     <ClInclude Include="src\Daybreak\Core\EntryPoint.h" />
     <ClInclude Include="src\Daybreak\Core\Input.h" />
     <ClInclude Include="src\Daybreak\Core\KeyCodes.h" />
