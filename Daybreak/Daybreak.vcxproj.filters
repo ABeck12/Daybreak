@@ -112,21 +112,13 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\Windows\WindowsInput.h">
-      <Filter>Platform\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\dbpch.h" />
     <ClInclude Include="vendor\entt\include\entt.hpp" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
-    <ClInclude Include="src\Daybreak\Scene\Entity.h" />
-    <ClInclude Include="src\Daybreak\Scene\Components.h" />
-    <ClInclude Include="src\Daybreak\Scene\Scene.h" />
-    <ClInclude Include="src\Daybreak\Core\UUID.h" />
-    <ClInclude Include="src\Daybreak\Core\DeltaTime.h" />
-    <ClInclude Include="src\Daybreak\Math\glmToString.h" />
+    <ClInclude Include="src\Daybreak\Math\GlmToString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Daybreak\Core\Application.cpp">
@@ -194,9 +186,5 @@
     </ClCompile>
     <ClCompile Include="src\dbpch.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
-    <ClCompile Include="src\Daybreak\Scene\Entity.cpp" />
-    <ClCompile Include="src\Daybreak\Scene\Scene.cpp" />
-    <ClCompile Include="src\Daybreak\Core\UUID.cpp" />
-    <ClCompile Include="src\Daybreak\Core\DeltaTime.cpp" />
   </ItemGroup>
 </Project>

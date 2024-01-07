@@ -96,7 +96,6 @@
     <ClInclude Include="src\Daybreak.h" />
     <ClInclude Include="src\Daybreak\Core\Application.h" />
     <ClInclude Include="src\Daybreak\Core\Base.h" />
-    <ClInclude Include="src\Daybreak\Core\DeltaTime.h" />
     <ClInclude Include="src\Daybreak\Core\EntryPoint.h" />
     <ClInclude Include="src\Daybreak\Core\Input.h" />
     <ClInclude Include="src\Daybreak\Core\KeyCodes.h" />
@@ -104,14 +103,13 @@
     <ClInclude Include="src\Daybreak\Core\LayerStack.h" />
     <ClInclude Include="src\Daybreak\Core\Log.h" />
     <ClInclude Include="src\Daybreak\Core\MouseCodes.h" />
-    <ClInclude Include="src\Daybreak\Core\UUID.h" />
     <ClInclude Include="src\Daybreak\Core\Window.h" />
     <ClInclude Include="src\Daybreak\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Daybreak\Events\Event.h" />
     <ClInclude Include="src\Daybreak\Events\KeyEvent.h" />
     <ClInclude Include="src\Daybreak\Events\MouseEvent.h" />
     <ClInclude Include="src\Daybreak\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="src\Daybreak\Math\glmToString.h" />
+    <ClInclude Include="src\Daybreak\Math\GlmToString.h" />
     <ClInclude Include="src\Daybreak\Renderer\Buffer.h" />
     <ClInclude Include="src\Daybreak\Renderer\Camera.h" />
     <ClInclude Include="src\Daybreak\Renderer\RenderAPI.h" />
@@ -120,15 +118,11 @@
     <ClInclude Include="src\Daybreak\Renderer\Shader.h" />
     <ClInclude Include="src\Daybreak\Renderer\Texture.h" />
     <ClInclude Include="src\Daybreak\Renderer\VertexArray.h" />
-    <ClInclude Include="src\Daybreak\Scene\Components.h" />
-    <ClInclude Include="src\Daybreak\Scene\Entity.h" />
-    <ClInclude Include="src\Daybreak\Scene\Scene.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
-    <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\dbpch.h" />
     <ClInclude Include="vendor\entt\include\entt.hpp" />
@@ -136,11 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Daybreak\Core\Application.cpp" />
-    <ClCompile Include="src\Daybreak\Core\DeltaTime.cpp" />
     <ClCompile Include="src\Daybreak\Core\Layer.cpp" />
     <ClCompile Include="src\Daybreak\Core\LayerStack.cpp" />
     <ClCompile Include="src\Daybreak\Core\Log.cpp" />
-    <ClCompile Include="src\Daybreak\Core\UUID.cpp" />
     <ClCompile Include="src\Daybreak\Core\Window.cpp" />
     <ClCompile Include="src\Daybreak\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Daybreak\ImGui\ImGuiLayer.cpp" />
@@ -151,8 +143,6 @@
     <ClCompile Include="src\Daybreak\Renderer\Shader.cpp" />
     <ClCompile Include="src\Daybreak\Renderer\Texture.cpp" />
     <ClCompile Include="src\Daybreak\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\Daybreak\Scene\Entity.cpp" />
-    <ClCompile Include="src\Daybreak\Scene\Scene.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />

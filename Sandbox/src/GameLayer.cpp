@@ -1,5 +1,4 @@
 #include <Daybreak.h>
-#include "Daybreak/Renderer/Camera.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "GameLayer.h"
@@ -9,9 +8,9 @@
 
 GameLayer::GameLayer() : Layer("GameLayer")
 {
-	camera = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.0f, 100.0f);
+	m_CameraController = CameraController(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.0f, 100.0f));
+	m_CameraController.SetCameraPosition(glm::vec3(0.0f, 0.0f, -50.0f));
 	//camera = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.0f, 100.0f);
-	cameraPos.z = -50.f;
 
 	texture = Daybreak::Texture2D::Create({ 128, 128, Daybreak::ImageFormat::RGB8, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Test.png");
 	shader = Daybreak::Shader::Create("Texture Shader", "../Sandbox/assets/TextureShader.glsl");
@@ -49,68 +48,25 @@ void GameLayer::OnUpdate()
 	//Daybreak::RenderCommand::SetClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 	Daybreak::RenderCommand::Clear();
 
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraPos);
-	view = glm::rotate(view, glm::radians(cameraRot.x), glm::vec3(1.0f, 1.0f, 0.0f));
-	view = glm::rotate(view, glm::radians(cameraRot.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	view = glm::rotate(view, glm::radians(cameraRot.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	//r = glm::mat4(1.0f);
-	//r = glm::rotate(r, glm::radians(cameraRot.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	//r = glm::rotate(r, glm::radians(cameraRot.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	//r = glm::rotate(r, glm::radians(cameraRot.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
-	glm::mat4 mt, mr, ms;
-	mt = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
-	mr = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ms = glm::scale(glm::mat4(1.0f), glm::vec3(10.0f));
-	glm::mat4 model = ms * mr * mt;
-	auto proj = camera.GetProjection();
-	mvp = proj * view * model;
-	//DB_LOG(mvp);
-	//DB_LOG(proj * view * model * glm::vec4(-0.5f, 0.5f, 0.0f,0.0f));
+	//glm::mat4 mt, mr, ms;
+	//mt = glm::translate(glm::mat4(1.0f), obj1Pos);
+	//mr = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	//ms = glm::scale(glm::mat4(1.0f), glm::vec3(10.0f));
+	//glm::mat4 model1 = ms * mr * mt;
+	//mvp = m_CameraController.GetProj() * m_CameraController.GetView() * model1;
+
 	texture->Bind();
 	shader->Bind();
-	shader->SetMat4("u_MVP", mvp);
+	//shader->SetMat4("u_MVP", mvp);
+	shader->SetMat4("u_MVP", m_CameraController.GetProj() * m_CameraController.GetView() * GetModelMat(obj1Pos, obj1Rot, obj1Scale));
 	shader->SetInt1("u_Texture", 0);
-	shader->SetFloat4("u_Color", glm::vec4(r_color, g_color, 1.0f, 1.0f));
 	Daybreak::RenderCommand::DrawIndexed(va); //this will be replaced with Renderer::Submit
 
-	float amount = 0.5f;
-	if (Daybreak::Input::IsKeyPressed(DB_KEY_S))
-	{
-		//DB_LOG("Moving camera up");
-		cameraPos.y += amount;
-		//DB_LOG(cameraPos);
-	}
-	if (Daybreak::Input::IsKeyPressed(DB_KEY_W))
-	{
-		//DB_LOG("Moving camera down");
-		cameraPos.y -= amount;
-		//DB_LOG(cameraPos);
-	}
-	if (Daybreak::Input::IsKeyPressed(DB_KEY_A))
-	{
-		//DB_LOG("Moving camera left");
-		cameraPos.x += amount;
-		//DB_LOG(cameraPos);
-	}
-	if (Daybreak::Input::IsKeyPressed(DB_KEY_D))
-	{
-		//DB_LOG("Moving camera right");
-		cameraPos.x -= amount;
-		//DB_LOG(cameraPos);
-	}
-	if (Daybreak::Input::IsKeyPressed(DB_KEY_E))
-	{
-		//DB_LOG("Moving camera in");
-		cameraPos.z += amount;
-		//DB_LOG(cameraPos);
-	}
-	if (Daybreak::Input::IsKeyPressed(DB_KEY_Q))
-	{
-		//DB_LOG("Moving camera out");
-		cameraPos.z -= amount;
-		//DB_LOG(cameraPos);
-	}
+	shader->SetMat4("u_MVP", m_CameraController.GetProj() * m_CameraController.GetView() * GetModelMat(obj2Pos, obj2Rot, obj2Scale));
+	Daybreak::RenderCommand::DrawIndexed(va); //this will be replaced with Renderer::Submit
+
+	m_CameraController.Update();
 }
 
 void GameLayer::OnEvent(Daybreak::Event& event)
@@ -118,7 +74,7 @@ void GameLayer::OnEvent(Daybreak::Event& event)
 	if (event.GetEventType() == Daybreak::EventType::KeyPressed)
 	{
 		Daybreak::KeyPressedEvent& e = (Daybreak::KeyPressedEvent&)event;
-		if (e.GetKeyCode() == DB_KEY_ESCAPE)
+		if (e.GetKeyCode() == Daybreak::Key::Escape)
 		{
 			Daybreak::Application::Get().Close();
 		}
@@ -126,51 +82,22 @@ void GameLayer::OnEvent(Daybreak::Event& event)
 	if (event.GetEventType() == Daybreak::EventType::WindowResize)
 	{
 		Daybreak::WindowResizeEvent& e = (Daybreak::WindowResizeEvent&)event;
-		camera = glm::perspective(glm::radians(45.0f), (float)e.GetWidth()/ (float)e.GetHeight(), 0.0f, 100.0f);
-		Daybreak::Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		//Daybreak::Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		if (e.GetWidth() != 0 && e.GetHeight() != 0) //TEMPORARY!!!
+			m_CameraController.UpdateProj(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.0f, 100.0f));
 	}
-	if (event.GetEventType() == Daybreak::EventType::KeyPressed)
-	{
-		Daybreak::KeyPressedEvent& e = (Daybreak::KeyPressedEvent&)event;
-		
-		//else if (e.GetKeyCode() == DB_KEY_UP)
-		//{
-		//	DB_LOG("Rotating camera up");
-		//	cameraRot.x += amount;
-		//	DB_LOG(cameraRot);
-		//}
-		//else if (e.GetKeyCode() == DB_KEY_DOWN)
-		//{
-		//	DB_LOG("Rotating camera down");
-		//	cameraRot.x -= amount;
-		//	DB_LOG(cameraRot);
-		//}
-		//else if (e.GetKeyCode() == DB_KEY_RIGHT)
-		//{
-		//	DB_LOG("Rotating camera up");
-		//	cameraRot.y += amount;
-		//	DB_LOG(cameraRot);
-		//}
-		//else if (e.GetKeyCode() == DB_KEY_LEFT)
-		//{
-		//	DB_LOG("Rotating camera down");
-		//	cameraRot.y -= amount;
-		//	DB_LOG(cameraRot);
-		//}
+}
 
-	}
-	//DB_LOG("{0}", event);
-	//if (event.GetEventType() == Daybreak::EventType::KeyPressed)
-	//{
-	//	Daybreak::KeyPressedEvent& e = (Daybreak::KeyPressedEvent&)event;
-	//	if (e.GetKeyCode() == DB_KEY_TAB)
-	//		DB_LOG("Tab key is pressed (event)!");
-	//	DB_LOG("{0}", (char)e.GetKeyCode());
-	//}
-	//if (event.GetEventType() == Daybreak::EventType::KeyTyped)
-	//{
-	//	DB_LOG("Key Typed!");
-	//}
+const glm::mat4 GameLayer::GetModelMat(const glm::vec3& pos, const glm::vec3& rot, const glm::vec3& scale)
+{
+	glm::mat4 t, r, s;
+	t = glm::translate(glm::mat4(1.0f), pos);
+	r = glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//r = glm::rotate(r, glm::radians(rot.y), glm::vec3(0.0f, 1.0f, 1.0f));
+	//r = glm::rotate(r, glm::radians(rot.z), glm::vec3(0.0f, 0.0f, 0.0f));
+	s = glm::scale(glm::mat4(1.0f),scale);
+
+	return (s * r * t);
 }
 
 void GameLayer::RenderTest2()

@@ -89,9 +89,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\CameraController.h" />
     <ClInclude Include="src\GameLayer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CameraController.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
     <ClCompile Include="src\GameLayer.cpp" />
   </ItemGroup>

@@ -15,12 +15,10 @@ For Renderer:
     Graphics Context
     Uniform Buffer?
 
-Update Input classes off of defines and move to enum classes
-
 Low Priority:
-    Change implementation of keycodes and mousecodes to use an enum class instead of cpp defines
+    Make a weakref system using std::weak_ptr
     Change Layerstack implemtation to match Hazel system to avoid crashing
-    Change implementation of imgui layers to match Hazel system in videos
+    Change implementation of imgui layers to match Hazel system in videos as well as ImGui layer in Application::Run
 
 Medium Priority:
     Add ability to pass args from sandbox to Daybreak when starting engine. This is stuff like initial window size etc.

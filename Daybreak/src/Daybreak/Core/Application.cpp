@@ -44,7 +44,7 @@ namespace Daybreak
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(DB_BIND_EVENT_FN(Application::OnWindowClose));
-
+		dispatcher.Dispatch<WindowResizeEvent>(DB_BIND_EVENT_FN(Application::OnWindowResize));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
@@ -58,8 +58,11 @@ namespace Daybreak
 	{
 		while (m_Running)
 		{
-			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+			if (!m_Minimized)
+			{
+				for (Layer* layer : m_LayerStack)
+					layer->OnUpdate();
+			}
 
 			m_Window->OnUpdate();
 		}
@@ -74,5 +77,19 @@ namespace Daybreak
 	{
 		Application::Close();
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+
+		m_Minimized = false;
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+
+		return false;
 	}
 }
