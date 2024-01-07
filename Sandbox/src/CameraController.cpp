@@ -24,7 +24,7 @@ void CameraController::Update()
 	//r = glm::rotate(r, glm::radians(cameraRot.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	//r = glm::rotate(r, glm::radians(cameraRot.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	//r = glm::rotate(r, glm::radians(cameraRot.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	float m_CameraTranslationSpeed = 0.5f;
+	float m_CameraTranslationSpeed = 0.1f;
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
 	{
 		cameraPos.x -= cos(glm::radians(cameraRot.z)) * m_CameraTranslationSpeed;

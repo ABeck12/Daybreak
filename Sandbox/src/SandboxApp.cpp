@@ -3,16 +3,10 @@
 
 #include "GameLayer.h"
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
-//
-//	__declspec(dllexport) DWORD NvOptimusEnablement = 1;
-//	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-//
-//#ifdef __cplusplus
-//}
-//#endif
+extern "C" {
+	//__declspec(dllexport) DWORD NvOptimusEnablement = 1;
+	//__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
 
 class Sandbox : public Daybreak::Application
 {
@@ -20,7 +14,7 @@ public:
 	Sandbox()
 	{
 		PushLayer(new GameLayer());
-		PushOverlay(new Daybreak::ImGuiLayer());
+		//PushOverlay(new Daybreak::ImGuiLayer());
 	}
 	~Sandbox()
 	{

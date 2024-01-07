@@ -10,7 +10,6 @@ namespace Daybreak
 {
 	class Renderer
 	{
-
 	public:
 		static void Init();
 		static void Shutdown();
@@ -20,6 +19,5 @@ namespace Daybreak
 		static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); }
 		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
 		
-		// This is where something like Renderer::DrawMesh would go for a 3D object?
 	};
 }

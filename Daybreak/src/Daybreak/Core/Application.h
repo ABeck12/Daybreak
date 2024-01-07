@@ -9,6 +9,8 @@
 #include "Daybreak/Events/ApplicationEvent.h"
 #include "Daybreak/Events/MouseEvent.h"
 #include "Daybreak/Events/KeyEvent.h"
+#include "Daybreak/ImGui/ImGuiLayer.h"
+
 
 namespace Daybreak
 {
@@ -39,6 +41,7 @@ namespace Daybreak
 		bool m_Running = true;
 		bool m_Minimized = false;
 		LayerStack m_LayerStack;
+		ImGuiLayer* m_ImGuiLayer;
 	private:
 		static Application* s_Instance;
 	};
