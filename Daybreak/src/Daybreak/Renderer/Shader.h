@@ -15,6 +15,7 @@ namespace Daybreak
 		virtual const std::string& GetName() const = 0;
 
 		virtual void SetInt1(const std::string& name, const uint32_t value) const = 0;
+		virtual void SetIntArray(const std::string& name, int* values, uint32_t count) const = 0;
 		virtual void SetFloat2(const std::string& name, const glm::vec2& vec) const = 0;
 		virtual void SetFloat3(const std::string& name, const glm::vec3& vec) const = 0;
 		virtual void SetFloat4(const std::string& name, const glm::vec4& vec) const = 0;

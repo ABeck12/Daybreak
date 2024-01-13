@@ -6,11 +6,11 @@
 
 namespace Daybreak
 {
-	OpenGLVertexBuffer::OpenGLVertexBuffer(const void* vertices, uint32_t size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(const float* vertices, uint32_t size)
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 	}
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
@@ -45,7 +45,7 @@ namespace Daybreak
 	//============================Index Buffer================================
 	//========================================================================
 
-	OpenGLIndexBuffer::OpenGLIndexBuffer(const void* indices, uint32_t count) : m_Count(count)
+	OpenGLIndexBuffer::OpenGLIndexBuffer(const uint32_t* indices, uint32_t count) : m_Count(count)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);

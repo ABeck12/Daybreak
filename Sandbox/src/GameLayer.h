@@ -15,11 +15,8 @@ public:
 	//void RenderTest2();
 
 private:
-	Daybreak::Ref<Daybreak::VertexArray> va;
-	Daybreak::Ref<Daybreak::VertexBuffer> vb;
-	Daybreak::Ref<Daybreak::IndexBuffer> ib;
-	Daybreak::Ref<Daybreak::Shader> shader;
-	Daybreak::Ref<Daybreak::Texture2D> texture;
+	Daybreak::Ref<Daybreak::Texture2D> texture1;
+	Daybreak::Ref<Daybreak::Texture2D> texture2;
 
 	CameraController m_CameraController;
 

@@ -66,7 +66,7 @@ project "Daybreak"
 	}
 
 	--pchheader "%{prj.name}/src/dbpch.h"
-	--pchsource "%{prj.name}/src/hzpch.cpp"
+	--pchsource "%{prj.name}/src/dbpch.cpp"
 
 	filter "system:windows"
 		cppdialect "C++17"

@@ -9,7 +9,7 @@ namespace Daybreak
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(const void* vertices, uint32_t size);
+		OpenGLVertexBuffer(const float* vertices, uint32_t size);
 		OpenGLVertexBuffer(uint32_t size);
 
 		virtual ~OpenGLVertexBuffer();
@@ -29,7 +29,7 @@ namespace Daybreak
 	class OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
-		OpenGLIndexBuffer(const void* indeces, uint32_t count);
+		OpenGLIndexBuffer(const uint32_t* indeces, uint32_t count);
 		virtual ~OpenGLIndexBuffer();
 
 		virtual void Bind() const override;

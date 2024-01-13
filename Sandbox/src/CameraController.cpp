@@ -24,7 +24,7 @@ void CameraController::Update(Daybreak::DeltaTime dt)
 	//r = glm::rotate(r, glm::radians(cameraRot.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	//r = glm::rotate(r, glm::radians(cameraRot.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	//r = glm::rotate(r, glm::radians(cameraRot.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	float m_CameraTranslationSpeed = 10.0f;
+	float m_CameraTranslationSpeed = -10.0f;
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
 	{
 		cameraPos.x -= cos(glm::radians(cameraRot.z)) * m_CameraTranslationSpeed * dt;
@@ -46,7 +46,7 @@ void CameraController::Update(Daybreak::DeltaTime dt)
 		cameraPos.x -= -sin(glm::radians(cameraRot.z)) * m_CameraTranslationSpeed * dt;
 		cameraPos.y -= cos(glm::radians(cameraRot.z)) * m_CameraTranslationSpeed * dt;
 	}
-	float m_CameraRotationSpeed = 10.0f;
+	float m_CameraRotationSpeed = 150.0f;
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Q))
 		cameraRot.z += m_CameraRotationSpeed * dt;
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::E))

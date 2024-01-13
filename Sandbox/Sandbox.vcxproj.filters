@@ -35,5 +35,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\TextureShader.glsl" />
+    <None Include="assets\Renderer2D_QuadShader.glsl" />
   </ItemGroup>
 </Project>

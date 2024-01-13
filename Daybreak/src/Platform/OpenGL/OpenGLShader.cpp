@@ -93,6 +93,12 @@ namespace Daybreak
 		glUniform1i(location, value);
 	}
 
+	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1iv(location, count, values);
+	}
+
 	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());

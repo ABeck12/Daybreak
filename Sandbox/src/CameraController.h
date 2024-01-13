@@ -14,6 +14,7 @@ public:
 	void UpdateProj(const glm::mat4& projection) { m_Camera.SetProjection(projection); }
 	void SetCameraPosition(const glm::vec3& position) { cameraPos = position; }
 	const glm::vec3& GetCameraPosition() const { return cameraPos; }
+	const Daybreak::Camera& GetCamera() const { return m_Camera; }
 private:
 	void UpdateView();
 	glm::mat4 m_View;

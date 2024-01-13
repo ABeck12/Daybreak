@@ -18,6 +18,7 @@ namespace Daybreak
 		virtual void Unbind() const override;
 
 		virtual void SetInt1(const std::string& name, const uint32_t value) const override;
+		virtual void SetIntArray(const std::string& name, int* values, uint32_t count) const override;
 		virtual void SetFloat2(const std::string& name, const glm::vec2& vec) const override;
 		virtual void SetFloat3(const std::string& name, const glm::vec3& vec) const override;
 		virtual void SetFloat4(const std::string& name, const glm::vec4& vec) const override;

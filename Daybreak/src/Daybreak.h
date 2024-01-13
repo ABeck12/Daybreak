@@ -15,6 +15,7 @@
 #include "Daybreak/Core/MouseCodes.h"
 
 #include "Daybreak/Renderer/Renderer.h"
+#include "Daybreak/Renderer/Renderer2D.h"
 #include "Daybreak/Renderer/RenderCommand.h"
 
 #include "Daybreak/Renderer/Buffer.h"
