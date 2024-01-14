@@ -10,12 +10,19 @@
 
 GameLayer::GameLayer() : Layer("GameLayer")
 {
-	m_CameraController = CameraController(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.0f, 100.0f));
+	m_CameraController = CameraController(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
 	m_CameraController.SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 	//camera = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.0f, 100.0f);
 
+
 	texture1 = Daybreak::Texture2D::Create({ 128, 128, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Test.png");
 	texture2 = Daybreak::Texture2D::Create({ 128, 128, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TestTexture.png");
+
+	
+	//DrawableObject gridObject1 = { texture2, glm::vec3(0.0f,0.0f,-0.5f), glm::vec2(1.0f), "object1"};
+	//DrawableObject gridObject2 = { texture1, glm::vec3(0.0f), glm::vec2(1.0f), "object2"};
+	//ObjectsList.push_back(gridObject1);
+	//ObjectsList.push_back(gridObject2);
 }
 
 void GameLayer::OnUpdate(Daybreak::DeltaTime dt)
@@ -23,31 +30,35 @@ void GameLayer::OnUpdate(Daybreak::DeltaTime dt)
 	//Daybreak::RenderCommand::SetClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f)); // Pink
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
 	Daybreak::RenderCommand::Clear();
-	//DB_INFO("Update Start");
 	
 	Daybreak::Renderer2D::BeginScene(m_CameraController.GetCamera(), m_CameraController.GetView());
 
+	//Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), texture1);
+	
 	for (int x = 0; x < 3 ; x++)
 	{
 		for (int y = 0; y < 3; y++)
 		{
-			glm::vec3 newpos(1.11f * x, 1.11f * y, 0.0f);
-			glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), newpos) * scale;
-			Daybreak::Renderer2D::DrawQuad(transform, glm::vec4(1.0f), texture2);
-			//if (x%2 == 1 || y%2 == 1)
-			//	Daybreak::Renderer2D::DrawQuad(transform, glm::vec4(0.5f), texture1);
-			//else
-			//	Daybreak::Renderer2D::DrawQuad(transform, glm::vec4(1.0f), texture2);
-
+			glm::vec3 pos(1.11f * x, 1.11f * y, 0.0f);
+			gridDepth = pos.z;
+			if (x % 2 == 1 || y % 2 == 1)
+				Daybreak::Renderer2D::DrawQuad(pos, { 1.0f, 1.0f }, texture1);
+			else
+				Daybreak::Renderer2D::DrawQuad(pos, { 1.0f, 1.0f }, texture2);
 		}
-
 	}
 
-	//Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(30.0f), texture1);
-	//Daybreak::Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), obj1Pos) * glm::scale(glm::mat4(1.0f), glm::vec3(3.0f)), glm::vec4(1.0f));
-	Daybreak::Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), obj1Pos) * glm::scale(glm::mat4(1.0f), glm::vec3(3.0f)) , glm::vec4(1.0f,0.5f,0.5f,0.5f));
-	//Daybreak::Renderer2D::DrawQuad(glm::translate(glm::mat4(1.0f), obj1Pos) * glm::scale(glm::mat4(1.0f), glm::vec3(3.0f)), glm::vec4(0.0f), texture1);
+	//std::sort(ObjectsList.begin(), ObjectsList.end());
+	//for (int i = 0; i < ObjectsList.size(); i++)
+	//{
+	//	if (ObjectsList[i].name == "object1")
+	//		ObjectsList[i].position = obj1Pos;
+	//	Daybreak::Renderer2D::DrawQuad(ObjectsList[i].position, ObjectsList[i].size, ObjectsList[i].texture);
+	//}
+
+	//Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), glm::vec4(1.0f, 0.5f, 0.5f, 0.75f));
+	Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), texture1, glm::vec4(0.5f,0.2f,0.95f,1.0f));
+
 
 	Daybreak::Renderer2D::EndScene();
 
@@ -95,8 +106,10 @@ void GameLayer::OnImGuiRender()
 	ImGui::Text((const char*)glm::to_string(m_CameraController.GetCameraPosition()).c_str());
 	ImGui::Text("Big Square Position");
 	ImGui::Text((const char*)glm::to_string(obj1Pos).c_str());
+	ImGui::Text("Grid Depth %.1f", gridDepth);
 
-
+	ImGui::Checkbox("Set Vsync", &vsyncBox);
+	Daybreak::Application::Get().GetWindow().SetVSync(vsyncBox);
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	ImGui::End();
 }

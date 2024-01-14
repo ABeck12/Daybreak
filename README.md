@@ -15,6 +15,7 @@ For Renderer:
     Framebuffer
     Graphics Context
     Uniform Buffer?
+    Shader Library
 
 Low Priority:
     Make a weakref system using std::weak_ptr? or maybe std::object_ptr?

@@ -2,6 +2,7 @@
 
 #include <Daybreak.h>
 #include "CameraController.h"
+//#include "DrawableObjects.h"
 
 class GameLayer : public Daybreak::Layer
 {
@@ -18,9 +19,12 @@ private:
 	Daybreak::Ref<Daybreak::Texture2D> texture1;
 	Daybreak::Ref<Daybreak::Texture2D> texture2;
 
+
+	//std::vector<DrawableObject> ObjectsList;
+
 	CameraController m_CameraController;
 
-	//glm::mat4 mvp;
+	float gridDepth = 0.0f;
 
 	glm::vec3 obj1Pos = glm::vec3(0.0f);
 	//glm::vec3 obj2Pos = glm::vec3(2.5f,1.0f, -5.0f);
@@ -35,6 +39,6 @@ private:
 	//float g_color = 0;
 	//float b_color = 0;
 
-
+	bool vsyncBox;
 
 };
