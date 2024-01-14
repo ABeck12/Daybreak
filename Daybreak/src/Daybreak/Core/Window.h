@@ -8,12 +8,10 @@ namespace Daybreak
 {
 	struct WindowProps
 	{
-		std::string Title;
-		uint32_t Width, Height;
-		WindowProps(const std::string& title = "Daybreak Engine",uint32_t width = 1280, uint32_t height = 720) 
-			: Title(title), Width(width), Height(height)
-		{
-		}
+		std::string Title = "Daybreak Engine";
+		uint32_t Width = 1280;
+		uint32_t Height = 720;
+		std::string IconFilepath = "../Sandbox/assets/DaybreakIcon.png";
 	};
 
 	class Window

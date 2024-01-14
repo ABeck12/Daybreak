@@ -5,6 +5,7 @@
 #include "Daybreak/Events/ApplicationEvent.h"
 #include "Daybreak/Events/KeyEvent.h"
 #include "Daybreak/Events/MouseEvent.h"
+#include <stb_image.h>
 
 namespace Daybreak
 {
@@ -45,6 +46,14 @@ namespace Daybreak
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
 		glfwSetWindowUserPointer(m_Window, &m_Data);
+
+		int width, height, bpp;
+		GLFWimage icon;
+		icon.pixels = stbi_load(props.IconFilepath.c_str(), &width, &height, &bpp, 0);
+		icon.width = width;
+		icon.height = height;
+		glfwSetWindowIcon(m_Window, 1, &icon);
+
 		SetVSync(true);
 
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)

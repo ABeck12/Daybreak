@@ -18,6 +18,7 @@ public:
 private:
 	Daybreak::Ref<Daybreak::Texture2D> texture1;
 	Daybreak::Ref<Daybreak::Texture2D> texture2;
+	Daybreak::Ref<Daybreak::Texture2D> tileTexture;
 
 
 	//std::vector<DrawableObject> ObjectsList;
@@ -27,18 +28,9 @@ private:
 	float gridDepth = 0.0f;
 
 	glm::vec3 obj1Pos = glm::vec3(0.0f);
-	//glm::vec3 obj2Pos = glm::vec3(2.5f,1.0f, -5.0f);
-
 	glm::vec3 obj1Rot = glm::vec3(0.0f);
-	//glm::vec3 obj2Rot = glm::vec3(0.0f);
-
 	glm::vec3 obj1Scale = glm::vec3(10.0f);
-	//glm::vec3 obj2Scale = glm::vec3(10.0f);
 
-	//float r_color = 0;
-	//float g_color = 0;
-	//float b_color = 0;
-
-	bool vsyncBox;
+	bool vsyncBox = true;
 
 };

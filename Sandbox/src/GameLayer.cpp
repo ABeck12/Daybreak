@@ -11,12 +11,14 @@
 GameLayer::GameLayer() : Layer("GameLayer")
 {
 	m_CameraController = CameraController(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
+	//m_CameraController = CameraController(glm::ortho(0,1280,0,720));
 	m_CameraController.SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 	//camera = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.0f, 100.0f);
 
 
 	texture1 = Daybreak::Texture2D::Create({ 128, 128, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Test.png");
 	texture2 = Daybreak::Texture2D::Create({ 128, 128, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TestTexture.png");
+	tileTexture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TileGrid.png");
 
 	
 	//DrawableObject gridObject1 = { texture2, glm::vec3(0.0f,0.0f,-0.5f), glm::vec2(1.0f), "object1"};
@@ -30,10 +32,19 @@ void GameLayer::OnUpdate(Daybreak::DeltaTime dt)
 	//Daybreak::RenderCommand::SetClearColor(glm::vec4(1.0f, 0.0f, 1.0f, 1.0f)); // Pink
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
 	Daybreak::RenderCommand::Clear();
-	
-	Daybreak::Renderer2D::BeginScene(m_CameraController.GetCamera(), m_CameraController.GetView());
 
-	//Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), texture1);
+	//{
+	//	glDisable(GL_DEPTH_TEST);
+	//	m_CameraController.UpdateProj(glm::ortho(0.f,16.0f,0.f,9.f, -1.f, 100.f));
+	//	Daybreak::Renderer2D::BeginScene(m_CameraController.GetCamera(), m_CameraController.GetView());
+	//	auto transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f,0.0f,-10.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(90.0f));
+	//	Daybreak::Renderer2D::DrawQuad(transform, tileTexture, glm::vec4(1.0f), 100.0f);
+	//	Daybreak::Renderer2D::EndScene();
+	//	glEnable(GL_DEPTH_TEST);
+	//	m_CameraController.UpdateProj(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
+	//}
+
+	Daybreak::Renderer2D::BeginScene(m_CameraController.GetCamera(), m_CameraController.GetView());
 	
 	for (int x = 0; x < 3 ; x++)
 	{
@@ -97,7 +108,6 @@ void GameLayer::OnEvent(Daybreak::Event& event)
 	}
 }
 
-
 void GameLayer::OnImGuiRender()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -108,7 +118,7 @@ void GameLayer::OnImGuiRender()
 	ImGui::Text((const char*)glm::to_string(obj1Pos).c_str());
 	ImGui::Text("Grid Depth %.1f", gridDepth);
 
-	ImGui::Checkbox("Set Vsync", &vsyncBox);
+	ImGui::Checkbox("Use Vsync", &vsyncBox);
 	Daybreak::Application::Get().GetWindow().SetVSync(vsyncBox);
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	ImGui::End();

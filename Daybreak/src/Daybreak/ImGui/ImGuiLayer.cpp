@@ -63,7 +63,7 @@ namespace Daybreak
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigViewportsNoAutoMerge = true;
-		io.ConfigViewportsNoTaskBarIcon = true;
+		//io.ConfigViewportsNoTaskBarIcon = true;
 
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

@@ -62,7 +62,7 @@ namespace Daybreak
 	{
 		while (m_Running)
 		{
-			float time = (float)glfwGetTime();
+			float time = (float)glfwGetTime(); //TEMPORARY
 			DeltaTime dt = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
