@@ -19,6 +19,15 @@ namespace Daybreak
 		//int EntityID;
 	};
 
+	struct LineVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+
+		// Editor-Only;
+		//int EntityID;
+	};
+
 	struct Renderer2DData
 	{
 		static const uint32_t MaxTextureSlots = 32;
@@ -29,16 +38,24 @@ namespace Daybreak
 		glm::mat4 ViewProjectionMatrix;
 
 		// For Quads
-		Ref<VertexBuffer> quadVb;
-		//Ref<IndexBuffer> quadIb;
-		Ref<VertexArray> quadVa;
-		Ref<Shader> quadShader;
+		Ref<VertexBuffer> QuadVB;
+		Ref<VertexArray> QuadVA;
+		Ref<Shader> QuadShader;
 		Ref<Texture2D> WhiteTexture;
 
-		uint32_t quadIndexCount = 0;
+		// For Lines
+		Ref<VertexBuffer> LineVB;
+		Ref<VertexArray> LineVA;
+		Ref<Shader> LineShader;
+		float LineWidth = 2.0f;
 
+		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
+
+		uint32_t LineVertexCount = 0;
+		LineVertex* LineVertexBufferBase = nullptr;
+		LineVertex* LineVertexBufferPtr = nullptr;
 
 		glm::vec4 QuadVertexPositions[4];
 
@@ -50,23 +67,22 @@ namespace Daybreak
 
 	void Renderer2D::Init()
 	{
-		s_Data.quadShader = Shader::Create("Renderer2D_QuadShader", "../Sandbox/assets/Renderer2D_QuadShader.glsl");
+		// Quads
+		s_Data.QuadShader = Shader::Create("Renderer2D_QuadShader", "../Sandbox/assets/Renderer2D_QuadShader.glsl");
 
-		s_Data.quadVa = VertexArray::Create();
-		s_Data.quadVb = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
-		s_Data.quadVb->SetLayout({
+		s_Data.QuadVA = VertexArray::Create();
+		s_Data.QuadVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
+		s_Data.QuadVB->SetLayout({
 				{ RenderDataTypes::Float3, std::string("a_Position") },
 				{ RenderDataTypes::Float2, std::string("a_TexCoord") },
 				{ RenderDataTypes::Float4, std::string("a_Color") },
 				{ RenderDataTypes::Float, std::string("a_TexIndex") },
 				{ RenderDataTypes::Float, std::string("a_TilingFactor") },
 			});
-		s_Data.quadVa->AddVertexBuffer(s_Data.quadVb);
-
+		s_Data.QuadVA->AddVertexBuffer(s_Data.QuadVB);
 		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
 
 		uint32_t* quadIndices = new uint32_t[s_Data.MaxIndices];
-
 		uint32_t offset = 0;
 		for (uint32_t i = 0; i < s_Data.MaxIndices; i += 6)
 		{
@@ -80,9 +96,8 @@ namespace Daybreak
 
 			offset += 4;
 		}
-
 		Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
-		s_Data.quadVa->SetIndexBuffer(quadIB);
+		s_Data.QuadVA->SetIndexBuffer(quadIB);
 		delete[] quadIndices;
 
 		s_Data.WhiteTexture = Texture2D::Create({ 1, 1, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point });
@@ -100,51 +115,76 @@ namespace Daybreak
 		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
 			samplers[i] = i;
 
-		s_Data.quadShader->Bind();
-		s_Data.quadShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+		s_Data.QuadShader->Bind();
+		s_Data.QuadShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+
+
+		// Lines
+		s_Data.LineShader = Shader::Create("Renderer2D_LineShader", "../Sandbox/assets/Renderer2D_LineShader.glsl");
+
+		s_Data.LineVA = VertexArray::Create();
+		s_Data.LineVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(LineVertex));
+		s_Data.LineVB->SetLayout({
+				{ RenderDataTypes::Float3, std::string("a_Position") },
+				{ RenderDataTypes::Float4, std::string("a_Color") }
+			});
+		s_Data.LineVA->AddVertexBuffer(s_Data.LineVB);
+		s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxVertices];
 
 	}
 
 	void Renderer2D::Shutdown()
 	{
 		delete[] s_Data.QuadVertexBufferBase;
+		delete[] s_Data.LineVertexBufferBase;
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
 		s_Data.ViewProjectionMatrix = camera.GetProjection() * transform;
-		s_Data.quadShader->Bind();
-
-		s_Data.quadShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
-
-		s_Data.quadIndexCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-
-		s_Data.TextureSlotIndex = 1;
 
 		StartBatch();
 	}
 
 	void Renderer2D::EndScene()
 	{
-		uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
-		s_Data.quadVb->SetData(s_Data.QuadVertexBufferBase, dataSize);
-
 		Flush();
 	}
 
 	void Renderer2D::Flush()
 	{
-		for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
-			s_Data.TextureSlots[i]->Bind(i);
-		s_Data.quadShader->Bind();
-		RenderCommand::DrawIndexed(s_Data.quadVa, s_Data.quadIndexCount);
+		if (s_Data.QuadIndexCount)
+		{
+			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
+			s_Data.QuadVB->SetData(s_Data.QuadVertexBufferBase, dataSize);
+
+			s_Data.QuadShader->Bind();
+			s_Data.QuadShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
+			for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
+				s_Data.TextureSlots[i]->Bind(i);
+			RenderCommand::DrawIndexed(s_Data.QuadVA, s_Data.QuadIndexCount);
+		}
+		if (s_Data.LineVertexCount)
+		{
+			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.LineVertexBufferPtr - (uint8_t*)s_Data.LineVertexBufferBase);
+			s_Data.LineVB->SetData(s_Data.LineVertexBufferBase, dataSize);
+
+			s_Data.LineShader->Bind();
+			s_Data.LineShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
+			RenderCommand::SetLineWidth(s_Data.LineWidth);
+			RenderCommand::DrawLines(s_Data.LineVA, s_Data.LineVertexCount);
+		}
 	}
 
 	void Renderer2D::StartBatch()
 	{
-		s_Data.quadIndexCount = 0;
+		s_Data.TextureSlotIndex = 1;
+
+		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.LineVertexCount = 0;
+		s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
 	}
 
 	void Renderer2D::NextBatch()
@@ -181,7 +221,7 @@ namespace Daybreak
 		constexpr size_t quadVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
-		if (s_Data.quadIndexCount >= Renderer2DData::MaxIndices)
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 			NextBatch();
 
 		float textureIndex = 0.0f;
@@ -213,7 +253,22 @@ namespace Daybreak
 			//s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
-		s_Data.quadIndexCount += 6;
+		s_Data.QuadIndexCount += 6;
 
+	}
+
+	void Renderer2D::DrawLine(const glm::vec3& pos1, const glm::vec3& pos2, const glm::vec4& color)
+	{
+		s_Data.LineVertexBufferPtr->Position = pos1;
+		s_Data.LineVertexBufferPtr->Color = color;
+		//s_Data.QuadVertexBufferPtr->EntityID = entityID;
+		s_Data.LineVertexBufferPtr++;
+
+		s_Data.LineVertexBufferPtr->Position = pos2;
+		s_Data.LineVertexBufferPtr->Color = color;
+		//s_Data.QuadVertexBufferPtr->EntityID = entityID;
+		s_Data.LineVertexBufferPtr++;
+		
+		s_Data.LineVertexCount += 2;
 	}
 }

@@ -15,6 +15,16 @@ namespace Daybreak
 		static inline void DrawIndexed(const Ref<VertexArray>& vertexArray, const uint32_t& indexCount = 0) { s_RenderAPI->DrawIndexed(vertexArray, indexCount); }
 		static inline void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) { s_RenderAPI->SetViewport(x, y, width, height); }
 
+		static void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+		{
+			s_RenderAPI->DrawLines(vertexArray, vertexCount);
+		}
+
+		static void SetLineWidth(float width)
+		{
+			s_RenderAPI->SetLineWidth(width);
+		}
+
 	private:
 		static Scope<RenderAPI> s_RenderAPI;
 	};

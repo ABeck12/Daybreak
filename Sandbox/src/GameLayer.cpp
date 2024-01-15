@@ -69,7 +69,7 @@ void GameLayer::OnUpdate(Daybreak::DeltaTime dt)
 
 	//Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), glm::vec4(1.0f, 0.5f, 0.5f, 0.75f));
 	Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), texture1, glm::vec4(0.5f,0.2f,0.95f,1.0f));
-
+	Daybreak::Renderer2D::DrawLine({ -6.f,-4.0f,0.0f }, { 1.0f,3.0f,-5.0f }, glm::vec4(1.0f));
 
 	Daybreak::Renderer2D::EndScene();
 

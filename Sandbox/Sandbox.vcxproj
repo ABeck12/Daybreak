@@ -103,6 +103,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\Renderer2D_LineShader.glsl" />
     <None Include="assets\Renderer2D_QuadShader.glsl" />
     <None Include="assets\TextureShader.glsl" />
   </ItemGroup>

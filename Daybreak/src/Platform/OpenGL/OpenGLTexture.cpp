@@ -84,7 +84,7 @@ namespace Daybreak
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void OpenGLTexture2D::SetData(void* data, uint32_t size)
+	const void OpenGLTexture2D::SetData(void* data, uint32_t size) const
 	{
 		auto m_DataFormat = GL_RGBA; //Temp
 		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;

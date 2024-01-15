@@ -25,7 +25,8 @@ namespace Daybreak
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-		
-		//static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture);
+	
+		static void DrawLine(const glm::vec3& pos1, const glm::vec3& pos2, const glm::vec4& color);
 	};
+
 }

@@ -23,7 +23,7 @@ namespace Daybreak
 		virtual const void Bind(const uint32_t& slot = 0) const override;
 		virtual const void Unbind() const override;
 
-		virtual void SetData(void* data, uint32_t size) override;
+		virtual const void SetData(void* data, uint32_t size) const override;
 
 		virtual bool operator==(const Texture& other) const override { return m_RendererID == other.GetRendererID(); }
 	private:

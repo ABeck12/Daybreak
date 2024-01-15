@@ -46,4 +46,15 @@ namespace Daybreak
 	{
 		glViewport(x, y, width, height);
 	}
+
+	void OpenGLRenderAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+	{
+		vertexArray->Bind();
+		glDrawArrays(GL_LINES, 0, vertexCount);
+	}
+
+	void OpenGLRenderAPI::SetLineWidth(float width)
+	{
+		glLineWidth(width);
+	}
 }

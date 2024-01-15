@@ -37,7 +37,7 @@ namespace Daybreak
 		virtual const void Bind(const uint32_t& slot = 0) const = 0;
 		virtual const void Unbind() const = 0;
 
-		virtual void SetData(void* data, uint32_t size) = 0;
+		virtual const void SetData(void* data, uint32_t size) const = 0;
 
 		virtual bool operator==(const Texture& other) const = 0;
 		
