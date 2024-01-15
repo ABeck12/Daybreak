@@ -11,7 +11,8 @@
 GameLayer::GameLayer() : Layer("GameLayer")
 {
 	m_CameraController = CameraController(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
-	//m_CameraController = CameraController(glm::ortho(0,1280,0,720));
+	//m_CameraController.UpdateProj(glm::ortho(0.f,16.0f,0.f,9.f, -1.f, 100.f));
+
 	m_CameraController.SetCameraPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 	//camera = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.0f, 100.0f);
 
@@ -33,17 +34,6 @@ void GameLayer::OnUpdate(Daybreak::DeltaTime dt)
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
 	Daybreak::RenderCommand::Clear();
 
-	//{
-	//	glDisable(GL_DEPTH_TEST);
-	//	m_CameraController.UpdateProj(glm::ortho(0.f,16.0f,0.f,9.f, -1.f, 100.f));
-	//	Daybreak::Renderer2D::BeginScene(m_CameraController.GetCamera(), m_CameraController.GetView());
-	//	auto transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f,0.0f,-10.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(90.0f));
-	//	Daybreak::Renderer2D::DrawQuad(transform, tileTexture, glm::vec4(1.0f), 100.0f);
-	//	Daybreak::Renderer2D::EndScene();
-	//	glEnable(GL_DEPTH_TEST);
-	//	m_CameraController.UpdateProj(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
-	//}
-
 	Daybreak::Renderer2D::BeginScene(m_CameraController.GetCamera(), m_CameraController.GetView());
 	
 	for (int x = 0; x < 3 ; x++)
@@ -59,16 +49,8 @@ void GameLayer::OnUpdate(Daybreak::DeltaTime dt)
 		}
 	}
 
-	//std::sort(ObjectsList.begin(), ObjectsList.end());
-	//for (int i = 0; i < ObjectsList.size(); i++)
-	//{
-	//	if (ObjectsList[i].name == "object1")
-	//		ObjectsList[i].position = obj1Pos;
-	//	Daybreak::Renderer2D::DrawQuad(ObjectsList[i].position, ObjectsList[i].size, ObjectsList[i].texture);
-	//}
-
-	//Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), glm::vec4(1.0f, 0.5f, 0.5f, 0.75f));
-	Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), texture1, glm::vec4(0.5f,0.2f,0.95f,1.0f));
+	zrot += 0.75f;
+	Daybreak::Renderer2D::DrawRotatedQuad(obj1Pos, glm::vec2(3.0f), zrot, texture1, glm::vec4(0.5f,0.2f,0.95f,1.0f));
 	Daybreak::Renderer2D::DrawLine({ -6.f,-4.0f,0.0f }, { 1.0f,3.0f,-5.0f }, glm::vec4(1.0f));
 
 	Daybreak::Renderer2D::EndScene();

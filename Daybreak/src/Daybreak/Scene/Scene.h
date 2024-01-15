@@ -1,5 +1,9 @@
 #pragma once
 
+#include "dbpch.h"
+
+#include <entt.hpp>
+
 namespace Daybreak
 {
 	class Scene
@@ -7,6 +11,6 @@ namespace Daybreak
 	public:
 
 	private:
-
+		entt::registry m_Registry;
 	};
 }

@@ -31,6 +31,8 @@ private:
 	glm::vec3 obj1Rot = glm::vec3(0.0f);
 	glm::vec3 obj1Scale = glm::vec3(10.0f);
 
+	float zrot = 0.0f;
+
 	bool vsyncBox = true;
 
 };

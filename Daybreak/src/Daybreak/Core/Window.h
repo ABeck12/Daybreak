@@ -11,7 +11,7 @@ namespace Daybreak
 		std::string Title = "Daybreak Engine";
 		uint32_t Width = 1280;
 		uint32_t Height = 720;
-		std::string IconFilepath = "../Sandbox/assets/DaybreakIcon.png";
+		std::string IconFilepath = "../DaybreakLogo.png";
 	};
 
 	class Window
