@@ -47,7 +47,7 @@ namespace Daybreak
 		Ref<VertexBuffer> LineVB;
 		Ref<VertexArray> LineVA;
 		Ref<Shader> LineShader;
-		float LineWidth = 2.0f;
+		float DefaultLineWidth = 2.0f;
 
 		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
@@ -171,7 +171,7 @@ namespace Daybreak
 
 			s_Data.LineShader->Bind();
 			s_Data.LineShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
-			RenderCommand::SetLineWidth(s_Data.LineWidth);
+			RenderCommand::SetLineWidth(s_Data.DefaultLineWidth);
 			RenderCommand::DrawLines(s_Data.LineVA, s_Data.LineVertexCount);
 		}
 	}
