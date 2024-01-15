@@ -1,4 +1,4 @@
-![DaybreakLogo](DaybreakLogo.png)
+![DaybreakLogo](Resources/DaybreakLogo.png)
 # Daybreak
 Daybreak Engine
 
