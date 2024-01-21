@@ -91,11 +91,13 @@
   <ItemGroup>
     <ClInclude Include="src\CameraController.h" />
     <ClInclude Include="src\GameLayer.h" />
+    <ClInclude Include="src\SceneLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CameraController.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
     <ClCompile Include="src\GameLayer.cpp" />
+    <ClCompile Include="src\SceneLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Daybreak\Daybreak.vcxproj">

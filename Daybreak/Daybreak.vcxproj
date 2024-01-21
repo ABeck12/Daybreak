@@ -121,7 +121,7 @@
     <ClInclude Include="src\Daybreak\Renderer\Texture.h" />
     <ClInclude Include="src\Daybreak\Renderer\VertexArray.h" />
     <ClInclude Include="src\Daybreak\Scene\Components.h" />
-    <ClInclude Include="src\Daybreak\Scene\GameObject.h" />
+    <ClInclude Include="src\Daybreak\Scene\Entity.h" />
     <ClInclude Include="src\Daybreak\Scene\Scene.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderAPI.h" />
@@ -149,7 +149,7 @@
     <ClCompile Include="src\Daybreak\Renderer\Shader.cpp" />
     <ClCompile Include="src\Daybreak\Renderer\Texture.cpp" />
     <ClCompile Include="src\Daybreak\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\Daybreak\Scene\GameObject.cpp" />
+    <ClCompile Include="src\Daybreak\Scene\Entity.cpp" />
     <ClCompile Include="src\Daybreak\Scene\Scene.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderAPI.cpp" />

@@ -16,7 +16,7 @@ namespace Daybreak
 		float TilingFactor;
 
 		// Editor-only
-		//int EntityID;
+		int EntityID;
 	};
 
 	struct LineVertex
@@ -78,6 +78,7 @@ namespace Daybreak
 				{ RenderDataTypes::Float4, std::string("a_Color") },
 				{ RenderDataTypes::Float, std::string("a_TexIndex") },
 				{ RenderDataTypes::Float, std::string("a_TilingFactor") },
+				{ RenderDataTypes::Int, std::string("a_EntityID") },
 			});
 		s_Data.QuadVA->AddVertexBuffer(s_Data.QuadVB);
 		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
@@ -215,8 +216,16 @@ namespace Daybreak
 		DrawQuad({ position.x, position.y, 0.0f }, size, color);
 	}
 
+	void Renderer2D::DrawSprite(const glm::mat4 transform, const SpriteRendererComponent& spriteRenderer, int entityID)
+	{
+		if (spriteRenderer.Sprite)
+			DrawQuad(transform, spriteRenderer.Sprite, spriteRenderer.TintColor, spriteRenderer.TilingFactor, entityID);
+		else
+			DrawQuad(transform, s_Data.WhiteTexture, spriteRenderer.TintColor, spriteRenderer.TilingFactor, entityID);
+	}
+
 	// This is the main DrawQuad function for now
-	void Renderer2D::DrawQuad(const glm::mat4& transform,const Ref<Texture2D>& texture, const glm::vec4& tintColor, const float& tilingFactor)
+	void Renderer2D::DrawQuad(const glm::mat4& transform,const Ref<Texture2D>& texture, const glm::vec4& tintColor, const float& tilingFactor, int entityID)
 	{
 		constexpr size_t quadVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
@@ -250,7 +259,7 @@ namespace Daybreak
 			s_Data.QuadVertexBufferPtr->Color = tintColor;
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-			//s_Data.QuadVertexBufferPtr->EntityID = entityID;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 		s_Data.QuadIndexCount += 6;

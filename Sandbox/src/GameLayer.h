@@ -18,7 +18,7 @@ public:
 private:
 	Daybreak::Ref<Daybreak::Texture2D> texture1;
 	Daybreak::Ref<Daybreak::Texture2D> texture2;
-	Daybreak::Ref<Daybreak::Texture2D> tileTexture;
+	Daybreak::Ref<Daybreak::Texture2D> daybreakLogo;
 
 
 	//std::vector<DrawableObject> ObjectsList;

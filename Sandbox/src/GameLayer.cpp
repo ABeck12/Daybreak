@@ -19,7 +19,7 @@ GameLayer::GameLayer() : Layer("GameLayer")
 
 	texture1 = Daybreak::Texture2D::Create({ 128, 128, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Test.png");
 	texture2 = Daybreak::Texture2D::Create({ 128, 128, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TestTexture.png");
-	tileTexture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TileGrid.png");
+	daybreakLogo = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
 
 	
 	//DrawableObject gridObject1 = { texture2, glm::vec3(0.0f,0.0f,-0.5f), glm::vec2(1.0f), "object1"};
@@ -50,7 +50,8 @@ void GameLayer::OnUpdate(Daybreak::DeltaTime dt)
 	}
 
 	zrot += 0.75f;
-	Daybreak::Renderer2D::DrawRotatedQuad(obj1Pos, glm::vec2(3.0f), zrot, texture1, glm::vec4(0.5f,0.2f,0.95f,1.0f));
+	Daybreak::Renderer2D::DrawRotatedQuad({ -3.0f,1.0f,0.0f }, glm::vec2(1.5f), zrot, texture1, { 0.5f,0.2f,0.95f,1.0f });
+	Daybreak::Renderer2D::DrawQuad(obj1Pos, glm::vec2(3.0f), daybreakLogo, glm::vec4(1.0f));
 	Daybreak::Renderer2D::DrawLine({ -6.f,-4.0f,0.0f }, { 1.0f,3.0f,-5.0f }, glm::vec4(1.0f));
 
 	Daybreak::Renderer2D::EndScene();

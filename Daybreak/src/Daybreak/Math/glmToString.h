@@ -4,6 +4,9 @@
 
 #include <glm/gtx/string_cast.hpp>
 
+//Temporary
+#define NOMINMAX
+
 inline std::ostream& operator<<(std::ostream& os, const glm::vec4& vec)
 {
 	return os << glm::to_string(vec);

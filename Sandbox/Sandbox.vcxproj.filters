@@ -24,12 +24,18 @@
     <ClCompile Include="src\CameraController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\SceneLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\CameraController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

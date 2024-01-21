@@ -1,4 +1,7 @@
-![DaybreakLogo](Resources/DaybreakLogo.png)
+<!-- ![DaybreakLogo](Resources/DaybreakLogo.png) -->
+
+<img src="Resources/DaybreakLogo.png" alt="drawing" width="300"/>
+
 # Daybreak
 Daybreak Engine
 
@@ -26,6 +29,7 @@ Licenses added via submodules => spdlog
     Remove glad dependency for timestep from application.cpp
 
 ### Medium Priority:
+    Make a asset manager system
     Add ability to pass args from sandbox to Daybreak when starting engine. This is stuff like initial window size etc.
 
 ### High Priority:

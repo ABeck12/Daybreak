@@ -121,7 +121,7 @@
     <ClInclude Include="src\Daybreak\Math\GlmToString.h" />
     <ClInclude Include="src\Daybreak\Core\DeltaTime.h" />
     <ClInclude Include="src\Daybreak\Scene\Scene.h" />
-    <ClInclude Include="src\Daybreak\Scene\GameObject.h" />
+    <ClInclude Include="src\Daybreak\Scene\Entity.h" />
     <ClInclude Include="src\Daybreak\Scene\Components.h" />
     <ClInclude Include="src\Daybreak\Renderer\Renderer2D.h" />
   </ItemGroup>
@@ -192,7 +192,7 @@
     <ClCompile Include="src\dbpch.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="src\Daybreak\Scene\Scene.cpp" />
-    <ClCompile Include="src\Daybreak\Scene\GameObject.cpp" />
+    <ClCompile Include="src\Daybreak\Scene\Entity.cpp" />
     <ClCompile Include="src\Daybreak\Renderer\Renderer2D.cpp" />
   </ItemGroup>
 </Project>

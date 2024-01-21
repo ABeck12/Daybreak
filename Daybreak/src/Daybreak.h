@@ -24,6 +24,10 @@
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Renderer/Camera.h"
 
+#include "Daybreak/Scene/Scene.h"
+#include "Daybreak/Scene/Entity.h"
+#include "Daybreak/Scene/Components.h"
+
 //Temp? Maybe?
 #include <Daybreak/Math/GlmToString.h>
 

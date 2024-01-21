@@ -2,6 +2,7 @@
 #include <Daybreak/Core/EntryPoint.h>
 
 #include "GameLayer.h"
+#include "SceneLayer.h"
 
 extern "C" {
 	//__declspec(dllexport) DWORD NvOptimusEnablement = 1;
@@ -13,7 +14,8 @@ class Sandbox : public Daybreak::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new GameLayer());
+		PushLayer(new SceneLayer());
+		//PushLayer(new GameLayer());
 		//PushOverlay(new Daybreak::ImGuiLayer());
 	}
 	~Sandbox()
