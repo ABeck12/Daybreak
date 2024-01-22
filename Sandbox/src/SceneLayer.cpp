@@ -17,6 +17,8 @@ SceneLayer::SceneLayer() : Layer("SceneLayer")
 	cameraComp.Camera.SetProjection(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
 	auto& cameraTransformComp = cameraEntity.GetComponent<Daybreak::TransformComponent>();
 	cameraTransformComp.Position = glm::vec3(0.0f, 0.0f, -10.0f);
+
+	lastMousePos = Daybreak::Input::GetMousePosition();
 }
 
 void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
@@ -40,6 +42,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Q))
 		entityTestPos.z -= amount;
 
+	
 	// Camera Update
 	auto& cameraPos = cameraEntity.GetComponent<Daybreak::TransformComponent>().Position;
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::K))
@@ -62,7 +65,16 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 		cameraRot.z -= amountRot;
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D8))
 		cameraRot.z = 0.0f;
+	
 
+
+	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
+	{
+		cameraPos = glm::vec3(0.0f,0.0f,-10.0f);
+		entityTestPos = glm::vec3(0.0f);
+	}
+	//MoveCamera(entityTest);
+	//MoveCamera(cameraEntity, dt);
 
 	m_Scene->OnSceneUpdate(dt);
 }
@@ -88,4 +100,52 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 void SceneLayer::OnImGuiRender()
 {
 	
+}
+
+void SceneLayer::MoveCamera(Daybreak::Entity& entity, Daybreak::DeltaTime dt)
+{
+	float rotationSensitivity = 100.0f;
+	float translationAmount = 10.0f * dt;
+	glm::vec2 mousePos = Daybreak::Input::GetMousePosition();
+	auto& transform = entity.GetComponent<Daybreak::TransformComponent>();
+	//transform.Rotation.x += (mousePos.x - lastMousePos.x) / rotationSensitivity;
+	//transform.Rotation.y += (-mousePos.y + lastMousePos.y) / rotationSensitivity;
+
+	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
+	{
+		transform.Position.x -= cos(glm::radians(transform.Rotation.z)) * translationAmount;
+		transform.Position.y -= sin(glm::radians(transform.Rotation.z)) * translationAmount;
+	}
+	else if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
+	{
+		transform.Position.x += cos(glm::radians(transform.Rotation.z)) * translationAmount;
+		transform.Position.y += sin(glm::radians(transform.Rotation.z)) * translationAmount;
+	}
+
+	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::W))
+	{
+		transform.Position.x += -sin(glm::radians(transform.Rotation.z)) * translationAmount;
+		transform.Position.y += cos(glm::radians(transform.Rotation.z)) * translationAmount;
+	}
+	else if (Daybreak::Input::IsKeyPressed(Daybreak::Key::S))
+	{
+		transform.Position.x -= -sin(glm::radians(transform.Rotation.z)) * translationAmount;
+		transform.Position.y -= cos(glm::radians(transform.Rotation.z)) * translationAmount;
+	}
+
+	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::W))
+	//	transform.Position.y += translationAmount;
+	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::S))
+	//	transform.Position.y -= translationAmount;
+	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
+	//	transform.Position.x += translationAmount;
+	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
+	//	transform.Position.x -= translationAmount;
+	
+	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::E))
+	//	entity.z += translationAmount;
+	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Q))
+	//	entity.z -= translationAmount;
+
+	lastMousePos = mousePos;
 }

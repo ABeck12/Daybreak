@@ -26,12 +26,12 @@ namespace Daybreak
 		Entity GetActiveCameraEntity();
 
 	private:
+		void DebugRender();
 		void RenderSpriteComponents();
 
 	private:
 		entt::registry m_Registry;
 
 		friend class Entity;
-
 	};
 }

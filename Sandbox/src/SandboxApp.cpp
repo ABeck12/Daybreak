@@ -14,9 +14,8 @@ class Sandbox : public Daybreak::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new SceneLayer());
 		//PushLayer(new GameLayer());
-		//PushOverlay(new Daybreak::ImGuiLayer());
+		PushLayer(new SceneLayer());
 	}
 	~Sandbox()
 	{
