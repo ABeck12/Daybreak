@@ -40,6 +40,7 @@ namespace Daybreak
 	
 
 		static void DrawLine(const glm::vec3& pos1, const glm::vec3& pos2, const glm::vec4& color);
+		static void DrawLine(const glm::vec2& pos1, const glm::vec2& pos2, const glm::vec4& color);
 	};
 
 }

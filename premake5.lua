@@ -13,6 +13,7 @@ outputloc = _WORKING_DIR
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDirs = {}
+IncludeDirs["box2d"] = "Daybreak/vendor/box2d/include"
 IncludeDirs["glfw"] = "Daybreak/vendor/glfw/include"
 IncludeDirs["glad"] = "Daybreak/vendor/glad/include"
 IncludeDirs["imgui"] = "Daybreak/vendor/imgui"
@@ -20,9 +21,17 @@ IncludeDirs["glm"] = "Daybreak/vendor/glm"
 IncludeDirs["stb_image"] = "Daybreak/vendor/stb_image"
 IncludeDirs["entt"] = "Daybreak/vendor/entt/include"
 
-include "Daybreak/vendor/glfw"
-include "Daybreak/vendor/glad"
-include "Daybreak/vendor/imgui"
+-- include "Daybreak/vendor/box2d"
+-- include "Daybreak/vendor/glfw"
+-- include "Daybreak/vendor/glad"
+-- include "Daybreak/vendor/imgui"
+
+group "Dependencies"
+	include "Daybreak/vendor/box2d"
+	include "Daybreak/vendor/glfw"
+	include "Daybreak/vendor/glad"
+	include "Daybreak/vendor/imgui"
+group ""
 
 project "Daybreak"
 	location "Daybreak"
@@ -38,15 +47,10 @@ project "Daybreak"
 		"%{prj.name}/src/**.cpp",
 		-- "%{prj.name}/src/**.hpp",
 	}
-	-- TEMPORARY
-	removefiles
-	{ 
-		"%{prj.name}/src/TestRenderer/**.cpp", "%{prj.name}/src/TestRenderer/**.h",
-		"%{prj.name}/src/Daybreak/Math/**.cpp", "%{prj.name}/src/Daybreak/Math/**.h",
-	}
 	
 	includedirs
 	{
+		"%{prj.name}/vendor/box2d/include",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/vendor/glad/include",
 		"%{prj.name}/vendor/glfw/include",
@@ -59,14 +63,15 @@ project "Daybreak"
 
 	links
 	{
+		"Box2d",
 		"glad",
 		"glfw",
 		"Imgui",
 		"opengl32.lib"
 	}
 
-	--pchheader "%{prj.name}/src/dbpch.h"
-	--pchsource "%{prj.name}/src/dbpch.cpp"
+	-- pchheader "%{prj.name}/src/dbpch.h"
+	-- pchsource "%{prj.name}/src/dbpch.cpp"
 
 	filter "system:windows"
 		cppdialect "C++17"

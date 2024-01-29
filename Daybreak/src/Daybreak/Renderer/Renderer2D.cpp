@@ -47,7 +47,7 @@ namespace Daybreak
 		Ref<VertexBuffer> LineVB;
 		Ref<VertexArray> LineVA;
 		Ref<Shader> LineShader;
-		float DefaultLineWidth = 2.0f;
+		float DefaultLineWidth = 1.0f;
 
 		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
@@ -303,5 +303,10 @@ namespace Daybreak
 		s_Data.LineVertexBufferPtr++;
 		
 		s_Data.LineVertexCount += 2;
+	}
+
+	void Renderer2D::DrawLine(const glm::vec2& pos1, const glm::vec2& pos2, const glm::vec4& color)
+	{
+		DrawLine({ pos1.x, pos1.y, 0.0f }, { pos2.x, pos2.y, 0.0f }, color);
 	}
 }

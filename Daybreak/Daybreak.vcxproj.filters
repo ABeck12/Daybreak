@@ -13,8 +13,17 @@
     <Filter Include="Daybreak\ImGui">
       <UniqueIdentifier>{52215BF3-3EEF-4EF9-2783-BF1F13F02A5E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Daybreak\Math">
+      <UniqueIdentifier>{012C98E0-6DEC-1317-3627-5D94A2A658F3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Daybreak\Physics">
+      <UniqueIdentifier>{9A595E49-8652-7D9B-AF84-62209BDC5CA7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Daybreak\Renderer">
       <UniqueIdentifier>{CE5E044C-3A75-02E2-83EC-8D03EF41D369}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Daybreak\Scene">
+      <UniqueIdentifier>{45190BF4-31E7-FEF9-1A7B-6F2006E8DA5E}</UniqueIdentifier>
     </Filter>
     <Filter Include="Platform">
       <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
@@ -32,6 +41,9 @@
       <Filter>Daybreak\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Daybreak\Core\Base.h">
+      <Filter>Daybreak\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Daybreak\Core\DeltaTime.h">
       <Filter>Daybreak\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Daybreak\Core\EntryPoint.h">
@@ -73,6 +85,12 @@
     <ClInclude Include="src\Daybreak\ImGui\ImGuiLayer.h">
       <Filter>Daybreak\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Daybreak\Math\GlmToString.h">
+      <Filter>Daybreak\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Daybreak\Physics\Physics2DUtils.h">
+      <Filter>Daybreak\Physics</Filter>
+    </ClInclude>
     <ClInclude Include="src\Daybreak\Renderer\Buffer.h">
       <Filter>Daybreak\Renderer</Filter>
     </ClInclude>
@@ -88,6 +106,9 @@
     <ClInclude Include="src\Daybreak\Renderer\Renderer.h">
       <Filter>Daybreak\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Daybreak\Renderer\Renderer2D.h">
+      <Filter>Daybreak\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Daybreak\Renderer\Shader.h">
       <Filter>Daybreak\Renderer</Filter>
     </ClInclude>
@@ -96,6 +117,15 @@
     </ClInclude>
     <ClInclude Include="src\Daybreak\Renderer\VertexArray.h">
       <Filter>Daybreak\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Daybreak\Scene\Components.h">
+      <Filter>Daybreak\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Daybreak\Scene\Entity.h">
+      <Filter>Daybreak\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Daybreak\Scene\Scene.h">
+      <Filter>Daybreak\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
       <Filter>Platform\OpenGL</Filter>
@@ -116,14 +146,7 @@
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\dbpch.h" />
-    <ClInclude Include="vendor\entt\include\entt.hpp" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
-    <ClInclude Include="src\Daybreak\Math\GlmToString.h" />
-    <ClInclude Include="src\Daybreak\Core\DeltaTime.h" />
-    <ClInclude Include="src\Daybreak\Scene\Scene.h" />
-    <ClInclude Include="src\Daybreak\Scene\Entity.h" />
-    <ClInclude Include="src\Daybreak\Scene\Components.h" />
-    <ClInclude Include="src\Daybreak\Renderer\Renderer2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Daybreak\Core\Application.cpp">
@@ -159,6 +182,9 @@
     <ClCompile Include="src\Daybreak\Renderer\Renderer.cpp">
       <Filter>Daybreak\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Daybreak\Renderer\Renderer2D.cpp">
+      <Filter>Daybreak\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Daybreak\Renderer\Shader.cpp">
       <Filter>Daybreak\Renderer</Filter>
     </ClCompile>
@@ -167,6 +193,12 @@
     </ClCompile>
     <ClCompile Include="src\Daybreak\Renderer\VertexArray.cpp">
       <Filter>Daybreak\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Daybreak\Scene\Entity.cpp">
+      <Filter>Daybreak\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Daybreak\Scene\Scene.cpp">
+      <Filter>Daybreak\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
       <Filter>Platform\OpenGL</Filter>
@@ -191,8 +223,5 @@
     </ClCompile>
     <ClCompile Include="src\dbpch.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
-    <ClCompile Include="src\Daybreak\Scene\Scene.cpp" />
-    <ClCompile Include="src\Daybreak\Scene\Entity.cpp" />
-    <ClCompile Include="src\Daybreak\Renderer\Renderer2D.cpp" />
   </ItemGroup>
 </Project>

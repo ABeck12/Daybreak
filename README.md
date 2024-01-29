@@ -12,6 +12,8 @@ Licenses to check/add => Hazel, Glfw, Glad, ImGui, stb_image, premake
 Licenses added via submodules => spdlog
 
 
+Fix pch file in premake
+
 # To Do List
 ### For Renderer2D:
     Font rendering
@@ -21,6 +23,9 @@ Licenses added via submodules => spdlog
     Uniform Buffer?
     Shader Library
     Update the OpenGLTexture2D class
+
+### For Physics2D:
+    
 
 ### Low Priority:
     Make a weakref system using std::weak_ptr? or maybe std::object_ptr?
