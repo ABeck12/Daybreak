@@ -5,12 +5,11 @@
 # Daybreak
 Daybreak Engine
 
-git clone https://github.com/ABeck12/Daybreak.git --recurse-submodules
+```git clone https://github.com/ABeck12/Daybreak.git --recurse-submodules```
 
-This is a 2D game engine based of Hazel engine. This uses GLFW and GLAD/OpenGL.
+This is a 2D game engine based of Hazel engine.
 
-
-Licenses to check/add => Hazel, Glfw, Glad, ImGui, stb_image, premake
+Licenses to check/add => Hazel, Glfw, Glad, ImGui, stb_image, premake, box2D
 Licenses added via submodules => spdlog
 
 
