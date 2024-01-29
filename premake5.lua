@@ -100,6 +100,8 @@ project "Daybreak"
 		}
 		symbols "On"
 		runtime "Release"
+		optimize "on"
+
 
 	-- filter "configurations:Dist"
 	-- 	defines
@@ -172,6 +174,8 @@ project "Sandbox"
 		}
 		symbols "On"
 		runtime "Release"
+		optimize "on"
+
 
 	-- filter "configurations:Dist"
 	-- 	defines 
