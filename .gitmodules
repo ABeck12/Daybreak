@@ -7,3 +7,6 @@
 [submodule "Daybreak/vendor/imgui"]
 	path = Daybreak/vendor/imgui
 	url = https://github.com/ABeck12/imgui.git
+[submodule "Daybreak/vendor/box2d"]
+	path = Daybreak/vendor/box2d
+	url = https://github.com/ABeck12/box2d.git
