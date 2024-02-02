@@ -9,6 +9,7 @@
 #include "Daybreak/ImGui/ImGuiLayer.h"
 
 #include "Daybreak/Core/DeltaTime.h"
+#include "Daybreak/Core/Time.h"
 
 #include "Daybreak/Core/Input.h"
 #include "Daybreak/Core/KeyCodes.h"

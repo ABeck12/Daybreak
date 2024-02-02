@@ -50,7 +50,6 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 {
 	Daybreak::RenderCommand::Clear();
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
-
 	/*
 	// entityTest Update
 	auto& entityTestPos = entityTest.GetComponent<Daybreak::TransformComponent>().Position;
@@ -93,21 +92,21 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D8))
 		cameraRot.z = 0.0f;
 
-
+	float velamount = 75.0;
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space))
 	{
 		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.y += 1.0;
+		velocity.y += velamount * dt;
 	}
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
 	{
 		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.x += 1.0;
+		velocity.x += velamount * dt;
 	}
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
 	{
 		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.x -= 1.0;
+		velocity.x -= velamount * dt;
 	}
 
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
@@ -142,7 +141,10 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 
 void SceneLayer::OnImGuiRender()
 {
-	
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui::Begin("ImGui Layer");
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	ImGui::End();
 }
 
 void SceneLayer::MoveCamera(Daybreak::Entity& entity, Daybreak::DeltaTime dt)

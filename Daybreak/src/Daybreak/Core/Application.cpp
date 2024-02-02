@@ -5,8 +5,7 @@
 #include "Daybreak/Core/Window.h"
 #include "Daybreak/Renderer/Renderer.h"
 #include "Daybreak/Core/DeltaTime.h"
-
-#include "GLFW/glfw3.h"
+#include "Daybreak/Core/Time.h"
 
 namespace Daybreak
 {
@@ -62,7 +61,7 @@ namespace Daybreak
 	{
 		while (m_Running)
 		{
-			float time = (float)glfwGetTime(); //TEMPORARY
+			float time = Time::GetTime();
 			DeltaTime dt = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
