@@ -1,2 +1,2 @@
-@REM call vendor\premake\premake5.exe gmake2
-@REM PAUSE
+call vendor\premake\premake5.exe gmake2
+PAUSE
