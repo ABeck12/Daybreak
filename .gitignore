@@ -12,6 +12,6 @@
 **/Makefile
 
 # For vscode
+/Tasks
 */.vscode
-# *c_cpp_properties.json
-# *tasks.json
+**.code-workspace

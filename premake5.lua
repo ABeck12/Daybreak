@@ -29,6 +29,15 @@ newaction
 		os.remove("**.vcxproj.filters")
 		os.remove("**.vcxproj.user")
 		os.remove("**Makefile")
+
+		os.remove("**.code-workspace")
+		os.rmdir("./Tasks")
+		os.rmdir("./Daybreak/.vscode")
+		os.rmdir("./Daybreak/box2d/.vscode")
+		os.rmdir("./Daybreak/glad/.vscode")
+		os.rmdir("./Daybreak/glfw/.vscode")
+		os.rmdir("./Daybreak/imgui/.vscode")
+		os.rmdir("./Sandbox/.vscode")
 		print("Done")
 	end
 }
