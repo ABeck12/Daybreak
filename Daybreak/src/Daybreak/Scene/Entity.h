@@ -2,9 +2,9 @@
 
 #include "dbpch.h"
 
-#include <entt.hpp>
-
 #include "Daybreak/Scene/Scene.h"
+
+#include <entt.hpp>
 
 namespace Daybreak
 {

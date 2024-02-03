@@ -1,6 +1,7 @@
 #include "SceneLayer.h"
 
 #include <Daybreak.h>
+#include <imgui.h>
 
 SceneLayer::SceneLayer() : Layer("SceneLayer")
 {
@@ -144,6 +145,11 @@ void SceneLayer::OnImGuiRender()
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::Begin("ImGui Layer");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	ImGui::End();
+
+	ImGui::Begin("Box Entity");
+	ImGui::SliderFloat("Roation", &entityTest.GetComponent<Daybreak::TransformComponent>().Rotation.z,-3.14f,3.14f);
+	//ImGui::SliderFloat3("Position", )
 	ImGui::End();
 }
 
