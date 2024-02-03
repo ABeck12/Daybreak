@@ -10,3 +10,8 @@
 **.vcxproj.user
 **.csproj
 **/Makefile
+
+# For vscode
+*/.vscode
+# *c_cpp_properties.json
+# *tasks.json

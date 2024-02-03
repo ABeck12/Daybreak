@@ -9,7 +9,8 @@ workspace "Daybreak"
 		-- "Dist"
 	}
 
-	
+require("vendor/premake/vscode")
+
 outputloc = _WORKING_DIR 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
