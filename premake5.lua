@@ -9,8 +9,28 @@ workspace "Daybreak"
 		-- "Dist"
 	}
 
+	
 outputloc = _WORKING_DIR 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+newaction
+{
+	trigger = "clean",
+	description = "Remove all binaries, intermediate binaries, vs files, and makefiles",
+	execute = function()
+		print("Removing binaries")
+		os.rmdir("./bin")
+		print("Removing intermediate binaries")
+		os.rmdir("./bin-int")
+		print("Removing project files")
+		os.remove("**.sln")
+		os.remove("**.vcxproj")
+		os.remove("**.vcxproj.filters")
+		os.remove("**.vcxproj.user")
+		os.remove("**Makefile")
+		print("Done")
+	end
+}
 
 IncludeDirs = {}
 IncludeDirs["box2d"] = "Daybreak/vendor/box2d/include"
@@ -33,158 +53,6 @@ group "Dependencies"
 	include "Daybreak/vendor/imgui"
 group ""
 
-project "Daybreak"
-	location "Daybreak"
-	kind "StaticLib"
-	language "C++"
+include "Daybreak"
+include "Sandbox"
 
-	targetdir ( "bin/" .. outputdir .. "/%{prj.name}" )
-	objdir ( "bin-int/" .. outputdir .. "/%{prj.name}" )
-
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-		-- "%{prj.name}/src/**.hpp",
-	}
-	
-	includedirs
-	{
-		"%{prj.name}/vendor/box2d/include",
-		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/glad/include",
-		"%{prj.name}/vendor/glfw/include",
-		"%{prj.name}/vendor/imgui",
-		"%{prj.name}/vendor/glm",
-		"%{prj.name}/vendor/stb_image",
-		"%{prj.name}/vendor/entt/include",
-		"%{prj.name}/src"
-	}
-
-	links
-	{
-		"Box2d",
-		"glad",
-		"glfw",
-		"Imgui",
-		"opengl32.lib"
-	}
-
-	-- pchheader "%{prj.name}/src/dbpch.h"
-	-- pchsource "%{prj.name}/src/dbpch.cpp"
-
-	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
-
-		defines
-		{
-			"DB_PLATFORM_WINDOWS",
-		}
-
-	filter "configurations:Debug"
-		defines 
-		{
-			"DB_DEBUG",
-			"DB_ENABLE_ASSERTS"
-		}
-		symbols "On"
-		runtime "Debug"
-
-	filter "configurations:Release"
-		defines 
-		{
-			"DB_RELEASE",
-			"DB_ENABLE_ASSERTS"
-		}
-		symbols "On"
-		runtime "Release"
-		optimize "on"
-
-
-	-- filter "configurations:Dist"
-	-- 	defines
-	-- 	{
-	-- 		"DB_DIST",
-	-- 	}
-	-- 	symbols "On"
-	
-
-	-- buildoptions
-	-- {
-    --     "/MT"
-    -- }
-
-project "Sandbox"
-	location "Sandbox"
-	kind "ConsoleApp"
-	language "C++"
-
-	targetdir ( "bin/" .. outputdir .. "/%{prj.name}" )
-	objdir ( "bin-int/" .. outputdir .. "/%{prj.name}" )
-
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
-	
-	includedirs
-	{
-		"Daybreak/src",
-		"Daybreak/vendor/spdlog/include",
-		"Daybreak/vendor/glad/include",
-		"Daybreak/vendor/glfw/include",
-		"Daybreak/vendor/imgui",
-		"Daybreak/vendor/glm",
-		"Daybreak/vendor/stb_image",
-		"Daybreak/vendor/entt/include",
-	}
-
-	links
-	{
-		"Daybreak",
-	}
-
-	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
-
-		defines
-		{
-			"DB_PLATFORM_WINDOWS",
-		}
-
-	filter "configurations:Debug"
-		defines 
-		{
-			"DB_DEBUG",
-			"DB_ENABLE_ASSERTS"
-		}
-		symbols "On"
-		runtime "Debug"
-
-
-	filter "configurations:Release"
-		defines 
-		{
-			"DB_RELEASE"
-		}
-		symbols "On"
-		runtime "Release"
-		optimize "on"
-
-
-	-- filter "configurations:Dist"
-	-- 	defines 
-	-- 	{
-	-- 		"DB_DIST"
-	-- 	}
-	-- 	symbols "On"
-
-	-- buildoptions
-	-- {
-    --     "/MT"
-    -- }
