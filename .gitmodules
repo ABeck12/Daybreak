@@ -10,3 +10,6 @@
 [submodule "Daybreak/vendor/box2d"]
 	path = Daybreak/vendor/box2d
 	url = https://github.com/ABeck12/box2d.git
+[submodule "vendor/premake/premake-vscode"]
+	path = vendor/premake/premake-vscode
+	url = https://github.com/ABeck12/premake-vscode.git
