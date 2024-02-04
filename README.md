@@ -40,6 +40,7 @@ Fix pch file in premake
 
 ### Medium Priority:
     Make a asset manager system
+    Rework audio to not be totally scuffed
     Add ability to pass args from sandbox to Daybreak when starting engine. This is stuff like initial window size etc.
 
 ### High Priority:

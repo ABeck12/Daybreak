@@ -12,9 +12,9 @@ namespace Daybreak
         static Ref<AudioClip> Create(const std::string& filepath);
 
         //Temporary
+        std::string GetFilepath() const { return m_Filepath; }
         AudioClip(const std::string& filepath) : m_Filepath(filepath) {}
-        std::string m_Filepath;
-
     private:
+        std::string m_Filepath;
     };
 }
