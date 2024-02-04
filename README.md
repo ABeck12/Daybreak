@@ -18,7 +18,6 @@ Fix pch file in premake
 # To Do List
 ### For Renderer2D:
     Font rendering
-    Line rendering
     Framebuffer
     Graphics Context
     Uniform Buffer?
@@ -26,13 +25,18 @@ Fix pch file in premake
     Update the OpenGLTexture2D class
 
 ### For Physics2D:
+    Contact filters
+    Raycasts
+    OnContact callbacks
+    IsColliding function
+    Adding of forces/impulse
+    Trigger colliders
     
 
 ### Low Priority:
     Make a weakref system using std::weak_ptr? or maybe std::object_ptr?
     Fix premake files
     Change windowswindow to glwfwindow since glfw is cross platform
-    Remove glad dependency for timestep from application.cpp
 
 ### Medium Priority:
     Make a asset manager system

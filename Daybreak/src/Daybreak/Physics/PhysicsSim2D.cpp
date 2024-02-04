@@ -1,31 +1,34 @@
 #include "dbpch.h"
 
-#include "Daybreak/Physics/Physics2D.h"
+#include "Daybreak/Physics/PhysicsSim2D.h"
+
+#include "Daybreak/Scene/Scene.h"
+#include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Physics/Physics2DUtils.h"
 
 #include "box2d/box2d.h"
 
 namespace Daybreak
 {
-	void Physics2D::InitSimulation()
+	void PhysicsSim2D::InitSimulation()
 	{
 		m_PhysicsWorld = new b2World({ 0.0f, -9.82f });
 	}
 
-	void Physics2D::ShutdownSimulation()
+	void PhysicsSim2D::ShutdownSimulation()
 	{
 		delete m_PhysicsWorld;
 		m_PhysicsWorld = nullptr;
 	}
 
-	void Physics2D::StepSimulation(DeltaTime dt)
+	void PhysicsSim2D::FixedStepSimulation()
 	{
 		const int32_t velocityIterations = 6;
 		const int32_t positionIterations = 2;
-		m_PhysicsWorld->Step(dt, velocityIterations, positionIterations);
+		m_PhysicsWorld->Step(0.016f, velocityIterations, positionIterations); // For now this is the fixed delta time
 	}
 
-	void Physics2D::AddEntity(Entity& entity)
+	void PhysicsSim2D::AddEntity(Entity& entity)
 	{
 		auto& transform = entity.GetComponent<TransformComponent>();
 		auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
@@ -58,7 +61,8 @@ namespace Daybreak
 			fixtureDef.restitution = rb2d.Restitution;
 			fixtureDef.restitutionThreshold = rb2d.RestitutionThreshold;
 
-			body->CreateFixture(&fixtureDef);
+			b2Fixture* fixture = body->CreateFixture(&fixtureDef);
+			bc2d.RuntimeFixture = fixture;
 
 			b2MassData massData;
 			massData.mass = rb2d.Mass;

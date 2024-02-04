@@ -60,9 +60,11 @@ namespace Daybreak
 	{
 		glm::vec2 Size = { 0.5f, 0.5f };
 		glm::vec2 Offset = { 0.0f, 0.0f };
+
+		// bool ColliderFilter[32] = { false };
 		//bool IsTrigger = false;
 
-		//void* RuntimeFixture = nullptr;
+		void* RuntimeFixture = nullptr;
 
 		BoxCollider2DComponent() = default;
 		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;

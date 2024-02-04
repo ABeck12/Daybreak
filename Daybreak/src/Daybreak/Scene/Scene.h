@@ -4,11 +4,9 @@
 
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Scene/Components.h"
+#include "Daybreak/Physics/PhysicsSim2D.h"
 
 #include <entt.hpp>
-
-// forward decleration
-class b2World;
 
 namespace Daybreak
 {
@@ -45,7 +43,8 @@ namespace Daybreak
 
 	private:
 		entt::registry m_Registry;
-		b2World* m_PhysicsWorld = nullptr;
+		PhysicsSim2D m_PhysicsSim2D;
+		float m_LastUpdateTime = 0.0f;
 
 		friend class Entity;
 	};

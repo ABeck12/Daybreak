@@ -5,6 +5,7 @@
 
 SceneLayer::SceneLayer() : Layer("SceneLayer")
 {
+	// Daybreak::Application::Get().GetWindow().SetVSync(false);
 	m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
 
 	entityTest = m_Scene->CreateEntity("Entity Test");
@@ -93,21 +94,21 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D8))
 		cameraRot.z = 0.0f;
 
-	float velamount = 75.0;
+	float velamount = 75.0f * dt;
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space))
 	{
 		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.y += velamount * dt;
+		velocity.y += velamount;
 	}
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
 	{
 		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.x += velamount * dt;
+		velocity.x += velamount;
 	}
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
 	{
 		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.x -= velamount * dt;
+		velocity.x -= velamount;
 	}
 
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
