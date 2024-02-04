@@ -12,8 +12,8 @@ project "Daybreak"
 		"src/**.h",
 		"src/**.cpp",
 		-- "%{prj.name}/src/**.hpp",
-        "vendor/stb_image/stb_image.h",
         "vendor/stb_image/stb_image.cpp",
+        "vendor/miniaudio/miniaudio.cpp",
 	}
 	
 	includedirs
@@ -26,6 +26,7 @@ project "Daybreak"
 		"vendor/glm",
 		"vendor/stb_image",
 		"vendor/entt/include",
+		"vendor/miniaudio",
 		"src"
 	}
 
