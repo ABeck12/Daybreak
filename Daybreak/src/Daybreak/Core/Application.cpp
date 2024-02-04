@@ -6,6 +6,7 @@
 #include "Daybreak/Renderer/Renderer.h"
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Core/Time.h"
+#include "Daybreak/Audio/AudioEngine.h"
 
 namespace Daybreak
 {
@@ -20,6 +21,7 @@ namespace Daybreak
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(DB_BIND_EVENT_FN(Application::OnEvent));
 
+		AudioEngine::Init();
 		Renderer::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();
@@ -28,6 +30,7 @@ namespace Daybreak
 
 	Application::~Application()
 	{
+		AudioEngine::Shutdown();
 		Renderer::Shutdown();
 	}
 

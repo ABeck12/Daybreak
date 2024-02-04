@@ -19,6 +19,9 @@
 #include "Daybreak/Renderer/Renderer2D.h"
 #include "Daybreak/Renderer/RenderCommand.h"
 
+#include "Daybreak/Audio/AudioEngine.h"
+#include "Daybreak/Audio/AudioClip.h"
+
 #include "Daybreak/Renderer/Buffer.h"
 #include "Daybreak/Renderer/Shader.h"
 #include "Daybreak/Renderer/VertexArray.h"

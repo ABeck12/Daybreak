@@ -36,6 +36,10 @@ SceneLayer::SceneLayer() : Layer("SceneLayer")
 	auto& floortransform = floorEntity.GetComponent<Daybreak::TransformComponent>();
 	floortransform.Position = { 0.0f,-4.0f,0.0f };
 	floortransform.Scale = { 15.0f, 1.0f,1.0f };
+
+
+	// floorEntity.GetComponent<Daybreak::RelationshipComponent>().ParentEntity = &cameraEntity;
+	// m_Scene->CreateEntity(floorEntity, "TestChild");
 }
 
 void SceneLayer::OnAttach()
@@ -51,7 +55,9 @@ void SceneLayer::OnDetach()
 void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 {
 	Daybreak::RenderCommand::Clear();
+
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
+	
 	/*
 	// entityTest Update
 	auto& entityTestPos = entityTest.GetComponent<Daybreak::TransformComponent>().Position;

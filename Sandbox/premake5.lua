@@ -23,6 +23,7 @@ project "Sandbox"
 		"../Daybreak/vendor/glm",
 		"../Daybreak/vendor/stb_image",
 		"../Daybreak/vendor/entt/include",
+		"../Daybreak/vendor/miniaudio",
 	}
 
 	links
@@ -51,7 +52,8 @@ project "Sandbox"
 	filter "configurations:Release"
 		defines 
 		{
-			"DB_RELEASE"
+			"DB_RELEASE",
+			"DB_ENABLE_ASSERTS"
 		}
 		symbols "On"
 		runtime "Release"

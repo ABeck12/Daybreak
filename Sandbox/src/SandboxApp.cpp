@@ -3,9 +3,10 @@
 
 #include "GameLayer.h"
 #include "SceneLayer.h"
+#include "AudioLayer.h"
 
 extern "C" {
-	__declspec(dllexport) DWORD NvOptimusEnablement = 1;
+	// __declspec(dllexport) DWORD NvOptimusEnablement = 1;
 	//__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
@@ -15,7 +16,8 @@ public:
 	Sandbox()
 	{
 		//PushLayer(new GameLayer());
-		PushLayer(new SceneLayer());
+		// PushLayer(new SceneLayer());
+		PushLayer(new AudioLayer());
 	}
 	~Sandbox()
 	{
