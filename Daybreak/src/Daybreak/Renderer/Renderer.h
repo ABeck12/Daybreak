@@ -21,14 +21,14 @@ namespace Daybreak
 		static void OnWindowResize(uint32_t width, uint32_t height);
 
 		static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); }
-		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
+		// static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
 	private:
-		// Temporary?
-		struct RendererData
-		{
-			glm::mat4 ViewProjectionMatrix;
-		};
+		// // Temporary?
+		// struct RendererData
+		// {
+		// 	glm::mat4 ViewProjectionMatrix;
+		// };
 
-		static Scope<RendererData> s_SceneData;
+		// static Scope<RendererData> s_SceneData;
 	};
 }

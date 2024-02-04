@@ -7,7 +7,7 @@
 
 namespace Daybreak
 {
-	Scope<Renderer::RendererData> Renderer::s_SceneData = CreateScope<Renderer::RendererData>();
+	// Scope<Renderer::RendererData> Renderer::s_SceneData = CreateScope<Renderer::RendererData>();
 
 	void Renderer::Init()
 	{
@@ -20,24 +20,24 @@ namespace Daybreak
 		Renderer2D::Shutdown();
 	}
 
-	void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
-	{
-		s_SceneData->ViewProjectionMatrix = camera.GetProjection() * transform;
-	}
+	// void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
+	// {
+	// 	s_SceneData->ViewProjectionMatrix = camera.GetProjection() * transform;
+	// }
 
-	void Renderer::EndScene()
-	{
+	// void Renderer::EndScene()
+	// {
 
-	}
+	// }
 
-	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
-	{
-		shader->Bind();
-		shader->SetMat4("u_Transform", transform);
-		shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix); // Set the view projection from a reference to the current scenes camera
-		vertexArray->Bind();
-		RenderCommand::DrawIndexed(vertexArray);
-	}
+	// void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
+	// {
+	// 	shader->Bind();
+	// 	shader->SetMat4("u_Transform", transform);
+	// 	shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix); // Set the view projection from a reference to the current scenes camera
+	// 	vertexArray->Bind();
+	// 	RenderCommand::DrawIndexed(vertexArray);
+	// }
 
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height)
 	{
