@@ -22,9 +22,22 @@ namespace Daybreak
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
+		// entity.AddComponent<RelationshipComponent>();
 
 		return entity;
 	}
+
+	// Entity Scene::CreateEntity(Entity& parent, const std::string& name)
+	// {
+	// 	Entity child = CreateEntity(name);
+	// 	auto& childRc = child.GetComponent<RelationshipComponent>();
+	// 	childRc.ParentEntity = &parent;
+
+	// 	auto& parentRc = parent.GetComponent<RelationshipComponent>();
+	// 	parentRc.ChildrenEntities.emplace_back(&child);
+
+	// 	return child;
+	// }
 
 	void Scene::DestroyEntity(const Entity& entity)
 	{

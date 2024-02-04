@@ -99,14 +99,14 @@ namespace Daybreak
 		Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
 	};
 
-	//struct ParentComponent
-	//{
-		// children entity ids here
-		// maybe in some sort of map/hash table?
-	//};
+	// class Entity;
 
-	//struct ChildComponent
-	//{
-		// parents entity id here
-	//};
+	// struct RelationshipComponent
+	// {
+	// 	Entity* ParentEntity = nullptr;
+	// 	std::vector<Entity*> ChildrenEntities;
+
+	// 	RelationshipComponent() = default;
+	// 	RelationshipComponent(const RelationshipComponent&) = default;
+	// };
 }

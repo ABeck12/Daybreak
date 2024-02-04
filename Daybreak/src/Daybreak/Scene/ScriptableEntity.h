@@ -19,6 +19,8 @@ namespace Daybreak
         virtual void OnCreate() {}
         virtual void OnUpdate(DeltaTime dt) {}
         virtual void OnDestroy() {}
+
+        // virtual void OnCollisionEnter() {}
     private:
         Entity m_Entity;
         friend class Scene;
