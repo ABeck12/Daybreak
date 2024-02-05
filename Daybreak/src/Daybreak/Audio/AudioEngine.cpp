@@ -16,7 +16,6 @@ namespace Daybreak
 
         DB_CORE_INFO("Audio Info:");
         DB_CORE_INFO("  Device: {0}", s_Engine.pDevice->playback.name);
-        // DB_LOG()
     }
 
     void AudioEngine::Shutdown()
