@@ -31,6 +31,7 @@
 #include "Daybreak/Scene/Scene.h"
 #include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Scene/Components.h"
+#include "Daybreak/Scene/ScriptableEntity.h"
 
 //Temp? Maybe?
 #include <Daybreak/Math/GlmToString.h>
