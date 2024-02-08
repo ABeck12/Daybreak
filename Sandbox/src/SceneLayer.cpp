@@ -3,12 +3,15 @@
 #include <Daybreak.h>
 #include <imgui.h>
 
+#include "ScriptableEntityTest.h"
+
 SceneLayer::SceneLayer() : Layer("SceneLayer")
 {
 	// Daybreak::Application::Get().GetWindow().SetVSync(false);
 	m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
 
 	entityTest = m_Scene->CreateEntity("Entity Test");
+	entityTest.AddComponent<Daybreak::NativeScriptComponent>().Bind<MoveableComponent>();
 	//auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
 	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Sandbox/assets/Test.png");
 	auto& sr = entityTest.AddComponent<Daybreak::SpriteRendererComponent>();
@@ -100,22 +103,22 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D8))
 		cameraRot.z = 0.0f;
 
-	float velamount = 75.0f * dt;
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space))
-	{
-		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.y += velamount;
-	}
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
-	{
-		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.x += velamount;
-	}
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
-	{
-		auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-		velocity.x -= velamount;
-	}
+	// float velamount = 75.0f * dt;
+	// if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space))
+	// {
+	// 	auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
+	// 	velocity.y += velamount;
+	// }
+	// if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
+	// {
+	// 	auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
+	// 	velocity.x += velamount;
+	// }
+	// if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
+	// {
+	// 	auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
+	// 	velocity.x -= velamount;
+	// }
 
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
 	{

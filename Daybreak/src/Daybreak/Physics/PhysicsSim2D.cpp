@@ -5,6 +5,8 @@
 #include "Daybreak/Scene/Scene.h"
 #include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Physics/Physics2DUtils.h"
+#include "Daybreak/Scene/ScriptableEntity.h"
+#include "Daybreak/Core/UUID.h"
 
 #include "box2d/box2d.h"
 
@@ -12,12 +14,16 @@ namespace Daybreak
 {
 	void PhysicsSim2D::InitSimulation()
 	{
-		m_PhysicsWorld = new b2World({ 0.0f, -9.82f });
+		m_PhysicsWorld = new b2World({ 0.0f, -9.8f });
+		// m_ContactLitener = new ContactListener();
+		// m_PhysicsWorld->SetContactListener(m_ContactLitener);
 	}
 
 	void PhysicsSim2D::ShutdownSimulation()
 	{
 		delete m_PhysicsWorld;
+		// delete m_ContactLitener;
+		// m_ContactLitener = nullptr;
 		m_PhysicsWorld = nullptr;
 	}
 
@@ -32,12 +38,15 @@ namespace Daybreak
 	{
 		auto& transform = entity.GetComponent<TransformComponent>();
 		auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+		// auto uuid = entity.GetUUID();
 
 		b2BodyDef bodyDef;
 		bodyDef.type = Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type);
 		bodyDef.position.Set(transform.Position.x, transform.Position.y);
 		bodyDef.angle = transform.Rotation.z;
 		bodyDef.bullet = rb2d.ContinuousDetection;
+		// bodyDef.userData.entityUUID = uuid;
+		// bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(scene);
 
 		b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
 		body->SetFixedRotation(rb2d.FixedRotation);
@@ -63,6 +72,7 @@ namespace Daybreak
 
 			b2Fixture* fixture = body->CreateFixture(&fixtureDef);
 			bc2d.RuntimeFixture = fixture;
+			bc2d.RuntimeBody = body;
 
 			b2MassData massData;
 			massData.mass = rb2d.Mass;
@@ -73,4 +83,14 @@ namespace Daybreak
 			body->SetMassData(&massData);
 		}
 	}
+
+	// void ContactListener::BeginContact(b2Contact* contact)
+	// {
+		
+	// }
+	
+	// void ContactListener::EndContact(b2Contact* contact)
+	// {
+		
+	// }
 }

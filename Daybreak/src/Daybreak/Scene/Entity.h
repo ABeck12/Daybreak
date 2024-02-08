@@ -3,6 +3,7 @@
 #include "dbpch.h"
 
 #include "Daybreak/Scene/Scene.h"
+#include "Daybreak/Core/UUID.h"
 
 #include <entt.hpp>
 
@@ -58,6 +59,7 @@ namespace Daybreak
 		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
 		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
+		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
 
 	private:
 		entt::entity m_EntityHandle{ entt::null };

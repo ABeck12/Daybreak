@@ -7,6 +7,7 @@
 #include "Daybreak/Renderer/Renderer2D.h"
 #include "Daybreak/Physics/Physics2DUtils.h"
 #include "Daybreak/Core/Time.h"
+#include "Daybreak/Scene/ScriptableEntity.h"
 
 #include <box2d/box2d.h>
 
@@ -20,6 +21,10 @@ namespace Daybreak
 	{
 		Entity entity = { m_Registry.create(), this };
 		entity.AddComponent<TransformComponent>();
+
+		UUID uuid = UUID();
+		entity.AddComponent<IDComponent>(uuid);
+		m_EntityMap[uuid] = entity;
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
 		// entity.AddComponent<RelationshipComponent>();
@@ -39,18 +44,43 @@ namespace Daybreak
 	// 	return child;
 	// }
 
-	void Scene::DestroyEntity(const Entity& entity)
+	void Scene::DestroyEntity(Entity entity)
 	{
+		m_EntityMap.erase(entity.GetUUID());
 		m_Registry.destroy(entity);
 	}
 
 	void Scene::OnRuntimeStart()
 	{
+		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+			{
+				// TODO: Move to Scene::OnScenePlay
+				if (!nsc.Instance)
+				{
+					nsc.Instance = nsc.InstantiateScript();
+					nsc.Instance->m_Entity = Entity{ entity, this };
+					nsc.Instance->OnCreate();
+				}
+			});
+
 		OnPhysicsStart();
 	}
 
 	void Scene::OnRuntimeUpdate(DeltaTime dt)
 	{
+		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+			{
+				// This runs here to catch any nsc that are instianted during scene play
+				if (!nsc.Instance)
+				{
+					nsc.Instance = nsc.InstantiateScript();
+					nsc.Instance->m_Entity = Entity{ entity, this };
+					nsc.Instance->OnCreate();
+				}
+
+				nsc.Instance->OnUpdate(dt);
+			});
+		
 		OnPhysicsUpdate(dt);
 		RenderScene();
 	}
@@ -58,6 +88,18 @@ namespace Daybreak
 	void Scene::OnRuntimeEnd()
 	{
 		OnPhysicsStop();
+
+		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+			{
+				// TODO: Move to Scene::OnSceneStop
+				if (!nsc.Instance)
+				{
+					nsc.Instance = nsc.InstantiateScript();
+					nsc.Instance->m_Entity = Entity{ entity, this };
+					nsc.Instance->OnDestroy();
+				}
+			});
+
 	}
 
 	Entity Scene::GetActiveCameraEntity()
@@ -150,5 +192,25 @@ namespace Daybreak
 	void Scene::OnPhysicsStop()
 	{
 		m_PhysicsSim2D.ShutdownSimulation();
+	}
+
+	Entity Scene::FindEntityByName(std::string_view name)
+	{
+		auto view = m_Registry.view<TagComponent>();
+		for (auto entity : view)
+		{
+			const TagComponent& tc = view.get<TagComponent>(entity);
+			if (tc.Tag == name)
+				return Entity{ entity, this };
+		}
+		return {};
+	}
+
+	Entity Scene::GetEntityByUUID(UUID uuid)
+	{
+		if (m_EntityMap.find(uuid) != m_EntityMap.end())
+			return { m_EntityMap.at(uuid), this };
+
+		return {};
 	}
 }

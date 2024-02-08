@@ -16,8 +16,8 @@ public:
 	Sandbox()
 	{
 		//PushLayer(new GameLayer());
-		// PushLayer(new SceneLayer());
-		PushLayer(new AudioLayer());
+		PushLayer(new SceneLayer());
+		// PushLayer(new AudioLayer());
 	}
 	~Sandbox()
 	{

@@ -25,9 +25,12 @@ namespace Daybreak
 
 		Entity CreateEntity(const std::string& name = std::string());
 		// Entity CreateEntity(Entity& parent, const std::string& name = std::string());
-		void DestroyEntity(const Entity& entity);
+		void DestroyEntity(Entity entity);
 
 		Entity GetActiveCameraEntity();
+
+		Entity GetEntityByUUID(UUID uuid);
+		Entity FindEntityByName(std::string_view name);
 
 		template<typename... Components>
 		auto GetAllEntitiesWith()
@@ -46,6 +49,8 @@ namespace Daybreak
 		entt::registry m_Registry;
 		PhysicsSim2D m_PhysicsSim2D;
 		float m_LastUpdateTime = 0.0f;
+
+		std::unordered_map<UUID, entt::entity> m_EntityMap;
 
 		friend class Entity;
 	};

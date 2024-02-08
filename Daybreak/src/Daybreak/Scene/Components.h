@@ -4,6 +4,7 @@
 
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Renderer/Camera.h"
+#include "Daybreak/Core/UUID.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -12,6 +13,14 @@
 
 namespace Daybreak
 {
+	struct IDComponent
+	{
+		UUID ID;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent&) = default;
+	};
+
 	struct TransformComponent
 	{
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
@@ -61,10 +70,11 @@ namespace Daybreak
 		glm::vec2 Size = { 0.5f, 0.5f };
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		// bool ColliderFilter[32] = { false };
+		// bool ColliderFilter[32] = { false }; // TODO: Change this to a Colliderfilter type
 		//bool IsTrigger = false;
 
 		void* RuntimeFixture = nullptr;
+		void* RuntimeBody = nullptr;
 
 		BoxCollider2DComponent() = default;
 		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
@@ -99,12 +109,32 @@ namespace Daybreak
 		Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
 	};
 
+	// Forward decleration
+	class ScriptableEntity;
+
+	struct NativeScriptComponent
+	{
+		ScriptableEntity* Instance = nullptr;
+
+		ScriptableEntity*(*InstantiateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
+
+		template<typename T>
+		void Bind()
+		{
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+		}
+	};
+
+
+	// Forward decleration
 	// class Entity;
 
 	// struct RelationshipComponent
 	// {
 	// 	Entity* ParentEntity = nullptr;
-	// 	std::vector<Entity*> ChildrenEntities;
+	// // 	std::vector<Entity*> ChildrenEntities;
 
 	// 	RelationshipComponent() = default;
 	// 	RelationshipComponent(const RelationshipComponent&) = default;

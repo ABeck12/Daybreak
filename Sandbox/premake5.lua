@@ -24,6 +24,7 @@ project "Sandbox"
 		"../Daybreak/vendor/stb_image",
 		"../Daybreak/vendor/entt/include",
 		"../Daybreak/vendor/miniaudio",
+		"../Daybreak/vendor/box2d/include",
 	}
 
 	links
