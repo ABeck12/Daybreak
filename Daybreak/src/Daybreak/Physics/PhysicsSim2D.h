@@ -3,24 +3,14 @@
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Scene/Components.h"
 
-#include "box2d/box2d.h"
+class b2World;
 
 namespace Daybreak
 {
 	class Entity;
 	class Scene;
-
-	class ContactListener : public b2ContactListener
-	{
-	public:
-		void BeginContact(b2Contact* contact);
-		void EndContact(b2Contact* contact);
-
-		void SetScene(Scene* scene) { m_Scene = scene; }
-		Scene* GetScene() { return m_Scene; }
-	private:
-		Scene* m_Scene;
-	};
+	class ContactListener;
+	class ContactFilter;
 
 	class PhysicsSim2D
 	{
@@ -35,14 +25,13 @@ namespace Daybreak
 		
 		// Use colliderfilter type like on the component
 		// bool RayCast(const glm::vec2& origin, const glm::vec2& direction, const float& depth, bool triggerCollidersOnHit = false); //TODO: Put in layer mask option
-
 	private:
-		// bool ContactFilter()
-
-	private:
-		float m_LastUpdateTime = 0.0f;
+		Scene* m_Scene;
 		b2World* m_PhysicsWorld;
 		ContactListener* m_ContactLitener;
+		ContactFilter* m_ContactFilter;
+
+		float m_LastUpdateTime = 0.0f;
 	};
 }
 

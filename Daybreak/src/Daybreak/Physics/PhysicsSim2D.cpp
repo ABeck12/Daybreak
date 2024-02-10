@@ -12,20 +12,75 @@
 
 namespace Daybreak
 {
+	class ContactListener : public b2ContactListener
+	{
+		void BeginContact(b2Contact* contact)
+		{
+			Scene* scene = (Scene*)contact->GetFixtureA()->GetUserData().pointer;
+			Entity entityA = scene->GetEntityByUUID((UUID)contact->GetFixtureA()->GetUserData().uuid);
+			Entity entityB = scene->GetEntityByUUID((UUID)contact->GetFixtureB()->GetUserData().uuid);
+
+			if (entityA.HasComponent<NativeScriptComponent>())
+			{
+				auto& nsc = entityA.GetComponent<NativeScriptComponent>();
+				nsc.Instance->OnCollisionEnter(entityB);
+			}
+			if (entityB.HasComponent<NativeScriptComponent>())
+			{
+				auto& nsc = entityB.GetComponent<NativeScriptComponent>();
+				nsc.Instance->OnCollisionEnter(entityA);
+			}
+		}
+
+		void EndContact(b2Contact* contact)
+		{
+			Scene* scene = (Scene*)contact->GetFixtureA()->GetUserData().pointer;
+			Entity entityA = scene->GetEntityByUUID((UUID)contact->GetFixtureA()->GetUserData().uuid);
+			Entity entityB = scene->GetEntityByUUID((UUID)contact->GetFixtureB()->GetUserData().uuid);
+
+			if (entityA.HasComponent<NativeScriptComponent>())
+			{
+				auto& nsc = entityA.GetComponent<NativeScriptComponent>();
+				nsc.Instance->OnCollisionExit(entityB);
+			}
+			if (entityB.HasComponent<NativeScriptComponent>())
+			{
+				auto& nsc = entityB.GetComponent<NativeScriptComponent>();
+				nsc.Instance->OnCollisionExit(entityA);
+			}
+		}
+	};
+
+	class ContactFilter : public b2ContactFilter
+	{
+		bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
+		{
+			Scene* scene = (Scene*)fixtureA->GetUserData().pointer;
+			Entity entityA = scene->GetEntityByUUID((UUID)fixtureA->GetUserData().uuid);
+			Entity entityB = scene->GetEntityByUUID((UUID)fixtureB->GetUserData().uuid);
+			return entityA.GetComponent<BoxCollider2DComponent>().CollisionFilter == entityB.GetComponent<BoxCollider2DComponent>().CollisionFilter;
+		}
+	};
+
 	void PhysicsSim2D::InitSimulation(Scene* scene)
 	{
+		m_Scene = scene;
 		m_PhysicsWorld = new b2World({ 0.0f, -9.8f });
 		m_ContactLitener = new ContactListener();
-		m_ContactLitener->SetScene(scene);
+		m_ContactFilter = new ContactFilter();
 		m_PhysicsWorld->SetContactListener(m_ContactLitener);
+		m_PhysicsWorld->SetContactFilter(m_ContactFilter);
 	}
 
 	void PhysicsSim2D::ShutdownSimulation()
 	{
 		delete m_PhysicsWorld;
 		delete m_ContactLitener;
+		delete m_ContactFilter;
+		m_ContactFilter = nullptr;
 		m_ContactLitener = nullptr;
 		m_PhysicsWorld = nullptr;
+		m_Scene = nullptr;
 	}
 
 	void PhysicsSim2D::FixedStepSimulation()
@@ -61,15 +116,16 @@ namespace Daybreak
 
 			b2PolygonShape boxShape;
 			boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
-
+	
 			b2FixtureDef fixtureDef;
 			fixtureDef.shape = &boxShape;
 			fixtureDef.density = rb2d.Density;
 			fixtureDef.friction = rb2d.Friction;
 			fixtureDef.restitution = rb2d.Restitution;
 			fixtureDef.restitutionThreshold = rb2d.RestitutionThreshold;
+			fixtureDef.isSensor = bc2d.IsTrigger;
 
-			fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_ContactLitener->GetScene());
+			fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_Scene);
 			fixtureDef.userData.uuid = entity.GetUUID();
 
 			b2Fixture* fixture = body->CreateFixture(&fixtureDef);
@@ -86,39 +142,5 @@ namespace Daybreak
 		}
 	}
 
-	void ContactListener::BeginContact(b2Contact* contact)
-	{
-		Scene* scene = (Scene*)contact->GetFixtureA()->GetUserData().pointer;
-		Entity entityA = scene->GetEntityByUUID((UUID)contact->GetFixtureA()->GetUserData().uuid);
-		Entity entityB = scene->GetEntityByUUID((UUID)contact->GetFixtureB()->GetUserData().uuid);
-
-		if (entityA.HasComponent<NativeScriptComponent>())
-		{
-			auto& nsc = entityA.GetComponent<NativeScriptComponent>();
-			nsc.Instance->OnCollisionEnter(entityB);
-		}
-		if (entityB.HasComponent<NativeScriptComponent>())
-		{
-			auto& nsc = entityB.GetComponent<NativeScriptComponent>();
-			nsc.Instance->OnCollisionEnter(entityA);
-		}
-	}
 	
-	void ContactListener::EndContact(b2Contact* contact)
-	{
-		Scene* scene = (Scene*)contact->GetFixtureA()->GetUserData().pointer;
-		Entity entityA = scene->GetEntityByUUID((UUID)contact->GetFixtureA()->GetUserData().uuid);
-		Entity entityB = scene->GetEntityByUUID((UUID)contact->GetFixtureB()->GetUserData().uuid);
-
-		if (entityA.HasComponent<NativeScriptComponent>())
-		{
-			auto& nsc = entityA.GetComponent<NativeScriptComponent>();
-			nsc.Instance->OnCollisionExit(entityB);
-		}
-		if (entityB.HasComponent<NativeScriptComponent>())
-		{
-			auto& nsc = entityB.GetComponent<NativeScriptComponent>();
-			nsc.Instance->OnCollisionExit(entityA);
-		}
-	}
 }

@@ -70,8 +70,8 @@ namespace Daybreak
 		glm::vec2 Size = { 0.5f, 0.5f };
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		// bool ColliderFilter[32] = { false }; // TODO: Change this to a Colliderfilter type
-		//bool IsTrigger = false;
+		unsigned char CollisionFilter = 0;
+		bool IsTrigger = false;
 
 		void* RuntimeFixture = nullptr;
 		void* RuntimeBody = nullptr;
@@ -90,8 +90,6 @@ namespace Daybreak
 		glm::vec2 Velocity = { 0.0f, 0.0f };
 
 		bool FixedRotation = false;
-		//bool FixedPositionX = false;
-		//bool FixedPositionY = false;
 		
 		float Mass = 1.0f;
 		float GravityScale = 1.0f;
