@@ -10,6 +10,7 @@ workspace "Daybreak"
 	}
 
 require("vendor/premake/premake-vscode")
+require("vendor/premake/cmake")
 
 outputloc = _WORKING_DIR 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -28,7 +29,14 @@ newaction
 		os.remove("**.vcxproj")
 		os.remove("**.vcxproj.filters")
 		os.remove("**.vcxproj.user")
+
 		os.remove("**Makefile")
+		os.remove("CMakeLists.txt")
+		os.remove("./Daybreak/vendor/imgui/ImGui.cmake")
+		os.remove("./Daybreak/vendor/glfw/GLFW.cmake")
+		os.remove("./Daybreak/vendor/box2d/Box2D.cmake")
+		os.remove("./Daybreak/Daybreak.cmake")
+		os.remove("./Sandbox/Sandbox.cmake")
 
 		os.remove("**.code-workspace")
 		os.rmdir("./Tasks")
