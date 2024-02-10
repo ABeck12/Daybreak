@@ -178,7 +178,7 @@ namespace Daybreak
 
 	void Scene::OnPhysicsStart()
 	{
-		m_PhysicsSim2D.InitSimulation();
+		m_PhysicsSim2D.InitSimulation(this);
 
 		auto view = m_Registry.view<Rigidbody2DComponent>();
 
@@ -213,4 +213,16 @@ namespace Daybreak
 
 		return {};
 	}
+
+	// void Scene::LogEntities()
+	// {
+	// 	DB_LOG("========");
+	// 	auto view = m_Registry.view<TagComponent>();
+	// 	for (auto entity : view)
+	// 	{
+	// 		const TagComponent& tc = view.get<TagComponent>(entity);
+	// 		DB_LOG(tc.Tag);
+	// 	}
+	// 	DB_LOG("========");
+	// }
 }

@@ -34,4 +34,14 @@ public:
             velocity.y -= velamount;
         }
     }
+
+    void OnCollisionEnter(Daybreak::Entity& entity)
+    {
+        DB_LOG("Collided with {}", entity.GetName());
+    }
+
+    void OnCollisionExit(Daybreak::Entity& entity)
+    {
+        DB_LOG("Exited collision with {}", entity.GetName());
+    }
 };
