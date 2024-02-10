@@ -11,6 +11,9 @@
 **.csproj
 **/Makefile
 
+CMakeLists.txt
+**.cmake
+
 # For vscode
 /Tasks
 */.vscode
