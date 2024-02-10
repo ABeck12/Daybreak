@@ -10,7 +10,6 @@ workspace "Daybreak"
 	}
 
 require("vendor/premake/premake-vscode")
-require("vendor/premake/cmake")
 
 outputloc = _WORKING_DIR 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
