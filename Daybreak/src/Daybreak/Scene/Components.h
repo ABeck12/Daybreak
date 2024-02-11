@@ -51,6 +51,7 @@ namespace Daybreak
 		Ref<Texture2D> Sprite;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float TilingFactor = 1.0f;
+		// uint8_t RenderLayer = 0;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
@@ -70,7 +71,7 @@ namespace Daybreak
 		glm::vec2 Size = { 0.5f, 0.5f };
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		unsigned char CollisionFilter = 0;
+		uint8_t CollisionLayer = 0;
 		bool IsTrigger = false;
 
 		void* RuntimeFixture = nullptr;

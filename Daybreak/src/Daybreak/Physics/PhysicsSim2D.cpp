@@ -58,7 +58,7 @@ namespace Daybreak
 			Scene* scene = (Scene*)fixtureA->GetUserData().pointer;
 			Entity entityA = scene->GetEntityByUUID((UUID)fixtureA->GetUserData().uuid);
 			Entity entityB = scene->GetEntityByUUID((UUID)fixtureB->GetUserData().uuid);
-			return entityA.GetComponent<BoxCollider2DComponent>().CollisionFilter == entityB.GetComponent<BoxCollider2DComponent>().CollisionFilter;
+			return entityA.GetComponent<BoxCollider2DComponent>().CollisionLayer == entityB.GetComponent<BoxCollider2DComponent>().CollisionLayer;
 		}
 	};
 

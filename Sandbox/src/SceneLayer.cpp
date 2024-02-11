@@ -143,9 +143,9 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 		}
 		if (e.GetKeyCode() == Daybreak::Key::E)
 		{
-			DB_LOG("Playing clip");
-			auto clip = Daybreak::AudioClip::Create("../Sandbox/assets/bonk.mp3");
-			Daybreak::AudioEngine::Play(clip);
+			// DB_LOG("Playing clip");
+			// auto clip = Daybreak::AudioClip::Create("../Sandbox/assets/bonk.mp3");
+			// Daybreak::AudioEngine::Play(clip);
 		}
 	}
 	if (event.GetEventType() == Daybreak::EventType::WindowResize)
