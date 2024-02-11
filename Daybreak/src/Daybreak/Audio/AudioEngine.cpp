@@ -25,6 +25,6 @@ namespace Daybreak
 
     void AudioEngine::Play(const Ref<AudioClip>& clip)
     {
-          ma_engine_play_sound(&s_Engine, clip->GetFilepath().c_str(), NULL);
+        ma_engine_play_sound(&s_Engine, clip->GetFilepath().c_str(), NULL);
     }
 }

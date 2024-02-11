@@ -141,6 +141,12 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 		{
 			Daybreak::Application::Get().Close();
 		}
+		if (e.GetKeyCode() == Daybreak::Key::E)
+		{
+			DB_LOG("Playing clip");
+			auto clip = Daybreak::AudioClip::Create("../Sandbox/assets/bonk.mp3");
+			Daybreak::AudioEngine::Play(clip);
+		}
 	}
 	if (event.GetEventType() == Daybreak::EventType::WindowResize)
 	{
@@ -148,6 +154,7 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 		if (e.GetWidth() != 0 && e.GetHeight() != 0) //TEMPORARY!!!
 			cameraEntity.GetComponent<Daybreak::CameraComponent>().Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.0f, 100.0f));
 	}
+
 }
 
 void SceneLayer::OnImGuiRender()

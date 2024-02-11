@@ -21,9 +21,9 @@ namespace Daybreak
         virtual void OnCreate() {}
         virtual void OnUpdate(DeltaTime dt) {}
         virtual void OnDestroy() {}
-
         virtual void OnCollisionEnter(Entity& entity) {}
         virtual void OnCollisionExit(Entity& entity) {}
+
     private:
         Entity m_Entity;
 

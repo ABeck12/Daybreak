@@ -21,9 +21,6 @@ namespace Daybreak
 
 		void AddEntity(Entity& entity);
 
-		//bool OverlapCollider(BoxCollider2DComponent bc2d);
-		
-		// Use colliderfilter type like on the component
 		// bool RayCast(const glm::vec2& origin, const glm::vec2& direction, const float& depth, bool triggerCollidersOnHit = false); //TODO: Put in layer mask option
 	private:
 		Scene* m_Scene;

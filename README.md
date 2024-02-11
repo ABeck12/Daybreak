@@ -9,8 +9,6 @@ Daybreak Engine
 
 This is a 2D game engine based of Hazel engine.
 
-Licenses to check/add => Hazel, Glfw, Glad, ImGui, stb_image, premake, box2D
-Licenses added via submodules => spdlog
 
 
 Fix pch file in premake
@@ -23,15 +21,12 @@ Fix pch file in premake
     Uniform Buffer?
     Shader Library
     Update the OpenGLTexture2D class
+    Texture atlas
 
 ### For Physics2D:
-    Contact filters
     Raycasts
-    OnContact callbacks
     IsColliding function
     Adding of forces/impulse
-    Trigger colliders
-    
 
 ### Low Priority:
     Make a weakref system using std::weak_ptr? or maybe std::object_ptr?
@@ -45,3 +40,4 @@ Fix pch file in premake
 
 ### High Priority:
     Add in timing and function profiling 
+    Animation component
