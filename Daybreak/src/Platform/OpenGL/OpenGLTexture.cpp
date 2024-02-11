@@ -7,29 +7,29 @@
 
 namespace Daybreak
 {
-	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs) : 
+	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs) :
 		m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, GL_RGBA8, m_Width, m_Height);
 
+		int glFilterType;
+		switch (textureSpecs.Filter)
+		{
+		case TextureFilterType::Bilinear:
+			glFilterType = GL_LINEAR;
+			break;
+		case TextureFilterType::Point:
+			glFilterType = GL_NEAREST;
+			break;
+		default:
+			DB_CORE_ASSERT(false, "Unknown filter type");
+		}
 
-		//int glFilterType;
-		//if (m_Specification.Filter == TextureFilterType::Bilinear)
-		//	glFilterType = GL_LINEAR;
-		//else if (m_Specification.Filter == TextureFilterType::Point)
-		//	glFilterType = GL_NEAREST;
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFilterType);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFilterType);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, glFilterType);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, glFilterType);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
 	}
 
 	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs, const std::string& filepath) :
@@ -47,10 +47,17 @@ namespace Daybreak
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
 		int glFilterType;
-		if (textureSpecs.Filter == TextureFilterType::Bilinear)
+		switch (textureSpecs.Filter)
+		{
+		case TextureFilterType::Bilinear:
 			glFilterType = GL_LINEAR;
-		else if (textureSpecs.Filter == TextureFilterType::Point)
+			break;
+		case TextureFilterType::Point:
 			glFilterType = GL_NEAREST;
+			break;
+		default:
+			DB_CORE_ASSERT(false, "Unknown filter type");
+		}
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFilterType);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glFilterType);
@@ -63,9 +70,7 @@ namespace Daybreak
 		if (m_LocalBuffer)
 			stbi_image_free(m_LocalBuffer);
 		else
-		{
 			DB_CORE_ERROR("Failed to load texture {}. {}", filepath, stbi_failure_reason());
-		}
 	}
 
 	OpenGLTexture2D::~OpenGLTexture2D()
