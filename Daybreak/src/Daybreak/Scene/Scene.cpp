@@ -80,7 +80,17 @@ namespace Daybreak
 
 				nsc.Instance->OnUpdate(dt);
 			});
-		
+
+		{
+			auto view = m_Registry.view<AnimatorComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& anim = entity.GetComponent<AnimatorComponent>();
+				anim.Source->UpdateSource(dt);
+			}
+		}
+
 		OnPhysicsUpdate(dt);
 		RenderScene();
 	}
@@ -125,12 +135,30 @@ namespace Daybreak
 
 		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
 
-		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
 		{
-			auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+			auto view = m_Registry.view<TransformComponent, AnimatorComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& transform = entity.GetComponent<TransformComponent>();
+				auto& anim = entity.GetComponent<AnimatorComponent>();
+
+				// Renderer2D::DrawQuad({ transform.Position.x, transform.Position.y }, { 1.0f,1.0f }, anim.AnimSource->GetFrame(anim.CurrentFrame).Sprite);
+				Renderer2D::DrawQuad(transform.GetTransform(), anim.Source->GetCurrentKeyFrame().Sprite, glm::vec4(1.0f), 1.0f, int(e));
+			}
 		}
+
+		{
+			auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& transform = entity.GetComponent<TransformComponent>();
+				auto& sprite = entity.GetComponent<SpriteRendererComponent>();
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)e);
+			}
+		}
+
 		Renderer2D::EndScene();
 	}
 

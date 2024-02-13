@@ -5,6 +5,7 @@
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Renderer/Camera.h"
 #include "Daybreak/Core/UUID.h"
+#include "Daybreak/Animation/AnimationSource.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -106,6 +107,15 @@ namespace Daybreak
 
 		Rigidbody2DComponent() = default;
 		Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
+	};
+
+	struct AnimatorComponent
+	{
+		bool IsPlaying = true;
+		Ref<AnimationSource> Source;
+
+		AnimatorComponent() = default;
+		AnimatorComponent(const AnimatorComponent&) = default;
 	};
 
 	// Forward decleration
