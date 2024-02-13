@@ -19,14 +19,14 @@ AnimLayer::AnimLayer() : Layer("AnimLayer")
 	auto& texture1 = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/AnimSprite1.png");
 	auto& texture2 = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/AnimSprite2.png");
 	auto& texture3 = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/AnimSprite3.png");
-	Daybreak::Ref<Daybreak::AnimationSource> animSource = Daybreak::CreateRef<Daybreak::AnimationSource>();
-	auto& anim = m_AnimatedEntity.AddComponent<Daybreak::AnimatorComponent>();
-	animSource->AddFrame({ texture1,0.0f });
-	animSource->AddFrame({ texture2,1.0f });
-	animSource->AddFrame({ texture3,2.0f });
-	animSource->AddFrame({ texture1,3.0f });
+	// Daybreak::Ref<Daybreak::AnimationSource> animSource = Daybreak::CreateRef<Daybreak::AnimationSource>();
+	// auto& anim = m_AnimatedEntity.AddComponent<Daybreak::AnimatorComponent>();
+	// animSource->AddFrame({ texture1,0.0f });
+	// animSource->AddFrame({ texture2,1.0f });
+	// animSource->AddFrame({ texture3,2.0f });
+	// animSource->AddFrame({ texture1,3.0f });
 
-	anim.Source = animSource;
+	// anim.Source = animSource;
 
 	
 	// auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Sandbox/assets/Test.png");
@@ -48,8 +48,15 @@ void AnimLayer::OnUpdate(Daybreak::DeltaTime dt)
 {
 	Daybreak::RenderCommand::Clear();
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
-
 	m_Scene->OnRuntimeUpdate(dt);
+	// Daybreak::Renderer2D::BeginScene(m_CameraEntity.GetComponent<Daybreak::CameraComponent>().Camera, m_CameraEntity.GetComponent<Daybreak::TransformComponent>().GetTransform());
+	auto& texturetemp = Daybreak::Texture2D::Create({ 0, 0, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
+	auto subtexture = Daybreak::SubTexture2D::Create(texturetemp, { 0, 0 }, { 50, 37 });
+
+	// Daybreak::Renderer2D::DrawQuad({0,0},{10,10}, subtexture);
+	Daybreak::Renderer2D::DrawRotatedQuad({0,0},{10,10}, 45.0f,subtexture);
+	// Daybreak::Renderer2D::DrawQuad(m_AnimatedEntity.GetComponent<Daybreak::TransformComponent>().GetTransform(), subtexture);
+	Daybreak::Renderer2D::EndScene();
 }
 
 void AnimLayer::OnEvent(Daybreak::Event& event)

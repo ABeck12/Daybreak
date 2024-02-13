@@ -17,13 +17,10 @@ namespace Daybreak
             if (m_PlaybackTime >= m_KeyFrames[m_CurrentFrame + 1].StartTime)
                 m_CurrentFrame += 1;
         }
-        else if (m_CurrentFrame == GetMaxFrames()-1)
+        else if (m_CurrentFrame == GetMaxFrames()-1 && m_LoopPlayback)
         {
-            if (m_LoopPlayback)
-            {
-                m_CurrentFrame = 0;
-                m_PlaybackTime = 0.0f;
-            }
+            m_CurrentFrame = 0;
+            m_PlaybackTime = 0.0f;
         }
     }
 }

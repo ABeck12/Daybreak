@@ -2,6 +2,7 @@
 
 #include "Daybreak/Renderer/Camera.h"
 #include "Daybreak/Renderer/Texture.h"
+#include "Daybreak/Renderer/SubTexture.h"	
 #include "Daybreak/Scene/Components.h"
 #include "Daybreak/Scene/Entity.h"
 
@@ -21,10 +22,15 @@ namespace Daybreak
 		static void NextBatch();
 
 		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec4& tintColor = glm::vec4(1.0f), const float& tilingFactor = 1.0f, int entityID = -1);
+		static void DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor = glm::vec4(1.0f), const float& tilingFactor = 1.0f, int entityID = -1);
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, 
 			const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, 
+			const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, 
+			const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, 
 			const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
@@ -35,6 +41,10 @@ namespace Daybreak
 			const Ref<Texture2D>& texture, const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotDeg,
 			const Ref<Texture2D>& texture, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotDeg, 
+			const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotDeg,
+			const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotDeg, const glm::vec4& color);
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotDeg, const glm::vec4& color);
 	
