@@ -3,8 +3,6 @@
 
 #include "GameLayer.h"
 #include "SceneLayer.h"
-#include "AudioLayer.h"
-#include "AnimLayer.h"
 
 extern "C" {
 	// __declspec(dllexport) DWORD NvOptimusEnablement = 1;
@@ -17,9 +15,7 @@ public:
 	Sandbox()
 	{
 		//PushLayer(new GameLayer());
-		// PushLayer(new SceneLayer());
-		PushLayer(new AnimLayer());
-		// PushLayer(new AudioLayer());
+		PushLayer(new SceneLayer());
 	}
 	~Sandbox()
 	{

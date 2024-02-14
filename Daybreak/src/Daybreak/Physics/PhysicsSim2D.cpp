@@ -53,12 +53,26 @@ namespace Daybreak
 
 	class ContactFilter : public b2ContactFilter
 	{
-		bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
+		bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) override
 		{
 			Scene* scene = (Scene*)fixtureA->GetUserData().pointer;
 			Entity entityA = scene->GetEntityByUUID((UUID)fixtureA->GetUserData().uuid);
 			Entity entityB = scene->GetEntityByUUID((UUID)fixtureB->GetUserData().uuid);
 			return entityA.GetComponent<BoxCollider2DComponent>().CollisionLayer == entityB.GetComponent<BoxCollider2DComponent>().CollisionLayer;
+		}
+	};
+
+	class RaycastCallback : public b2RayCastCallback
+	{
+	public:
+		bool m_Hit;
+
+		RaycastCallback() : m_Hit(false) {}
+
+		float ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
+		{
+			m_Hit = true;
+			return fraction;
 		}
 	};
 
@@ -140,6 +154,14 @@ namespace Daybreak
 
 			body->SetMassData(&massData);
 		}
+	}
+
+	bool PhysicsSim2D::Raycast(const glm::vec2& startPos, const glm::vec2& endPos)
+	{
+		RaycastCallback callback;
+		m_PhysicsWorld->RayCast(&callback, { startPos.x, startPos.y }, { endPos.x, endPos.y });
+
+		return callback.m_Hit;
 	}
 
 	// bool PhysicsSim2D::RayCast(const glm::vec2& origin, const glm::vec2& direction, const float& depth, bool triggerCollidersOnHit)

@@ -10,18 +10,35 @@ SceneLayer::SceneLayer() : Layer("SceneLayer")
 	// Daybreak::Application::Get().GetWindow().SetVSync(false);
 	m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
 
-	entityTest = m_Scene->CreateEntity("Entity Test");
-	entityTest.AddComponent<Daybreak::NativeScriptComponent>().Bind<MoveableComponent>();
+	playerEntity = m_Scene->CreateEntity("Entity Test");
+	playerEntity.AddComponent<Daybreak::NativeScriptComponent>().Bind<MoveableComponent>();
 	//auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
-	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Sandbox/assets/Test.png");
-	auto& sr = entityTest.AddComponent<Daybreak::SpriteRendererComponent>();
-	auto& rb2d = entityTest.AddComponent<Daybreak::Rigidbody2DComponent>();
+	auto& rb2d = playerEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	rb2d.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
-	//rb2d.FixedRotation = true;
-	rb2d.Restitution = 0.70f;
+	rb2d.FixedRotation = true;
+	rb2d.Restitution = 0.00f;
 	//rb2d.RestitutionThreshold = 2.0f;
-	auto& bc2d = entityTest.AddComponent<Daybreak::BoxCollider2DComponent>();
-	sr.Sprite = texture;
+	auto& bc2d = playerEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
+
+	auto& spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
+	float width = 50.;
+	float height = 37.;
+	auto& subtexture1 = Daybreak::SubTexture2D::Create(spriteSheet, { 0, 10 }, { width, height });
+	auto& subtexture2 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 10 }, { width, height });
+	auto& subtexture3 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 10 }, { width, height });
+	auto& subtexture4 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 10 }, { width, height });
+	Daybreak::Ref<Daybreak::AnimationSource> animSource = Daybreak::CreateRef<Daybreak::AnimationSource>();
+	auto& anim = playerEntity.AddComponent<Daybreak::AnimatorComponent>();
+	float step = 0.16f;
+	animSource->AddFrame({ subtexture1, 0 * step });
+	animSource->AddFrame({ subtexture2, 1 * step });
+	animSource->AddFrame({ subtexture3, 2 * step });
+	animSource->AddFrame({ subtexture4, 3 * step });
+	animSource->AddFrame({ subtexture1, 4 * step });
+	anim.Source = animSource;
+
+
+
 	
 	cameraEntity = m_Scene->CreateEntity("Camera");
 	auto& cameraComp = cameraEntity.AddComponent<Daybreak::CameraComponent>();
@@ -39,6 +56,8 @@ SceneLayer::SceneLayer() : Layer("SceneLayer")
 	auto& floortransform = floorEntity.GetComponent<Daybreak::TransformComponent>();
 	floortransform.Position = { 0.0f,-4.0f,0.0f };
 	floortransform.Scale = { 15.0f, 1.0f,1.0f };
+	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Sandbox/assets/Test.png");
+	floorsr.Sprite = texture;
 
 
 	// floorEntity.GetComponent<Daybreak::RelationshipComponent>().ParentEntity = &cameraEntity;
@@ -60,24 +79,8 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	Daybreak::RenderCommand::Clear();
 
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
-	
-	/*
-	// entityTest Update
-	auto& entityTestPos = entityTest.GetComponent<Daybreak::TransformComponent>().Position;
-	float amount = 10.0f * dt;
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::W))
-		entityTestPos.y += amount;
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::S))
-		entityTestPos.y -= amount;
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
-		entityTestPos.x += amount;
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
-		entityTestPos.x -= amount;
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::E))
-		entityTestPos.z += amount;
-	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Q))
-		entityTestPos.z -= amount;
-	*/
+	auto playerPos = playerEntity.GetComponent<Daybreak::TransformComponent>().Position;
+	bool hit = m_Scene->GetPhysicsSim2D().Raycast({ playerPos.x, playerPos.y }, { playerPos.x, playerPos.y - 1 });
 
 	// Camera Update
 	float amount = 10.0f * dt;
@@ -103,33 +106,16 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D8))
 		cameraRot.z = 0.0f;
 
-	// float velamount = 75.0f * dt;
-	// if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space))
-	// {
-	// 	auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-	// 	velocity.y += velamount;
-	// }
-	// if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
-	// {
-	// 	auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-	// 	velocity.x += velamount;
-	// }
-	// if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
-	// {
-	// 	auto& velocity = entityTest.GetComponent<Daybreak::Rigidbody2DComponent>().Velocity;
-	// 	velocity.x -= velamount;
-	// }
-
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
 	{
 		cameraPos = glm::vec3(0.0f, 0.0f, -10.0f);
-		auto& entityTestPos = entityTest.GetComponent<Daybreak::TransformComponent>().Position;
-		entityTestPos = glm::vec3(0.0f);
+		auto& playerEntityPos = playerEntity.GetComponent<Daybreak::TransformComponent>().Position;
+		playerEntityPos = glm::vec3(0.0f);
 	}
 
 
 	m_Scene->OnRuntimeUpdate(dt);
-	DrawColliders();
+	// DrawColliders();
 }
 
 void SceneLayer::OnEvent(Daybreak::Event& event)
@@ -165,7 +151,7 @@ void SceneLayer::OnImGuiRender()
 	ImGui::End();
 
 	ImGui::Begin("Box Entity");
-	ImGui::SliderFloat("Roation", &entityTest.GetComponent<Daybreak::TransformComponent>().Rotation.z,-3.14f,3.14f);
+	ImGui::SliderFloat("Roation", &playerEntity.GetComponent<Daybreak::TransformComponent>().Rotation.z,-3.14f,3.14f);
 	//ImGui::SliderFloat3("Position", )
 	ImGui::End();
 }
@@ -200,20 +186,6 @@ void SceneLayer::MoveCamera(Daybreak::Entity& entity, Daybreak::DeltaTime dt)
 		transform.Position.x -= -sin(glm::radians(transform.Rotation.z)) * translationAmount;
 		transform.Position.y -= cos(glm::radians(transform.Rotation.z)) * translationAmount;
 	}
-
-	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::W))
-	//	transform.Position.y += translationAmount;
-	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::S))
-	//	transform.Position.y -= translationAmount;
-	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
-	//	transform.Position.x += translationAmount;
-	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
-	//	transform.Position.x -= translationAmount;
-	
-	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::E))
-	//	entity.z += translationAmount;
-	//if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Q))
-	//	entity.z -= translationAmount;
 
 	lastMousePos = mousePos;
 }
