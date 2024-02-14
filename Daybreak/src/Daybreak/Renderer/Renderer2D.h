@@ -35,8 +35,9 @@ namespace Daybreak
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 
-		static void DrawSprite(const glm::mat4 transform, const SpriteRendererComponent& spriteRenderer, int entityID);
-		
+		static void DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRenderer, int entityID);
+		static void DrawSprite(const glm::mat4& transform, const AnimatorComponent& anim, int entityID);
+
 		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotDeg, 
 			const Ref<Texture2D>& texture, const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotDeg,

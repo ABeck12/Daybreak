@@ -2,6 +2,7 @@
 
 #include "dbpch.h"
 
+#include "Daybreak/Renderer/SubTexture.h"
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Core/DeltaTime.h"
 
@@ -9,7 +10,7 @@ namespace Daybreak
 {
     struct KeyFrame
     {
-        Ref<Texture2D> Sprite;
+        Ref<SubTexture2D> Sprite;
         float StartTime = 0.0f;
     };
 

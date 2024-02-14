@@ -87,7 +87,8 @@ namespace Daybreak
 			{
 				Entity entity = { e, this };
 				auto& anim = entity.GetComponent<AnimatorComponent>();
-				anim.Source->UpdateSource(dt);
+				if (anim.IsPlaying)
+					anim.Source->UpdateSource(dt);
 			}
 		}
 
@@ -143,8 +144,7 @@ namespace Daybreak
 				auto& transform = entity.GetComponent<TransformComponent>();
 				auto& anim = entity.GetComponent<AnimatorComponent>();
 
-				// Renderer2D::DrawQuad({ transform.Position.x, transform.Position.y }, { 1.0f,1.0f }, anim.AnimSource->GetFrame(anim.CurrentFrame).Sprite);
-				Renderer2D::DrawQuad(transform.GetTransform(), anim.Source->GetCurrentKeyFrame().Sprite, glm::vec4(1.0f), 1.0f, int(e));
+				Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);
 			}
 		}
 
@@ -155,6 +155,7 @@ namespace Daybreak
 				Entity entity = { e, this };
 				auto& transform = entity.GetComponent<TransformComponent>();
 				auto& sprite = entity.GetComponent<SpriteRendererComponent>();
+
 				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)e);
 			}
 		}

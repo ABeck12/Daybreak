@@ -11,6 +11,9 @@ namespace Daybreak
         m_TexCoords[1] = { max.x, min.y };
         m_TexCoords[2] = { max.x, max.y };
         m_TexCoords[3] = { min.x, max.y };
+
+        m_Height = max.y - min.y;
+        m_Width = max.x - min.x;
     }
 
     Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2D>& texture, const glm::vec2& coords, const glm::vec2& cellSize, const glm::vec2& cellCount)

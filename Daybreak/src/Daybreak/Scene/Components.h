@@ -113,6 +113,7 @@ namespace Daybreak
 	{
 		bool IsPlaying = true;
 		Ref<AnimationSource> Source;
+		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		AnimatorComponent() = default;
 		AnimatorComponent(const AnimatorComponent&) = default;
