@@ -19,7 +19,7 @@ public:
         float velamount = 150.0f * dt;
         if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space) && m_IsGrounded)
         {
-            m_RB.Velocity.y += 2.5 * velamount;
+            m_RB.Velocity.y += 2.5f * velamount;
             m_IsGrounded = false;
         }
         if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))

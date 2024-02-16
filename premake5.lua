@@ -10,6 +10,7 @@ workspace "Daybreak"
 	}
 
 require("vendor/premake/premake-vscode")
+require("vendor/premake/export-compile-commands")
 
 outputloc = _WORKING_DIR 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -36,6 +37,12 @@ newaction
 		os.remove("./Daybreak/vendor/box2d/Box2D.cmake")
 		os.remove("./Daybreak/Daybreak.cmake")
 		os.remove("./Sandbox/Sandbox.cmake")
+		os.rmdir("./build")
+		os.rmdir("./CmakeFiles")
+		os.remove("CmakeCache.txt")
+
+		os.remove("compile_commands.json")
+		os.rmdir("./compile_commands")
 
 		os.remove("**.code-workspace")
 		os.rmdir("./Tasks")
@@ -57,11 +64,6 @@ IncludeDirs["imgui"] = "Daybreak/vendor/imgui"
 IncludeDirs["glm"] = "Daybreak/vendor/glm"
 IncludeDirs["stb_image"] = "Daybreak/vendor/stb_image"
 IncludeDirs["entt"] = "Daybreak/vendor/entt/include"
-
--- include "Daybreak/vendor/box2d"
--- include "Daybreak/vendor/glfw"
--- include "Daybreak/vendor/glad"
--- include "Daybreak/vendor/imgui"
 
 group "Dependencies"
 	include "Daybreak/vendor/box2d"

@@ -13,3 +13,6 @@
 [submodule "vendor/premake/premake-vscode"]
 	path = vendor/premake/premake-vscode
 	url = https://github.com/ABeck12/premake-vscode.git
+[submodule "vendor/premake/export-compile-commands"]
+	path = vendor/premake/export-compile-commands
+	url = https://github.com/ABeck12/premake-export-compile-commands.git
