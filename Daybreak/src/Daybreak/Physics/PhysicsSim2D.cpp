@@ -156,7 +156,7 @@ namespace Daybreak
 		}
 	}
 
-	bool PhysicsSim2D::Raycast(const glm::vec2& startPos, const glm::vec2& endPos)
+	bool PhysicsSim2D::RayCast(const glm::vec2& startPos, const glm::vec2& endPos)
 	{
 		RaycastCallback callback;
 		m_PhysicsWorld->RayCast(&callback, { startPos.x, startPos.y }, { endPos.x, endPos.y });
@@ -164,8 +164,13 @@ namespace Daybreak
 		return callback.m_Hit;
 	}
 
-	// bool PhysicsSim2D::RayCast(const glm::vec2& origin, const glm::vec2& direction, const float& depth, bool triggerCollidersOnHit)
-	// {
-		
-	// }
+	bool PhysicsSim2D::RayCast(const glm::vec2& startPos, const glm::vec2& directionNorm, const float& depth)
+	{
+		glm::vec2 endPos;
+		float angle = atan(directionNorm.y / directionNorm.x);
+		endPos.x = startPos.x + depth * cos(angle);
+		endPos.y = startPos.y + depth * sin(angle);
+
+		return RayCast(startPos, endPos);
+	}
 }

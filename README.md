@@ -24,9 +24,9 @@ Fix pch file in premake
     Texture atlas
     Render layers and ordering
     Circle rendering
+    RenderAPI pointer
 
 ### For Physics2D:
-    Raycasts
     IsColliding function
     Adding of forces/impulse
     Physics Layers

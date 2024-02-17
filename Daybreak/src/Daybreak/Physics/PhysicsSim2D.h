@@ -21,8 +21,9 @@ namespace Daybreak
 
 		void AddEntity(Entity& entity);
 
-		bool Raycast(const glm::vec2& startPos, const glm::vec2& endPos);
-		// bool RayCast(const glm::vec2& origin, const glm::vec2& direction, const float& depth, bool triggerCollidersOnHit = false); //TODO: Put in layer mask option
+		bool RayCast(const glm::vec2& startPos, const glm::vec2& endPos);
+		bool RayCast(const glm::vec2& startPos, const glm::vec2& directionNorm, const float& depth);
+
 	private:
 		Scene* m_Scene;
 		b2World* m_PhysicsWorld;

@@ -3,6 +3,7 @@
 #include <Daybreak.h>
 #include <imgui.h>
 
+#include "Daybreak/Renderer/Texture.h"
 #include "ScriptableEntityTest.h"
 
 SceneLayer::SceneLayer() : Layer("SceneLayer")
@@ -20,7 +21,7 @@ SceneLayer::SceneLayer() : Layer("SceneLayer")
 	//rb2d.RestitutionThreshold = 2.0f;
 	auto& bc2d = playerEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
 
-	auto& spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
+	const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
 	float width = 50.;
 	float height = 37.;
 	auto& subtexture1 = Daybreak::SubTexture2D::Create(spriteSheet, { 0, 10 }, { width, height });
@@ -80,7 +81,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
 	auto playerPos = playerEntity.GetComponent<Daybreak::TransformComponent>().Position;
-	bool hit = m_Scene->GetPhysicsSim2D().Raycast({ playerPos.x, playerPos.y }, { playerPos.x, playerPos.y - 1 });
+	bool hit = m_Scene->GetPhysicsSim2D().RayCast({ playerPos.x, playerPos.y }, { playerPos.x, playerPos.y - 1 });
 
 	// Camera Update
 	float amount = 10.0f * dt;
