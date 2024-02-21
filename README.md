@@ -22,15 +22,16 @@ Fix pch file in premake
     Shader Library
     Update the OpenGLTexture2D class
     Texture atlas
-    Render layers and ordering
+    Render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
     Circle rendering
     RenderAPI pointer
 
 ### For Physics2D:
     IsColliding function
     Adding of forces/impulse
-    Physics Layers
+    Physics Layers -> rework as enums instead of actual numbers
     Circle colliders
+    Check for memory leaks from box2d userdata and scene ptr. Do I need to delete scene*? Do box2d userdatas need to be manually deleted?
 
 ### Scene
     Component and Entity active or not
@@ -40,13 +41,16 @@ Fix pch file in premake
     Resolve memory leak from not having NativeScriptComponents delete their instances in on scene stop
     Relationship components
     Multiple components per entity?
-        Needed for colliders
+        Needed for colliders and maybe NativeScripts
     Circle collidercomponent
+    Make a SceneRenderer Class?
+    Render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
 
 ### Low Priority:
     Make a weakref system using std::weak_ptr? or maybe std::object_ptr?
     Fix premake files
     Change windowswindow to glwfwindow since glfw is cross platform
+    Add input suppport for gamepads
 
 ### Medium Priority:
     Make a asset manager system with Daybreak specific files for images, shaders?, animation sources, sound files?

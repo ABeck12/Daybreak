@@ -91,6 +91,7 @@ namespace Daybreak
 		delete m_PhysicsWorld;
 		delete m_ContactLitener;
 		delete m_ContactFilter;
+		delete m_Scene;
 		m_ContactFilter = nullptr;
 		m_ContactLitener = nullptr;
 		m_PhysicsWorld = nullptr;

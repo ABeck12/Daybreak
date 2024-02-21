@@ -34,10 +34,17 @@ SceneLayer::SceneLayer() : Layer("SceneLayer")
 	animSource->AddFrame({ subtexture1, 0 * step });
 	animSource->AddFrame({ subtexture2, 1 * step });
 	animSource->AddFrame({ subtexture3, 2 * step });
-	animSource->AddFrame({ subtexture4, 3 * step });
-	animSource->AddFrame({ subtexture1, 4 * step });
-	anim.Source = animSource;
+    animSource->AddFrame({ subtexture4, 3 * step });
+    animSource->AddFrame({ subtexture1, 4 * step });
+    anim.Source = animSource;
 
+
+        
+
+
+	
+
+	
 
 
 	
@@ -60,6 +67,11 @@ SceneLayer::SceneLayer() : Layer("SceneLayer")
 	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Sandbox/assets/Test.png");
 	floorsr.Sprite = texture;
 
+	Daybreak::FrameBufferSpecifications fbspec;
+	fbspec.Width = 1280;
+	fbspec.Height = 720;
+	m_FrameBuffer = Daybreak::FrameBuffer::Create(fbspec);
+
 
 	// floorEntity.GetComponent<Daybreak::RelationshipComponent>().ParentEntity = &cameraEntity;
 	// m_Scene->CreateEntity(floorEntity, "TestChild");
@@ -77,6 +89,8 @@ void SceneLayer::OnDetach()
 
 void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 {
+	// m_FrameBuffer->Bind();
+
 	Daybreak::RenderCommand::Clear();
 
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
@@ -114,8 +128,8 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 		playerEntityPos = glm::vec3(0.0f);
 	}
 
-
 	m_Scene->OnRuntimeUpdate(dt);
+	// m_FrameBuffer->Unbind();
 	// DrawColliders();
 }
 
@@ -139,7 +153,7 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 	{
 		Daybreak::WindowResizeEvent& e = (Daybreak::WindowResizeEvent&)event;
 		if (e.GetWidth() != 0 && e.GetHeight() != 0) //TEMPORARY!!!
-			cameraEntity.GetComponent<Daybreak::CameraComponent>().Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.0f, 100.0f));
+			m_Scene->GetActiveCameraEntity().GetComponent<Daybreak::CameraComponent>().Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.0f, 100.0f));
 	}
 
 }
@@ -147,14 +161,46 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 void SceneLayer::OnImGuiRender()
 {
 	ImGuiIO& io = ImGui::GetIO();
-	ImGui::Begin("ImGui Layer");
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-	ImGui::End();
 
-	ImGui::Begin("Box Entity");
-	ImGui::SliderFloat("Roation", &playerEntity.GetComponent<Daybreak::TransformComponent>().Rotation.z,-3.14f,3.14f);
-	//ImGui::SliderFloat3("Position", )
-	ImGui::End();
+	// ImGuiIO& io = ImGui::GetIO();
+	// static bool opt_fullscreen_persistant = true;
+	// bool opt_fullscreen = opt_fullscreen_persistant;
+	// ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	// if (opt_fullscreen)
+	// {
+	// 	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	// 	ImGui::SetNextWindowPos(viewport->Pos);
+	// 	ImGui::SetNextWindowSize(viewport->Size);
+	// 	ImGui::SetNextWindowViewport(viewport->ID);
+	// 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	// 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	// 	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+	// 	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	// }
+
+	// if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	// {
+	// 	// ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+	// 	// ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+	// }
+
+	// ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+	// ImGui::Begin("Image Test");
+	// uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
+	// ImGui::Image((void*)textureID, ImVec2({ 1280,720 }),{0, 1}, {1, 0});
+	// ImGui::End();
+
+
+
+
+	// ImGui::Begin("ImGui Layer");
+	// ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	// ImGui::End();
+
+	// ImGui::Begin("Box Entity");
+	// ImGui::SliderFloat("Roation", &playerEntity.GetComponent<Daybreak::TransformComponent>().Rotation.z,-3.14f,3.14f);
+	// //ImGui::SliderFloat3("Position", )
+	// ImGui::End();
 }
 
 void SceneLayer::MoveCamera(Daybreak::Entity& entity, Daybreak::DeltaTime dt)

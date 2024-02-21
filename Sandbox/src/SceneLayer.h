@@ -22,6 +22,7 @@ private:
 private:
 	glm::vec2 lastMousePos = glm::vec2(1.0f);
 	Daybreak::Ref<Daybreak::Scene> m_Scene;
+	Daybreak::Ref<Daybreak::FrameBuffer> m_FrameBuffer;
 
 	Daybreak::Entity playerEntity;
 	Daybreak::Entity floorEntity;
