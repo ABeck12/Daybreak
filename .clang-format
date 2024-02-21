@@ -34,6 +34,7 @@ SpacesInContainerLiterals: 'true'
 SpacesInParentheses: 'false'
 SpacesInSquareBrackets: 'false'
 TabWidth: '4'
+UseTab: Always
 ColumnLimit: 0
 SortIncludes: 'false'
 
