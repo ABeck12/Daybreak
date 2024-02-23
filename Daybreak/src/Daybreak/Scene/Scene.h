@@ -24,7 +24,7 @@ namespace Daybreak
 		void OnRuntimeEnd();
 
 		Entity CreateEntity(const std::string& name = std::string());
-		// Entity CreateEntity(Entity& parent, const std::string& name = std::string());
+		Entity CreateEntity(Entity& parent, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
 
 		Entity GetActiveCameraEntity();

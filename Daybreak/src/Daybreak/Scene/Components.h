@@ -22,6 +22,17 @@ namespace Daybreak
 		IDComponent(const IDComponent&) = default;
 	};
 
+	struct RelationshipComponent
+	{
+		UUID ParentID = 0;
+
+		uint32_t AmountOfChildren = 0;
+		std::vector<UUID> ChildrenIDs;
+
+		RelationshipComponent() = default;
+		RelationshipComponent(const RelationshipComponent&) = default;
+	};
+
 	struct TransformComponent
 	{
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
@@ -30,15 +41,13 @@ namespace Daybreak
 
 		glm::mat4 GetTransform() const
 		{
-			return glm::translate(glm::mat4(1.0f), Position)
-				* glm::toMat4(glm::quat(Rotation))
-				* glm::scale(glm::mat4(1.0f), Scale);
+			return glm::translate(glm::mat4(1.0f), Position) * glm::toMat4(glm::quat(Rotation)) * glm::scale(glm::mat4(1.0f), Scale);
 		}
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 	};
-	
+
 	struct TagComponent
 	{
 		std::string Tag;
@@ -84,15 +93,20 @@ namespace Daybreak
 
 	struct Rigidbody2DComponent
 	{
-		enum class BodyType { Static = 0, Dynamic, Kinematic };
+		enum class BodyType
+		{
+			Static = 0,
+			Dynamic,
+			Kinematic
+		};
 
 		BodyType Type = BodyType::Static;
 		bool ContinuousDetection = false;
-		
+
 		glm::vec2 Velocity = { 0.0f, 0.0f };
 
 		bool FixedRotation = false;
-		
+
 		float Mass = 1.0f;
 		float GravityScale = 1.0f;
 		float AngularDrag = 1.0f;
@@ -126,27 +140,23 @@ namespace Daybreak
 	{
 		ScriptableEntity* Instance = nullptr;
 
-		ScriptableEntity*(*InstantiateScript)();
+		ScriptableEntity* (*InstantiateScript)();
 		void (*DestroyScript)(NativeScriptComponent*);
 
 		template<typename T>
 		void Bind()
 		{
-			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+			InstantiateScript = []()
+			{
+				return static_cast<ScriptableEntity*>(new T());
+			};
+			DestroyScript = [](NativeScriptComponent* nsc)
+			{
+				delete nsc->Instance;
+				nsc->Instance = nullptr;
+			};
 		}
 	};
 
 
-	// Forward decleration
-	// class Entity;
-
-	// struct RelationshipComponent
-	// {
-	// 	Entity* ParentEntity = nullptr;
-	// // 	std::vector<Entity*> ChildrenEntities;
-
-	// 	RelationshipComponent() = default;
-	// 	RelationshipComponent(const RelationshipComponent&) = default;
-	// };
 }

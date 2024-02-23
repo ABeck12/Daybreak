@@ -27,25 +27,39 @@ namespace Daybreak
 		m_EntityMap[uuid] = entity;
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
-		// entity.AddComponent<RelationshipComponent>();
+		entity.AddComponent<RelationshipComponent>();
 
 		return entity;
 	}
 
-	// Entity Scene::CreateEntity(Entity& parent, const std::string& name)
-	// {
-	// 	Entity child = CreateEntity(name);
-	// 	auto& childRc = child.GetComponent<RelationshipComponent>();
-	// 	childRc.ParentEntity = &parent;
+	Entity Scene::CreateEntity(Entity& parent, const std::string& name)
+	{
+		Entity child = CreateEntity(name);
+		auto& childRc = child.GetComponent<RelationshipComponent>();
+		childRc.ParentID = parent.GetUUID();
 
-	// 	auto& parentRc = parent.GetComponent<RelationshipComponent>();
-	// 	parentRc.ChildrenEntities.emplace_back(&child);
+		auto& parentRc = parent.GetComponent<RelationshipComponent>();
+		parentRc.ChildrenIDs.emplace_back(child.GetUUID());
+		parentRc.AmountOfChildren++;
 
-	// 	return child;
-	// }
+		return child;
+	}
 
 	void Scene::DestroyEntity(Entity entity)
 	{
+		auto& entityRc = entity.GetComponent<RelationshipComponent>();
+		if (entityRc.ParentID != 0)
+		{
+			Entity parent = GetEntityByUUID(entityRc.ParentID);
+			auto& parentRc = parent.GetComponent<RelationshipComponent>();
+			std::vector<UUID>::iterator position = std::find(parentRc.ChildrenIDs.begin(), parentRc.ChildrenIDs.end(), entity.GetUUID());
+			if (position != parentRc.ChildrenIDs.end())
+			{
+				parentRc.ChildrenIDs.erase(position);
+				parentRc.AmountOfChildren--;
+			}
+		}
+
 		m_EntityMap.erase(entity.GetUUID());
 		m_Registry.destroy(entity);
 	}
@@ -53,15 +67,14 @@ namespace Daybreak
 	void Scene::OnRuntimeStart()
 	{
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-			{
+													  {
 				// TODO: Move to Scene::OnScenePlay
 				if (!nsc.Instance)
 				{
 					nsc.Instance = nsc.InstantiateScript();
 					nsc.Instance->m_Entity = Entity{ entity, this };
 					nsc.Instance->OnCreate();
-				}
-			});
+				} });
 
 		OnPhysicsStart();
 	}
@@ -69,7 +82,7 @@ namespace Daybreak
 	void Scene::OnRuntimeUpdate(DeltaTime dt)
 	{
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-			{
+													  {
 				// This runs here to catch any nsc that are instianted during scene play
 				if (!nsc.Instance)
 				{
@@ -78,8 +91,7 @@ namespace Daybreak
 					nsc.Instance->OnCreate();
 				}
 
-				nsc.Instance->OnUpdate(dt);
-			});
+				nsc.Instance->OnUpdate(dt); });
 
 		{
 			auto view = m_Registry.view<AnimatorComponent>();
@@ -101,16 +113,14 @@ namespace Daybreak
 		OnPhysicsStop();
 
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-			{
+													  {
 				// TODO: Move to Scene::OnSceneStop
 				if (!nsc.Instance)
 				{
 					nsc.Instance = nsc.InstantiateScript();
 					nsc.Instance->m_Entity = Entity{ entity, this };
 					nsc.Instance->OnDestroy();
-				}
-			});
-
+				} });
 	}
 
 	Entity Scene::GetActiveCameraEntity()
@@ -120,7 +130,7 @@ namespace Daybreak
 		{
 			const auto& camera = view.get<CameraComponent>(entity);
 			if (camera.Primary)
-				return Entity{ entity, this };
+				return Entity { entity, this };
 		}
 		DB_CORE_ERROR("Scene has no camera component marked as primary!");
 		return {};
@@ -230,7 +240,7 @@ namespace Daybreak
 		{
 			const TagComponent& tc = view.get<TagComponent>(entity);
 			if (tc.Tag == name)
-				return Entity{ entity, this };
+				return Entity { entity, this };
 		}
 		return {};
 	}
