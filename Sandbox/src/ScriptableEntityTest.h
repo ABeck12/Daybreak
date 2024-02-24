@@ -8,7 +8,27 @@ public:
     void OnCreate()
     {
         m_Transform = GetComponent<Daybreak::TransformComponent>();
-        m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
+		m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
+
+
+		auto& anim = GetComponent<Daybreak::AnimatorComponent>();
+		const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
+        float width = 50.;
+        float height = 37.;
+        auto& subtexture1 = Daybreak::SubTexture2D::Create(spriteSheet, { 0, 10 }, { width, height });
+        auto& subtexture2 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 10 }, { width, height });
+        auto& subtexture3 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 10 }, { width, height });
+		auto& subtexture4 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 10 }, { width, height });
+
+	    Daybreak::Ref<Daybreak::AnimationSource> animSource = Daybreak::CreateRef<Daybreak::AnimationSource>();
+		animSource->AddKeyFrame(subtexture1, 10);
+        animSource->AddKeyFrame(subtexture2, 10);
+        animSource->AddKeyFrame(subtexture3, 10);
+		animSource->AddKeyFrame(subtexture4, 10);
+		auto action = [&]() {AnimTest();};
+	    animSource->AddKeyFrame(subtexture1, 10.0f/60.0f,action);
+
+		anim.Source = animSource;
     }
 
     void OnUpdate(Daybreak::DeltaTime dt)
@@ -53,10 +73,20 @@ public:
     void OnCollisionExit(Daybreak::Entity& entity)
     {
         m_IsGrounded = false;
+	}
+
+	void AnimTest()
+	{
+        DB_LOG(test);
+		if (test)
+			test = false;
+		else
+			test = true;
     }
 
 private:
     Daybreak::TransformComponent m_Transform;
     Daybreak::Rigidbody2DComponent m_RB;
-    bool m_IsGrounded = false;
+	bool m_IsGrounded = false;
+	bool test = false;
 };

@@ -8,27 +8,39 @@
 
 namespace Daybreak
 {
-    struct KeyFrame
-    {
-        Ref<SubTexture2D> Sprite;
-        float StartTime = 0.0f;
-    };
+	using AnimationAction = std::function<void(void)>;
 
-    class AnimationSource
-    {
-    public:
-        void AddFrame(const KeyFrame& frame);
+	struct KeyFrame
+	{
+		Ref<SubTexture2D> Sprite;
+		float Duration = 0.0f;
+		AnimationAction Action;
+	};
 
-        KeyFrame GetCurrentKeyFrame() const { return m_KeyFrames[m_CurrentFrame]; }
-        uint32_t GetMaxFrames() const { return (uint32_t)m_KeyFrames.size(); }
+	class AnimationSource
+	{
+	public:
+		void AddKeyFrame(const Ref<SubTexture2D>& subTexture, const uint32_t& numberFrames, const AnimationAction& action = nullptr);
 
-        void UpdateSource(const DeltaTime dt);
+		void AddAction(const uint32_t& startingFrame);
 
-    private:
-        std::vector<KeyFrame> m_KeyFrames;
-        
-        bool m_LoopPlayback = true;
-        uint32_t m_CurrentFrame = 0;
-        float m_PlaybackTime = 0.0f;
-    };
+		KeyFrame GetCurrentKeyFrame() const { return m_KeyFrames[m_CurrentKeyFrame]; }
+		uint32_t GetMaxKeyFrames() const { return (uint32_t)(m_KeyFrames.size()-1); }
+
+		void SetLoopPlayback(bool loopPlayback) { m_LoopPlayback = loopPlayback; }
+
+		void UpdateSource(const DeltaTime dt);
+
+	private:
+		void IncrementKeyFrame();
+		void ResetSource();
+		
+	private:
+		std::vector<KeyFrame> m_KeyFrames;
+		std::unordered_map<uint32_t, std::vector<AnimationAction>> m_AnimationActions;
+
+		bool m_LoopPlayback = true;
+		uint32_t m_CurrentKeyFrame = 0;
+		float m_DisplayTime = 0.0f;
+	};
 }
