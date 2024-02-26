@@ -37,7 +37,6 @@ namespace Daybreak
 		
 	private:
 		std::vector<KeyFrame> m_KeyFrames;
-		std::unordered_map<uint32_t, std::vector<AnimationAction>> m_AnimationActions;
 
 		bool m_LoopPlayback = true;
 		uint32_t m_CurrentKeyFrame = 0;
