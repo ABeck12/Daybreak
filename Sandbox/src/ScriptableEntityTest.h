@@ -10,7 +10,6 @@ public:
         m_Transform = GetComponent<Daybreak::TransformComponent>();
 		m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
 
-
 		auto& anim = GetComponent<Daybreak::AnimatorComponent>();
 		const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
         float width = 50.;
@@ -26,7 +25,7 @@ public:
         animSource->AddKeyFrame(subtexture3, 10);
 		animSource->AddKeyFrame(subtexture4, 10);
 		auto action = [&]() {AnimTest();};
-	    animSource->AddKeyFrame(subtexture1, 10.0f/60.0f,action);
+	    animSource->AddKeyFrame(subtexture1, 10, action);
 
 		anim.Source = animSource;
     }
@@ -34,7 +33,7 @@ public:
     void OnUpdate(Daybreak::DeltaTime dt)
     {
         auto& m_Transform = GetComponent<Daybreak::TransformComponent>();
-        auto& m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
+		auto& m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
 
         float velamount = 150.0f * dt;
         if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space) && m_IsGrounded)
@@ -77,7 +76,7 @@ public:
 
 	void AnimTest()
 	{
-        DB_LOG(test);
+        // DB_LOG(test);
 		if (test)
 			test = false;
 		else

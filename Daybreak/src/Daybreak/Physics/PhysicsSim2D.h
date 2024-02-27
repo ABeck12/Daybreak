@@ -24,6 +24,14 @@ namespace Daybreak
 		bool RayCast(const glm::vec2& startPos, const glm::vec2& endPos);
 		bool RayCast(const glm::vec2& startPos, const glm::vec2& directionNorm, const float& depth);
 
+		void AddForce(const Rigidbody2DComponent& rb2d, const glm::vec2& force, const glm::vec2& point);
+		void AddForce(const Rigidbody2DComponent& rb2d, const glm::vec2& force);
+		void AddTorque(const Rigidbody2DComponent& rb2d, const float& torque);
+
+		void AddLinearImpulse(const Rigidbody2DComponent& rb2d, const glm::vec2& impulse, const glm::vec2& point);
+		void AddLinearImpulse(const Rigidbody2DComponent& rb2d, const glm::vec2& impulse);
+		void AddAngularImpulse(const Rigidbody2DComponent& rb2d, const float& impulse);
+
 	private:
 		Scene* m_Scene;
 		b2World* m_PhysicsWorld;

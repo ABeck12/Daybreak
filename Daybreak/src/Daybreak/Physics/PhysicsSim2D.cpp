@@ -221,4 +221,34 @@ namespace Daybreak
 
 		return RayCast(startPos, endPos);
 	}
+
+	void PhysicsSim2D::AddForce(const Rigidbody2DComponent& rb2d, const glm::vec2& force, const glm::vec2& point)
+	{
+		((b2Body*)rb2d.RuntimeBody)->ApplyForce({ force.x, force.y }, { point.x, point.y }, true);
+	}
+
+	void PhysicsSim2D::AddForce(const Rigidbody2DComponent& rb2d, const glm::vec2& force)
+	{
+		((b2Body*)rb2d.RuntimeBody)->ApplyForceToCenter({ force.x, force.y }, true);
+	}
+
+	void PhysicsSim2D::AddTorque(const Rigidbody2DComponent& rb2d, const float& torque)
+	{
+		((b2Body*)rb2d.RuntimeBody)->ApplyTorque(torque, true);
+	}
+
+	void PhysicsSim2D::AddLinearImpulse(const Rigidbody2DComponent& rb2d, const glm::vec2& impulse, const glm::vec2& point)
+	{
+		((b2Body*)rb2d.RuntimeBody)->ApplyLinearImpulse({ impulse.x, impulse.y }, { point.x, point.y }, true);
+	}
+
+	void PhysicsSim2D::AddLinearImpulse(const Rigidbody2DComponent& rb2d, const glm::vec2& impulse)
+	{
+		((b2Body*)rb2d.RuntimeBody)->ApplyLinearImpulseToCenter({ impulse.x, impulse.y }, true);
+	}
+
+	void PhysicsSim2D::AddAngularImpulse(const Rigidbody2DComponent& rb2d, const float& impulse)
+	{
+		((b2Body*)rb2d.RuntimeBody)->ApplyAngularImpulse(impulse, true);
+	}
 }

@@ -17,7 +17,7 @@ SceneLayer::SceneLayer()
 	// auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
 	auto& rb2d = playerEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	rb2d.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
-	rb2d.FixedRotation = true;
+	// rb2d.FixedRotation = true;
 	rb2d.Restitution = 0.00f;
 	// rb2d.RestitutionThreshold = 2.0f;
 	auto& bc2d = playerEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
@@ -123,6 +123,13 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 		cameraPos = glm::vec3(0.0f, 0.0f, -10.0f);
 		auto& playerEntityPos = playerEntity.GetComponent<Daybreak::TransformComponent>().Position;
 		playerEntityPos = glm::vec3(0.0f);
+	}
+	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::T))
+	{
+		auto& rb2d = playerEntity.GetComponent<Daybreak::Rigidbody2DComponent>();
+		auto& transform = playerEntity.GetComponent<Daybreak::TransformComponent>();
+		// m_Scene->GetPhysicsSim2D().AddForce(rb2d, {0,100}, {transform.Position.x,transform.Position.y});
+		// m_Scene->GetPhysicsSim2D().AddTorque(rb2d, 100.0f);
 	}
 
 	m_Scene->OnRuntimeUpdate(dt);

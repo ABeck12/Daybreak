@@ -21,7 +21,6 @@ Fix pch file in premake
     Uniform Buffer?
     Shader Library
     Update the OpenGLTexture2D class
-    Texture atlas
     Render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
     Circle rendering
     RenderAPI pointer
@@ -30,7 +29,6 @@ Fix pch file in premake
     IsColliding function
     Adding of forces/impulse
     Physics Layers -> rework as enums instead of actual numbers
-    Circle colliders
     Check for memory leaks from box2d userdata and scene ptr. Do I need to delete scene*? Do box2d userdatas need to be manually deleted?
 
 ### Scene
@@ -38,12 +36,9 @@ Fix pch file in premake
         Includes rendering and physics too
     Scene saving and loading
     Add OnScenePlay and OnSceneStop
-    Resolve memory leak from not having NativeScriptComponents delete their instances in on scene stop
     Relationship components
     Multiple components per entity?
         Needed for colliders and maybe NativeScripts
-    Circle collidercomponent
-    Make a SceneRenderer Class?
     Render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
 
 ### Low Priority:
@@ -59,4 +54,3 @@ Fix pch file in premake
 
 ### High Priority:
     Add in timing and function profiling 
-    Animation component
