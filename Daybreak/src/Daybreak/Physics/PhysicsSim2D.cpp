@@ -58,7 +58,24 @@ namespace Daybreak
 			Scene* scene = (Scene*)fixtureA->GetUserData().pointer;
 			Entity entityA = scene->GetEntityByUUID((UUID)fixtureA->GetUserData().uuid);
 			Entity entityB = scene->GetEntityByUUID((UUID)fixtureB->GetUserData().uuid);
-			return entityA.GetComponent<BoxCollider2DComponent>().CollisionLayer == entityB.GetComponent<BoxCollider2DComponent>().CollisionLayer;
+
+			if (entityA.HasComponent<BoxCollider2DComponent>() && entityB.HasComponent<BoxCollider2DComponent>())
+			{
+				return entityA.GetComponent<BoxCollider2DComponent>().CollisionLayer == entityB.GetComponent<BoxCollider2DComponent>().CollisionLayer;
+			}
+			else if (entityA.HasComponent<BoxCollider2DComponent>() && entityB.HasComponent<CircleCollider2DComponent>())
+			{
+				return entityA.GetComponent<BoxCollider2DComponent>().CollisionLayer == entityB.GetComponent<CircleCollider2DComponent>().CollisionLayer;
+			}
+			else if (entityA.HasComponent<CircleCollider2DComponent>() && entityB.HasComponent<BoxCollider2DComponent>())
+			{
+				return entityA.GetComponent<CircleCollider2DComponent>().CollisionLayer == entityB.GetComponent<BoxCollider2DComponent>().CollisionLayer;
+			}
+			else if (entityA.HasComponent<CircleCollider2DComponent>() && entityB.HasComponent<CircleCollider2DComponent>())
+			{
+				return entityA.GetComponent<CircleCollider2DComponent>().CollisionLayer == entityB.GetComponent<CircleCollider2DComponent>().CollisionLayer;
+			}
+			return false;
 		}
 	};
 
@@ -152,6 +169,36 @@ namespace Daybreak
 			massData.center = b2Vec2(transform.Position.x + bc2d.Offset.x, transform.Position.y + bc2d.Offset.y);
 			float I = rb2d.Mass * ((bc2d.Size.x * bc2d.Size.x) / 12 + (bc2d.Size.y * bc2d.Size.y) / 12);
 			massData.I = I;
+
+			body->SetMassData(&massData);
+		}
+		else if (entity.HasComponent<CircleCollider2DComponent>())
+		{
+			auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+
+			b2CircleShape circleShape;
+			circleShape.m_p.Set(transform.Position.x + cc2d.Offset.x, transform.Position.y + cc2d.Offset.y);
+			circleShape.m_radius = cc2d.Radius;
+
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &circleShape;
+			fixtureDef.density = rb2d.Density;
+			fixtureDef.friction = rb2d.Friction;
+			fixtureDef.restitution = rb2d.Restitution;
+			fixtureDef.restitutionThreshold = rb2d.RestitutionThreshold;
+			fixtureDef.isSensor = cc2d.IsTrigger;
+
+			fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_Scene);
+			fixtureDef.userData.uuid = entity.GetUUID();
+
+			b2Fixture* fixture = body->CreateFixture(&fixtureDef);
+			cc2d.RuntimeFixture = fixture;
+			cc2d.RuntimeBody = body;
+
+			b2MassData massData;
+			massData.mass = rb2d.Mass;
+			massData.center = b2Vec2(transform.Position.x + cc2d.Offset.x, transform.Position.y + cc2d.Offset.y);
+			massData.I = 0.5f * rb2d.Mass * cc2d.Radius * cc2d.Radius;
 
 			body->SetMassData(&massData);
 		}

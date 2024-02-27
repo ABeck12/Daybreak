@@ -81,6 +81,19 @@ namespace Daybreak
 
 	void Scene::OnRuntimeUpdate(DeltaTime dt)
 	{
+		{
+			auto view = m_Registry.view<AnimatorComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& anim = entity.GetComponent<AnimatorComponent>();
+				if (anim.IsPlaying)
+				{
+					anim.Source->UpdateSource(dt);
+				}
+			}
+		}
+
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 													  {
 				// This runs here to catch any nsc that are instianted during scene play
@@ -92,17 +105,6 @@ namespace Daybreak
 				}
 
 				nsc.Instance->OnUpdate(dt); });
-
-		{
-			auto view = m_Registry.view<AnimatorComponent>();
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& anim = entity.GetComponent<AnimatorComponent>();
-				if (anim.IsPlaying)
-					anim.Source->UpdateSource(dt);
-			}
-		}
 
 		OnPhysicsUpdate(dt);
 		RenderScene();

@@ -91,6 +91,21 @@ namespace Daybreak
 		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
 	};
 
+	struct CircleCollider2DComponent
+	{
+		float Radius = 0.5f;
+		glm::vec2 Offset = { 0.0f, 0.0f };
+
+		uint8_t CollisionLayer = 0;
+		bool IsTrigger = false;
+
+		void* RuntimeFixture = nullptr;
+		void* RuntimeBody = nullptr;
+
+		CircleCollider2DComponent() = default;
+		CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
+	};
+
 	struct Rigidbody2DComponent
 	{
 		enum class BodyType
