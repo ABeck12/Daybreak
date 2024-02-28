@@ -16,7 +16,7 @@ namespace Daybreak
 {
 	struct IDComponent
 	{
-		UUID ID;
+		UUID ID = 0;
 
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
