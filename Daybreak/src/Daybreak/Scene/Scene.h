@@ -38,8 +38,6 @@ namespace Daybreak
 			return m_Registry.view<Components...>();
 		}
 
-		PhysicsSim2D& GetPhysicsSim2D() { return m_PhysicsSim2D; }
-
 	private:
 		inline void RenderScene();
 

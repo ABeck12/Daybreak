@@ -17,7 +17,7 @@ SceneLayer::SceneLayer()
 	// auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
 	auto& rb2d = playerEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	rb2d.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
-	// rb2d.FixedRotation = true;
+	rb2d.FixedRotation = true;
 	rb2d.Restitution = 0.00f;
 	// rb2d.RestitutionThreshold = 2.0f;
 	auto& bc2d = playerEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
@@ -92,7 +92,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
 	auto playerPos = playerEntity.GetComponent<Daybreak::TransformComponent>().Position;
-	bool hit = m_Scene->GetPhysicsSim2D().RayCast({ playerPos.x, playerPos.y }, { playerPos.x, playerPos.y - 1 });
+	// bool hit = m_Scene->GetPhysicsSim2D().RayCast({ playerPos.x, playerPos.y }, { playerPos.x, playerPos.y - 1 });
 
 	// Camera Update
 	float amount = 10.0f * dt;
