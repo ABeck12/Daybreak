@@ -81,7 +81,7 @@ namespace Daybreak
 		glm::vec2 Size = { 0.5f, 0.5f };
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		uint8_t CollisionLayer = 0;
+		uint16_t CollisionLayer = 0;
 		bool IsTrigger = false;
 
 		void* RuntimeFixture = nullptr;
@@ -96,7 +96,7 @@ namespace Daybreak
 		float Radius = 0.5f;
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		uint8_t CollisionLayer = 0;
+		uint16_t CollisionLayer = 0;
 		bool IsTrigger = false;
 
 		void* RuntimeFixture = nullptr;

@@ -1,0 +1,52 @@
+Scene: Untitled
+Entities:
+  - Entity: 5423667020259943241
+    TagComponent:
+      Tag: Floor
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, -4, 0]
+      Rotation: [0, 0, 0]
+      Scale: [15, 1, 1]
+    SpriteRendererComponent:
+      Filepath: ../Sandbox/assets/Test.png
+      TintColor: [1, 1, 1, 1]
+      TilingFactor: 1
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+  - Entity: 17632160898621823946
+    TagComponent:
+      Tag: Camera
+    RelationshipComponent:
+      ParentID: 17713919386955522849
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, 0, -10]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 17713919386955522849
+    TagComponent:
+      Tag: Player
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 1
+      ChildrenIDs:
+        - 17632160898621823946
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false

@@ -24,6 +24,7 @@ Fix pch file in premake
     Render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
     Circle rendering
     RenderAPI pointer
+    Rework camera class such that it is no longer just a mat4 and you can set the view matrix in a better way rather then just setting a new mat4
 
 ### For Physics2D:
     IsColliding function

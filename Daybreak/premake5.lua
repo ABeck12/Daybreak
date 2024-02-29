@@ -37,6 +37,7 @@ project "Daybreak"
 		"glad",
 		"glfw",
 		"Imgui",
+		"yaml-cpp",
 		"opengl32.lib"
 	}
 

@@ -5,6 +5,7 @@
 
 #include "Daybreak/Renderer/Texture.h"
 #include "ScriptableEntityTest.h"
+#include "Daybreak/Scene/SceneSerializer.h"
 
 SceneLayer::SceneLayer()
 	: Layer("SceneLayer")
@@ -12,7 +13,7 @@ SceneLayer::SceneLayer()
 	// Daybreak::Application::Get().GetWindow().SetVSync(false);
 	m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
 
-	playerEntity = m_Scene->CreateEntity("Entity Test");
+	playerEntity = m_Scene->CreateEntity("Player");
 	playerEntity.AddComponent<Daybreak::NativeScriptComponent>().Bind<MoveableComponent>();
 	// auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
 	auto& rb2d = playerEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
@@ -45,7 +46,7 @@ SceneLayer::SceneLayer()
 	// anim.Source = animSource;
 
 
-	cameraEntity = m_Scene->CreateEntity("Camera");
+	cameraEntity = m_Scene->CreateEntity(playerEntity, "Camera");
 	auto& cameraComp = cameraEntity.AddComponent<Daybreak::CameraComponent>();
 	cameraComp.Primary = true;
 	cameraComp.Camera.SetProjection(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
@@ -69,7 +70,9 @@ SceneLayer::SceneLayer()
 	fbspec.Height = 720;
 	m_FrameBuffer = Daybreak::FrameBuffer::Create(fbspec);
 
-
+	Daybreak::SceneSerializer serializer(m_Scene);
+	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	DB_LOG(floorsr.Sprite->GetFilepath());
 	// floorEntity.GetComponent<Daybreak::RelationshipComponent>().ParentEntity = &cameraEntity;
 	// m_Scene->CreateEntity(floorEntity, "TestChild");
 }
