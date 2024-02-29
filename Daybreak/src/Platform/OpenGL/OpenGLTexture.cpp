@@ -8,7 +8,7 @@
 namespace Daybreak
 {
 	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs) :
-		m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height)
+		m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height), m_Filepath(std::string())
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, GL_RGBA8, m_Width, m_Height);
@@ -33,7 +33,7 @@ namespace Daybreak
 	}
 
 	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs, const std::string& filepath) :
-		m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height)
+		m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height), m_Filepath(filepath)
 	{
 		stbi_set_flip_vertically_on_load(1);
 		int m_BPP; // SUPER TEMPORARY
