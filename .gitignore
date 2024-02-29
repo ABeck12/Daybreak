@@ -19,7 +19,7 @@ CMakeCache.txt
 /.cache
 /compile_commands
 /compile_commands.json
-.clangd
+# .clangd
 
 # For vscode
 /Tasks

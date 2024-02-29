@@ -1,0 +1,11 @@
+Diagnostics:
+  Suppress: [unused-includes, missing_type_specifier, value_reference_bind_to_temporary, lvalue_reference_bind_to_temporary]
+
+CompileFlags:
+  Add: [-std=c++17]
+
+
+# InlayHints:
+  # Enabled: Yes
+  # ParameterNames: Yes
+  # DeducedTypes: No

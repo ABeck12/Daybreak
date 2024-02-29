@@ -27,6 +27,7 @@ project "Daybreak"
 		"vendor/stb_image",
 		"vendor/entt/include",
 		"vendor/miniaudio",
+		"vendor/yaml-cpp/include",
 		"src"
 	}
 

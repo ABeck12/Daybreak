@@ -25,6 +25,7 @@ project "Sandbox"
 		"../Daybreak/vendor/entt/include",
 		"../Daybreak/vendor/miniaudio",
 		"../Daybreak/vendor/box2d/include",
+		"../Daybreak/vendor/yaml-cpp/include",
 	}
 
 	links

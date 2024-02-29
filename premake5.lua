@@ -35,6 +35,7 @@ newaction
 		os.remove("./Daybreak/vendor/imgui/ImGui.cmake")
 		os.remove("./Daybreak/vendor/glfw/GLFW.cmake")
 		os.remove("./Daybreak/vendor/box2d/Box2D.cmake")
+		os.remove("./Daybreak/vendor/yaml-cpp/yaml-cpp.cmake")
 		os.remove("./Daybreak/Daybreak.cmake")
 		os.remove("./Sandbox/Sandbox.cmake")
 		os.rmdir("./build")
@@ -52,6 +53,7 @@ newaction
 		os.rmdir("./Daybreak/glad/.vscode")
 		os.rmdir("./Daybreak/glfw/.vscode")
 		os.rmdir("./Daybreak/imgui/.vscode")
+		os.rmdir("./Daybreak/yaml-cpp/.vscode/c_cpp_properties.json")
 		os.rmdir("./Sandbox/.vscode")
 		print("Done")
 	end
@@ -65,12 +67,14 @@ IncludeDirs["imgui"] = "Daybreak/vendor/imgui"
 IncludeDirs["glm"] = "Daybreak/vendor/glm"
 IncludeDirs["stb_image"] = "Daybreak/vendor/stb_image"
 IncludeDirs["entt"] = "Daybreak/vendor/entt/include"
+IncludeDirs["yaml-cpp"] = "Daybreak/vendor/yaml-cpp/include"
 
 group "Dependencies"
 	include "Daybreak/vendor/box2d"
 	include "Daybreak/vendor/glfw"
 	include "Daybreak/vendor/glad"
 	include "Daybreak/vendor/imgui"
+	include "Daybreak/vendor/yaml-cpp"
 group ""
 
 include "Daybreak"
