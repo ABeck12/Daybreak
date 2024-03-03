@@ -36,6 +36,8 @@ public:
 	    idleAnimation->AddKeyFrame(idle1, framesPerAnimationFrame, action);
 
 		GetComponent<Daybreak::AnimatorComponent>().Source = idleAnimation;
+		GetComponent<Daybreak::AnimatorComponent>().PixelsPerUnit = 50;
+		
 
 	    runAnimation = Daybreak::CreateRef<Daybreak::AnimationSource>();
         runAnimation->AddKeyFrame(run1, framesPerAnimationFrame);

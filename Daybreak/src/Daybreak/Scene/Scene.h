@@ -5,6 +5,7 @@
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Scene/Components.h"
 #include "Daybreak/Physics/PhysicsSim2D.h"
+#include "Daybreak/Core/UUID.h"
 
 #include <entt.hpp>
 
@@ -25,12 +26,14 @@ namespace Daybreak
 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntity(Entity& parent, const std::string& name = std::string());
+		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
+
 		void DestroyEntity(Entity entity);
 
 		Entity GetActiveCameraEntity();
 
 		Entity GetEntityByUUID(UUID uuid);
-		Entity FindEntityByName(std::string_view name);
+		Entity GetEntityByName(std::string_view name);
 
 		template<typename... Components>
 		auto GetAllEntitiesWith()

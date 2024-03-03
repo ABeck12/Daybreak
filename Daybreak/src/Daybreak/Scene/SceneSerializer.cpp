@@ -4,107 +4,108 @@
 #include "Daybreak/Scene/Components.h"
 #include "Daybreak/Scene/Entity.h"
 
+#define YAML_CPP_DLL 
 #define YAML_CPP_STATIC_DEFINE
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 
-/*
-// namespace YAML
-// {
-// 	template<>
-// 	struct convert<glm::vec2>
-// 	{
-// 		static Node encode(const glm::vec2& rhs)
-// 		{
-// 			Node node;
-// 			node.push_back(rhs.x);
-// 			node.push_back(rhs.y);
-// 			node.SetStyle(EmitterStyle::Flow);
-// 			return node;
-// 		}
 
-// 		static bool decode(const Node& node, glm::vec2& rhs)
-// 		{
-// 			if (!node.IsSequence() || node.size() != 2)
-// 				return false;
+namespace YAML
+{
+	template<>
+	struct convert<glm::vec2>
+	{
+		static Node encode(const glm::vec2& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.SetStyle(EmitterStyle::Flow);
+			return node;
+		}
 
-// 			rhs.x = node[0].as<float>();
-// 			rhs.y = node[1].as<float>();
-// 			return true;
-// 		}
-// 	};
+		static bool decode(const Node& node, glm::vec2& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 2)
+				return false;
 
-// 	template<>
-// 	struct convert<glm::vec3>
-// 	{
-// 		static Node encode(const glm::vec3& rhs)
-// 		{
-// 			Node node;
-// 			node.push_back(rhs.x);
-// 			node.push_back(rhs.y);
-// 			node.push_back(rhs.z);
-// 			node.SetStyle(EmitterStyle::Flow);
-// 			return node;
-// 		}
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			return true;
+		}
+	};
 
-// 		static bool decode(const Node& node, glm::vec3& rhs)
-// 		{
-// 			if (!node.IsSequence() || node.size() != 3)
-// 				return false;
+	template<>
+	struct convert<glm::vec3>
+	{
+		static Node encode(const glm::vec3& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			node.SetStyle(EmitterStyle::Flow);
+			return node;
+		}
 
-// 			rhs.x = node[0].as<float>();
-// 			rhs.y = node[1].as<float>();
-// 			rhs.z = node[2].as<float>();
-// 			return true;
-// 		}
-// 	};
+		static bool decode(const Node& node, glm::vec3& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 3)
+				return false;
 
-// 	template<>
-// 	struct convert<glm::vec4>
-// 	{
-// 		static Node encode(const glm::vec4& rhs)
-// 		{
-// 			Node node;
-// 			node.push_back(rhs.x);
-// 			node.push_back(rhs.y);
-// 			node.push_back(rhs.z);
-// 			node.push_back(rhs.w);
-// 			node.SetStyle(EmitterStyle::Flow);
-// 			return node;
-// 		}
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			rhs.z = node[2].as<float>();
+			return true;
+		}
+	};
 
-// 		static bool decode(const Node& node, glm::vec4& rhs)
-// 		{
-// 			if (!node.IsSequence() || node.size() != 4)
-// 				return false;
+	template<>
+	struct convert<glm::vec4>
+	{
+		static Node encode(const glm::vec4& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			node.push_back(rhs.w);
+			node.SetStyle(EmitterStyle::Flow);
+			return node;
+		}
 
-// 			rhs.x = node[0].as<float>();
-// 			rhs.y = node[1].as<float>();
-// 			rhs.z = node[2].as<float>();
-// 			rhs.w = node[3].as<float>();
-// 			return true;
-// 		}
-// 	};
+		static bool decode(const Node& node, glm::vec4& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 4)
+				return false;
 
-// 	template<>
-// 	struct convert<Daybreak::UUID>
-// 	{
-// 		static Node encode(const Daybreak::UUID& uuid)
-// 		{
-// 			Node node;
-// 			node.push_back((uint64_t)uuid);
-// 			return node;
-// 		}
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			rhs.z = node[2].as<float>();
+			rhs.w = node[3].as<float>();
+			return true;
+		}
+	};
 
-// 		static bool decode(const Node& node, Daybreak::UUID& uuid)
-// 		{
-// 			uuid = node.as<uint64_t>();
-// 			return true;
-// 		}
-// 	};
+	template<>
+	struct convert<Daybreak::UUID>
+	{
+		static Node encode(const Daybreak::UUID& uuid)
+		{
+			Node node;
+			node.push_back((uint64_t)uuid);
+			return node;
+		}
 
-// }
-*/
+		static bool decode(const Node& node, Daybreak::UUID& uuid)
+		{
+			uuid = node.as<uint64_t>();
+			return true;
+		}
+	};
+
+}
+
 
 
 namespace Daybreak
@@ -265,7 +266,55 @@ namespace Daybreak
 		fout << out.c_str();
 	}
 
-    void SceneSerializer::Deserialize(const std::string& filepath)
+    bool SceneSerializer::Deserialize(const std::string& filepath)
 	{
+		DB_CORE_WARN("Deserialize function not implemented");
+		return false;
+		// YAML::Node data;
+		// try
+		// {
+		// 	data = YAML::LoadFile(filepath);
+		// }
+		// catch (YAML::ParserException e)
+		// {
+		// 	DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", filepath, e.what());
+		// 	return false;
+		// }
+
+		// if (!data["Scene"])
+		// 	return false;
+
+		// std::string sceneName = data["Scene"].as<std::string>();
+		// DB_CORE_LOG("Deserializing scene '{0}'", sceneName);
+
+		// auto entities = data["Entities"];
+		// if (entities)
+		// {
+		// 	for (auto entity : entities)
+		// 	{
+		// 		uint64_t uuid = entity["Entity"].as<uint64_t>();
+
+		// 		std::string name;
+		// 		auto tagComponent = entity["TagComponent"];
+		// 		if (tagComponent)
+		// 			name = tagComponent["Tag"].as<std::string>();
+
+		// 		DB_CORE_LOG("Deserialized entity with ID = {0}, name = {1}", uuid, name);
+
+		// 		Entity deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
+
+		// 		auto transformComponent = entity["TransformComponent"];
+		// 		if (transformComponent)
+		// 		{
+		// 			// Entities always have transforms
+		// 			auto& tc = deserializedEntity.GetComponent<TransformComponent>();
+		// 			tc.Position = transformComponent["Position"].as<glm::vec3>();
+		// 			tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
+		// 			tc.Scale = transformComponent["Scale"].as<glm::vec3>();
+		// 		}
+		// 	}
+		// }
+
+		// return true;
 	}
 }

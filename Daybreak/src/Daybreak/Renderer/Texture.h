@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dbpch.h"
+
 namespace Daybreak
 {
 	enum class ImageFormat

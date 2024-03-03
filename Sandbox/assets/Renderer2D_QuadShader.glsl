@@ -45,5 +45,5 @@ void main()
 		discard;
 	o_Color = textureColor;
 
-	//color = vec4(v_TexCoord.x, v_TexCoord.y, 0.0f, 1.0f); //DEBUG color checker
+	// o_Color = vec4(v_TexCoord.x, v_TexCoord.y, 0.0f, 1.0f); //DEBUG color checker
 };

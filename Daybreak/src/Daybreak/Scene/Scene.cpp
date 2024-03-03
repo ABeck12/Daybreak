@@ -8,6 +8,7 @@
 #include "Daybreak/Physics/Physics2DUtils.h"
 #include "Daybreak/Core/Time.h"
 #include "Daybreak/Scene/ScriptableEntity.h"
+#include "Daybreak/Renderer/RenderCommand.h"
 
 #include <box2d/box2d.h>
 
@@ -43,6 +44,19 @@ namespace Daybreak
 		parentRc.AmountOfChildren++;
 
 		return child;
+	}
+
+	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
+	{
+		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<TransformComponent>();
+		entity.AddComponent<IDComponent>(uuid);
+		m_EntityMap[uuid] = entity;
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.Tag = name.empty() ? "Entity" : name;
+		entity.AddComponent<RelationshipComponent>();
+
+		return entity;
 	}
 
 	void Scene::DestroyEntity(Entity entity)
@@ -140,7 +154,7 @@ namespace Daybreak
 
 	void Scene::RenderScene()
 	{
-		auto cameraEntity = GetActiveCameraEntity();
+	auto cameraEntity = GetActiveCameraEntity();
 
 		glm::mat4 translation = glm::translate(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Position);
 		glm::mat4 rotation = glm::toMat4(glm::quat(cameraEntity.GetComponent<TransformComponent>().Rotation));
@@ -156,7 +170,7 @@ namespace Daybreak
 				auto& transform = entity.GetComponent<TransformComponent>();
 				auto& anim = entity.GetComponent<AnimatorComponent>();
 
-				Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);
+				Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);		
 			}
 		}
 
@@ -235,7 +249,7 @@ namespace Daybreak
 		m_PhysicsSim2D.ShutdownSimulation();
 	}
 
-	Entity Scene::FindEntityByName(std::string_view name)
+	Entity Scene::GetEntityByName(std::string_view name)
 	{
 		auto view = m_Registry.view<TagComponent>();
 		for (auto entity : view)

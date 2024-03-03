@@ -15,6 +15,7 @@ Fix pch file in premake
 
 # To Do List
 ### For Renderer2D:
+    Sprit sizing  needs to be changed such that we can have a huge sprite at scale 1. Look at how unity works with pixls per unit options.
     Font rendering
     Finish framebuffer class and add dynamic amounts of framebuffer attachments
     Graphics Context

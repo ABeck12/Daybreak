@@ -219,16 +219,16 @@ namespace Daybreak
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRenderer, int entityID)
 	{
 		if (spriteRenderer.Sprite)
-			DrawQuad(glm::scale(transform, { spriteRenderer.Sprite->GetWidth() / spriteRenderer.Sprite->GetHeight(), 1.0f, 1.0f }),
-				spriteRenderer.Sprite, spriteRenderer.TintColor, spriteRenderer.TilingFactor, entityID);
+			DrawQuad(glm::scale(transform, { (float)spriteRenderer.Sprite->GetWidth() / (float)spriteRenderer.PixelsPerUnit,  (float)spriteRenderer.Sprite->GetHeight() / (float)spriteRenderer.PixelsPerUnit, 1.0f }),
+				spriteRenderer.Sprite, spriteRenderer.TintColor, spriteRenderer.TilingFactor, (int)entityID);
 		else
 			DrawQuad(transform, s_Data.WhiteTexture, spriteRenderer.TintColor, spriteRenderer.TilingFactor, entityID);
 	}
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const AnimatorComponent& anim, int entityID)
 	{
-		Renderer2D::DrawQuad(glm::scale(transform, { anim.Source->GetCurrentKeyFrame().Sprite->GetWidth() / anim.Source->GetCurrentKeyFrame().Sprite->GetHeight(), 1.0f, 1.0f }),
-			anim.Source->GetCurrentKeyFrame().Sprite, anim.TintColor, 1.0f, int(entityID));
+		Renderer2D::DrawQuad(glm::scale(transform, { (float)anim.Source->GetCurrentKeyFrame().Sprite->GetWidth() / (float)anim.Source->GetCurrentKeyFrame().Sprite->GetHeight(), 1.0f, 1.0f }),
+			anim.Source->GetCurrentKeyFrame().Sprite, anim.TintColor, 1.0f, (int)entityID);
 	}
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform,const Ref<Texture2D>& texture, const glm::vec4& tintColor, const float& tilingFactor, int entityID)

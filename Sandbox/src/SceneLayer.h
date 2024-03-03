@@ -17,6 +17,7 @@ public:
 private:
 	void MoveCamera(Daybreak::Entity& entity, Daybreak::DeltaTime dt);
 
+	void DrawGrid();
 	void DrawColliders();
 	glm::vec3 RotatePoint(glm::vec3 vec, float theta);
 private:

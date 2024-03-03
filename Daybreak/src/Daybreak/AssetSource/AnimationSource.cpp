@@ -1,6 +1,6 @@
 #include "dbpch.h"
 
-#include "Daybreak/Animation/AnimationSource.h"
+#include "Daybreak/AssetSource/AnimationSource.h"
 
 namespace Daybreak
 {

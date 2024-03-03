@@ -1,6 +1,38 @@
 Scene: Untitled
 Entities:
-  - Entity: 5423667020259943241
+  - Entity: 2237672217776149134
+    TagComponent:
+      Tag: testsprite
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Filepath: ../Sandbox/assets/Test.png
+      TintColor: [1, 1, 1, 1]
+      TilingFactor: 1
+  - Entity: 9004612509921708864
+    TagComponent:
+      Tag: Background
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, 0, -1]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Filepath: ../Sandbox/assets/Background.png
+      TintColor: [1, 1, 1, 1]
+      TilingFactor: 1
+  - Entity: 13894620833582884326
     TagComponent:
       Tag: Floor
     RelationshipComponent:
@@ -21,26 +53,26 @@ Entities:
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
-  - Entity: 17632160898621823946
+  - Entity: 15776675582206100706
     TagComponent:
       Tag: Camera
     RelationshipComponent:
-      ParentID: 17713919386955522849
+      ParentID: 9642321316489600112
       AmountOfChildren: 0
       ChildrenIDs:
         []
     TransformComponent:
-      Position: [0, 0, -10]
+      Position: [0, 0, -15]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 17713919386955522849
+  - Entity: 9642321316489600112
     TagComponent:
       Tag: Player
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 1
       ChildrenIDs:
-        - 17632160898621823946
+        - 15776675582206100706
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]

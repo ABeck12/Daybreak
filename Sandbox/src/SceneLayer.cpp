@@ -46,35 +46,57 @@ SceneLayer::SceneLayer()
 	// anim.Source = animSource;
 
 
+
 	cameraEntity = m_Scene->CreateEntity(playerEntity, "Camera");
 	auto& cameraComp = cameraEntity.AddComponent<Daybreak::CameraComponent>();
 	cameraComp.Primary = true;
 	cameraComp.Camera.SetProjection(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
+	// cameraComp.Camera.SetProjection(glm::ortho(0.0f,1280.0f,0.0f,720.0f,0.1f,75.0f));
+	float swidth = 1280.0f/100;
+	float sheight = 720.0f / 100;
+	// float swidth = 16.0f;
+	// float sheight = 9.0f;
+	cameraComp.Camera.SetProjection(glm::ortho(-swidth/2,swidth/2,-sheight/2,sheight/2,0.1f,75.0f));
 	auto& cameraTransformComp = cameraEntity.GetComponent<Daybreak::TransformComponent>();
-	cameraTransformComp.Position = glm::vec3(0.0f, 0.0f, -10.0f);
+	cameraTransformComp.Position = glm::vec3(0.0f, 0.0f, -15.0f);
 
 	lastMousePos = Daybreak::Input::GetMousePosition();
 
 	floorEntity = m_Scene->CreateEntity("Floor");
-	auto& floorsr = floorEntity.AddComponent<Daybreak::SpriteRendererComponent>();
+	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Test.png");
+	auto& floorsr = floorEntity.AddComponent<Daybreak::SpriteRendererComponent>(texture);
 	auto& floorrb2d = floorEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	auto& floorbc2d = floorEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
 	auto& floortransform = floorEntity.GetComponent<Daybreak::TransformComponent>();
 	floortransform.Position = { 0.0f, -4.0f, 0.0f };
 	floortransform.Scale = { 15.0f, 1.0f, 1.0f };
-	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Sandbox/assets/Test.png");
-	floorsr.Sprite = texture;
+	// floorsr.Sprite = texture;
 
 	Daybreak::FrameBufferSpecifications fbspec;
 	fbspec.Width = 1280;
 	fbspec.Height = 720;
 	m_FrameBuffer = Daybreak::FrameBuffer::Create(fbspec);
 
-	Daybreak::SceneSerializer serializer(m_Scene);
-	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
-	DB_LOG(floorsr.Sprite->GetFilepath());
+	
+	// DB_LOG(floorsr.Sprite->GetFilepath());
 	// floorEntity.GetComponent<Daybreak::RelationshipComponent>().ParentEntity = &cameraEntity;
 	// m_Scene->CreateEntity(floorEntity, "TestChild");
+	auto& tileTexture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TileGrid.png");
+
+	auto background = m_Scene->CreateEntity("Background");
+	auto backgroundSprite = Daybreak::Texture2D::Create({ 1280,720, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Background.png");
+	auto& backgroundTransform = background.GetComponent<Daybreak::TransformComponent>();
+	backgroundTransform.Position.z = -1;
+	auto& backgroundSr = background.AddComponent<Daybreak::SpriteRendererComponent>();
+	backgroundSr.Sprite = backgroundSprite;
+	// backgroundSr.PixelsPerUnit = 1064;
+
+	auto test = m_Scene->CreateEntity("testsprite");
+	auto& testsr = test.AddComponent<Daybreak::SpriteRendererComponent>(texture);
+	
+
+	Daybreak::SceneSerializer serializer(m_Scene);
+	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
 }
 
 void SceneLayer::OnAttach()
@@ -90,6 +112,8 @@ void SceneLayer::OnDetach()
 void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 {
 	// m_FrameBuffer->Bind();
+	// m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position.z = -1;
+	// DB_LOG("player {} background {}", playerEntity.GetComponent<Daybreak::TransformComponent>().Position, m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position);
 
 	Daybreak::RenderCommand::Clear();
 
@@ -123,7 +147,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
 	{
-		cameraPos = glm::vec3(0.0f, 0.0f, -10.0f);
+		cameraPos = glm::vec3(0.0f, 0.0f, -15.0f);
 		auto& playerEntityPos = playerEntity.GetComponent<Daybreak::TransformComponent>().Position;
 		playerEntityPos = glm::vec3(0.0f);
 	}
@@ -136,6 +160,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	}
 
 	m_Scene->OnRuntimeUpdate(dt);
+	DrawGrid();
 	// m_FrameBuffer->Unbind();
 	// DrawColliders();
 }
@@ -160,7 +185,10 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 	{
 		Daybreak::WindowResizeEvent& e = (Daybreak::WindowResizeEvent&)event;
 		if (e.GetWidth() != 0 && e.GetHeight() != 0) // TEMPORARY!!!
-			m_Scene->GetActiveCameraEntity().GetComponent<Daybreak::CameraComponent>().Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.0f, 100.0f));
+		{
+			// m_Scene->GetActiveCameraEntity().GetComponent<Daybreak::CameraComponent>().Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.1f, 75.0f));
+			// m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position.z *= -1;
+		}
 	}
 }
 
@@ -317,4 +345,22 @@ glm::vec3 SceneLayer::RotatePoint(glm::vec3 vec, float theta)
 	out.y = vec.x * sin(theta) + vec.y * cos(theta);
 	out.z = vec.z;
 	return out;
+}
+
+void SceneLayer::DrawGrid()
+{
+	float length = 100.0f;
+	int numLines = 100;
+	glm::vec4 lineColor = { 0.82f, 0.82f, 0.82f, 1.0f };
+
+
+	for (int i = -numLines; i < numLines; i++)
+	{
+		// Daybreak::Renderer2D::DrawLine({(float)i+0.5f, -length,0.0f}, {(float)i+0.5f, length,0.0f}, lineColor);
+		// Daybreak::Renderer2D::DrawLine({ -length, (float)i + 0.5f, 0.0f }, { length, (float)i + 0.5f, 0.0f }, lineColor);
+
+		Daybreak::Renderer2D::DrawLine({(float)i, -length,0.0f}, {(float)i, length,0.0f}, {1.0f,1.0f,1.0f,1.0f});
+		Daybreak::Renderer2D::DrawLine({ -length, (float)i, 0.0f }, { length, (float)i, 0.0f }, {1.0f,1.0f,1.0f,0.5f});
+	}
+	Daybreak::Renderer2D::EndScene();
 }

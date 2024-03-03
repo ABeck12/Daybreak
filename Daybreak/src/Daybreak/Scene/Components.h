@@ -5,7 +5,7 @@
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Renderer/Camera.h"
 #include "Daybreak/Core/UUID.h"
-#include "Daybreak/Animation/AnimationSource.h"
+#include "Daybreak/AssetSource/AnimationSource.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -61,10 +61,13 @@ namespace Daybreak
 		Ref<Texture2D> Sprite;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float TilingFactor = 1.0f;
+		uint32_t PixelsPerUnit = 128; //TODO: move to a sprite asset class
 		// uint8_t RenderLayer = 0;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
+		SpriteRendererComponent(Ref<Texture2D> sprite)
+			: Sprite(sprite) {}
 	};
 
 	struct CameraComponent
@@ -143,6 +146,8 @@ namespace Daybreak
 		bool IsPlaying = true;
 		Ref<AnimationSource> Source;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		uint32_t PixelsPerUnit = 128; //TODO: move to a sprite asset class
+
 
 		AnimatorComponent() = default;
 		AnimatorComponent(const AnimatorComponent&) = default;
