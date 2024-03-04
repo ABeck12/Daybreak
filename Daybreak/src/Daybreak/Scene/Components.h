@@ -72,8 +72,15 @@ namespace Daybreak
 
 	struct CameraComponent
 	{
+		enum class ProjectionType
+		{
+			Perspective,
+			Orthographic
+		};
+		
 		Camera Camera;
 		bool Primary = false; // Move this to the scene class
+		ProjectionType Type = ProjectionType::Perspective;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;

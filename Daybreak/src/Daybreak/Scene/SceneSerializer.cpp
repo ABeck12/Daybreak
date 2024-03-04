@@ -131,6 +131,18 @@ namespace Daybreak
 		return out;
 	}
 
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::mat4& m)
+	{
+		out << YAML::Flow;
+		out << YAML::BeginSeq;
+		out	<< m[0][0] << m[0][1] << m[0][1] << m[0][1];
+		out	<< m[1][0] << m[1][1] << m[1][2] << m[1][3];
+		out	<< m[2][0] << m[2][1] << m[2][2] << m[2][3];
+		out	<< m[3][0] << m[3][1] << m[3][2] << m[3][3];
+		out	<< YAML::EndSeq;
+		return out;
+	}
+
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		DB_CORE_ASSERT(entity.HasComponent<IDComponent>(), "Entity does not have ID Component");
@@ -179,24 +191,80 @@ namespace Daybreak
 			out << YAML::BeginMap;
 
 			auto& sr = entity.GetComponent<SpriteRendererComponent>();
+
+			out << YAML::Key << "Sprite";
+			out << YAML::BeginMap;
 			out << YAML::Key << "Filepath" << YAML::Value << sr.Sprite->GetFilepath();
+			out << YAML::Key << "Specifications";
+			out << YAML::BeginMap;
+			out << YAML::Key << "Width" << YAML::Value << sr.Sprite->GetTexutreSpecifications().Width;
+			out << YAML::Key << "Height" << YAML::Value << sr.Sprite->GetTexutreSpecifications().Height;
+			switch (sr.Sprite->GetTexutreSpecifications().Format)
+			{
+				case ImageFormat::RGB:
+					out << YAML::Key << "Format" << YAML::Value << "RGB";
+					break;
+				case ImageFormat::RGBA:
+					out << YAML::Key << "Format" << YAML::Value << "RGBA";
+					break;
+				case ImageFormat::None:
+					out << YAML::Key << "Format" << YAML::Value << "None";
+					DB_CORE_ERROR("Can't serialize image type \"None\"");
+					break;
+			}
+			switch (sr.Sprite->GetTexutreSpecifications().Filter)
+			{
+				case TextureFilterType::Point:
+					out << YAML::Key << "Filter" << YAML::Value << "Point";
+					break;
+				case TextureFilterType::Bilinear:
+					out << YAML::Key << "Filter" << YAML::Value << "Bilinear";
+					break;					
+			}
+			out << YAML::EndMap; //Specifications
+			out << YAML::EndMap; //Sprite
+
 			out << YAML::Key << "TintColor" << YAML::Value << sr.TintColor;
 			out << YAML::Key << "TilingFactor" << YAML::Value << sr.TilingFactor;
-			// out << YAML::Key << "Width" << YAML::Value << sr.TilingFactor;
-			// out << YAML::Key << "Height" << YAML::Value << sr.TilingFactor;
-			// out << YAML::Key << "FIlterType" << YAML::Value << sr.TilingFactor;
+			out << YAML::Key << "PixelsPerUnit" << YAML::Value << sr.PixelsPerUnit;
 
 			out << YAML::EndMap;
-
-			DB_CORE_WARN("SpriteRendererComponent serialization not fully implemented");
 		}
 		if (entity.HasComponent<AnimatorComponent>())
 		{
-			DB_CORE_WARN("AnimatorComponent serialization implemented");
+			DB_CORE_WARN("AnimatorComponent serialization not implemented");
 		}
 		if (entity.HasComponent<Rigidbody2DComponent>())
 		{
-			DB_CORE_WARN("Rigidbody2DComponent serialization implemented");
+			out << YAML::Key << "BoxCollider2DComponent";
+			out << YAML::BeginMap;
+
+			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+
+			switch (rb2d.Type)
+			{
+				case (Rigidbody2DComponent::BodyType::Dynamic):
+					out << YAML::Key << "Type" << YAML::Value << "Dynamic";
+					break;
+				case (Rigidbody2DComponent::BodyType::Static):
+					out << YAML::Key << "Type" << YAML::Value << "Static";
+					break;
+				case (Rigidbody2DComponent::BodyType::Kinematic):
+					out << YAML::Key << "Type" << YAML::Value << "Kinematic";
+					break;
+			}
+			out << YAML::Key << "ContinuousDetection" << YAML::Value << rb2d.ContinuousDetection;
+			out << YAML::Key << "Velocity" << YAML::Value << rb2d.Velocity;
+			out << YAML::Key << "Mass" << YAML::Value << rb2d.Mass;
+			out << YAML::Key << "GravityScale" << YAML::Value << rb2d.GravityScale;
+			out << YAML::Key << "AngularDrag" << YAML::Value << rb2d.AngularDrag;
+			out << YAML::Key << "LinearDrag" << YAML::Value << rb2d.LinearDrag;
+			out << YAML::Key << "Density" << YAML::Value << rb2d.Density;
+			out << YAML::Key << "Friction" << YAML::Value << rb2d.Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << rb2d.Restitution;
+			out << YAML::Key << "RestitutionThreshold" << YAML::Value << rb2d.RestitutionThreshold;
+
+			out << YAML::EndMap;
 		}
 		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
@@ -226,11 +294,20 @@ namespace Daybreak
 		}
 		if (entity.HasComponent<CameraComponent>())
 		{
-			DB_CORE_WARN("CameraComponent serialization implemented");
+			out << YAML::Key << "CameraComponent";
+			out << YAML::BeginMap;
+
+			auto& cc = entity.GetComponent<CameraComponent>();
+
+			// out << YAML::Key << "CameraProjection" << YAML::Value << cc.Camera.GetProjection();
+			out << YAML::Key << "Primary" << YAML::Value << cc.Primary;
+
+			out << YAML::EndMap;
+			DB_CORE_WARN("CameraComponent serialization not fully implemented");
 		}
 		if (entity.HasComponent<NativeScriptComponent>())
 		{
-			DB_CORE_WARN("NativeScriptComponent serialization implemented");
+			DB_CORE_WARN("NativeScriptComponent serialization not implemented");
 		}
 
 		out << YAML::EndMap;

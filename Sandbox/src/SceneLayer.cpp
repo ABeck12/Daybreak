@@ -22,6 +22,8 @@ SceneLayer::SceneLayer()
 	rb2d.Restitution = 0.00f;
 	// rb2d.RestitutionThreshold = 2.0f;
 	auto& bc2d = playerEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
+	bc2d.Size = { 0.5f, 0.5f };
+	bc2d.Offset.y = 0.04f;
 
 	const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
 	float width = 50.;
@@ -56,9 +58,9 @@ SceneLayer::SceneLayer()
 	float sheight = 720.0f / 100;
 	// float swidth = 16.0f;
 	// float sheight = 9.0f;
-	cameraComp.Camera.SetProjection(glm::ortho(-swidth/2,swidth/2,-sheight/2,sheight/2,0.1f,75.0f));
+	// cameraComp.Camera.SetProjection(glm::ortho(-swidth/2,swidth/2,-sheight/2,sheight/2,0.1f,75.0f));
 	auto& cameraTransformComp = cameraEntity.GetComponent<Daybreak::TransformComponent>();
-	cameraTransformComp.Position = glm::vec3(0.0f, 0.0f, -15.0f);
+	cameraTransformComp.Position = glm::vec3(0.0f, 0.0f, -10.0f);
 
 	lastMousePos = Daybreak::Input::GetMousePosition();
 
@@ -147,7 +149,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 
 	if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
 	{
-		cameraPos = glm::vec3(0.0f, 0.0f, -15.0f);
+		cameraPos = glm::vec3(0.0f, 0.0f, -10.0f);
 		auto& playerEntityPos = playerEntity.GetComponent<Daybreak::TransformComponent>().Position;
 		playerEntityPos = glm::vec3(0.0f);
 	}
@@ -186,7 +188,7 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 		Daybreak::WindowResizeEvent& e = (Daybreak::WindowResizeEvent&)event;
 		if (e.GetWidth() != 0 && e.GetHeight() != 0) // TEMPORARY!!!
 		{
-			// m_Scene->GetActiveCameraEntity().GetComponent<Daybreak::CameraComponent>().Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.1f, 75.0f));
+			m_Scene->GetActiveCameraEntity().GetComponent<Daybreak::CameraComponent>().Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.1f, 75.0f));
 			// m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position.z *= -1;
 		}
 	}
@@ -356,11 +358,11 @@ void SceneLayer::DrawGrid()
 
 	for (int i = -numLines; i < numLines; i++)
 	{
-		// Daybreak::Renderer2D::DrawLine({(float)i+0.5f, -length,0.0f}, {(float)i+0.5f, length,0.0f}, lineColor);
-		// Daybreak::Renderer2D::DrawLine({ -length, (float)i + 0.5f, 0.0f }, { length, (float)i + 0.5f, 0.0f }, lineColor);
+		Daybreak::Renderer2D::DrawLine({(float)i+0.5f, -length,0.0f}, {(float)i+0.5f, length,0.0f}, lineColor);
+		Daybreak::Renderer2D::DrawLine({ -length, (float)i + 0.5f, 0.0f }, { length, (float)i + 0.5f, 0.0f }, lineColor);
 
-		Daybreak::Renderer2D::DrawLine({(float)i, -length,0.0f}, {(float)i, length,0.0f}, {1.0f,1.0f,1.0f,1.0f});
-		Daybreak::Renderer2D::DrawLine({ -length, (float)i, 0.0f }, { length, (float)i, 0.0f }, {1.0f,1.0f,1.0f,0.5f});
+		// Daybreak::Renderer2D::DrawLine({(float)i, -length,0.0f}, {(float)i, length,0.0f}, {1.0f,1.0f,1.0f,1.0f});
+		// Daybreak::Renderer2D::DrawLine({ -length, (float)i, 0.0f }, { length, (float)i, 0.0f }, {1.0f,1.0f,1.0f,0.5f});
 	}
 	Daybreak::Renderer2D::EndScene();
 }

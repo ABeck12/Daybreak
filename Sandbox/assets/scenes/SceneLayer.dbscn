@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 2237672217776149134
+  - Entity: 10780218913058575697
     TagComponent:
       Tag: testsprite
     RelationshipComponent:
@@ -13,10 +13,17 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Filepath: ../Sandbox/assets/Test.png
+      Sprite:
+        Filepath: ../Sandbox/assets/Test.png
+        Specifications:
+          Width: 128
+          Height: 128
+          Format: RGBA
+          Filter: Point
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
-  - Entity: 9004612509921708864
+      PixelsPerUnit: 128
+  - Entity: 14632398339497782773
     TagComponent:
       Tag: Background
     RelationshipComponent:
@@ -29,10 +36,17 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Filepath: ../Sandbox/assets/Background.png
+      Sprite:
+        Filepath: ../Sandbox/assets/Background.png
+        Specifications:
+          Width: 1280
+          Height: 720
+          Format: RGBA
+          Filter: Point
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
-  - Entity: 13894620833582884326
+      PixelsPerUnit: 128
+  - Entity: 16915373598974467166
     TagComponent:
       Tag: Floor
     RelationshipComponent:
@@ -45,40 +59,73 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [15, 1, 1]
     SpriteRendererComponent:
-      Filepath: ../Sandbox/assets/Test.png
+      Sprite:
+        Filepath: ../Sandbox/assets/Test.png
+        Specifications:
+          Width: 128
+          Height: 128
+          Format: RGBA
+          Filter: Point
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
+      PixelsPerUnit: 128
+    BoxCollider2DComponent:
+      Type: Static
+      ContinuousDetection: false
+      Velocity: [0, 0]
+      Mass: 1
+      GravityScale: 1
+      AngularDrag: 1
+      LinearDrag: 1
+      Density: 1
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
     BoxCollider2DComponent:
       Size: [0.5, 0.5]
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
-  - Entity: 15776675582206100706
+  - Entity: 13042950047631110110
     TagComponent:
       Tag: Camera
     RelationshipComponent:
-      ParentID: 9642321316489600112
+      ParentID: 9941527029914516220
       AmountOfChildren: 0
       ChildrenIDs:
         []
     TransformComponent:
-      Position: [0, 0, -15]
+      Position: [0, 0, -10]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 9642321316489600112
+    CameraComponent:
+      Primary: true
+  - Entity: 9941527029914516220
     TagComponent:
       Tag: Player
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 1
       ChildrenIDs:
-        - 15776675582206100706
+        - 13042950047631110110
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     BoxCollider2DComponent:
+      Type: Dynamic
+      ContinuousDetection: false
+      Velocity: [0, 0]
+      Mass: 1
+      GravityScale: 1
+      AngularDrag: 1
+      LinearDrag: 1
+      Density: 1
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    BoxCollider2DComponent:
       Size: [0.5, 0.5]
-      Offset: [0, 0]
+      Offset: [0, 0.0399999991]
       CollisionLayer: 0
       IsTrigger: false
