@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 10780218913058575697
+  - Entity: 8475970488157879469
     TagComponent:
       Tag: testsprite
     RelationshipComponent:
@@ -9,7 +9,7 @@ Entities:
       ChildrenIDs:
         []
     TransformComponent:
-      Position: [0, 0, 0]
+      Position: [0, -1, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
@@ -23,7 +23,12 @@ Entities:
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
       PixelsPerUnit: 128
-  - Entity: 14632398339497782773
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+  - Entity: 13234486112094865771
     TagComponent:
       Tag: Background
     RelationshipComponent:
@@ -46,7 +51,7 @@ Entities:
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
       PixelsPerUnit: 128
-  - Entity: 16915373598974467166
+  - Entity: 8942970002807926975
     TagComponent:
       Tag: Floor
     RelationshipComponent:
@@ -86,11 +91,11 @@ Entities:
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
-  - Entity: 13042950047631110110
+  - Entity: 761419428405229904
     TagComponent:
       Tag: Camera
     RelationshipComponent:
-      ParentID: 9941527029914516220
+      ParentID: 10354100007601204076
       AmountOfChildren: 0
       ChildrenIDs:
         []
@@ -100,14 +105,14 @@ Entities:
       Scale: [1, 1, 1]
     CameraComponent:
       Primary: true
-  - Entity: 9941527029914516220
+  - Entity: 10354100007601204076
     TagComponent:
       Tag: Player
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 1
       ChildrenIDs:
-        - 13042950047631110110
+        - 761419428405229904
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
@@ -125,7 +130,7 @@ Entities:
       Restitution: 0
       RestitutionThreshold: 0.5
     BoxCollider2DComponent:
-      Size: [0.5, 0.5]
+      Size: [0.100000001, 0.5]
       Offset: [0, 0.0399999991]
       CollisionLayer: 0
       IsTrigger: false

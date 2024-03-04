@@ -19,7 +19,8 @@ namespace Daybreak
 		void FixedStepSimulation();
 		void ShutdownSimulation();
 
-		void AddEntity(Entity& entity);
+		void AddColliderWithRigidbody(Entity& entity);
+		void AddCollider(Entity& entity);
 
 		bool RayCast(const glm::vec2& startPos, const glm::vec2& endPos);
 		bool RayCast(const glm::vec2& startPos, const glm::vec2& directionNorm, const float& depth);

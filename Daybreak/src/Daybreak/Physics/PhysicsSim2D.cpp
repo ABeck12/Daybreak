@@ -122,7 +122,7 @@ namespace Daybreak
 		m_PhysicsWorld->Step(0.016f, velocityIterations, positionIterations); // For now this is the fixed delta time
 	}
 
-	void PhysicsSim2D::AddEntity(Entity& entity)
+	void PhysicsSim2D::AddColliderWithRigidbody(Entity& entity)
 	{
 		auto& transform = entity.GetComponent<TransformComponent>();
 		auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
@@ -201,6 +201,58 @@ namespace Daybreak
 			massData.I = 0.5f * rb2d.Mass * cc2d.Radius * cc2d.Radius;
 
 			body->SetMassData(&massData);
+		}
+	}
+
+	void PhysicsSim2D::AddCollider(Entity& entity)
+	{
+		auto& transform = entity.GetComponent<TransformComponent>();
+		auto uuid = entity.GetUUID();
+
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_staticBody;
+		bodyDef.position.Set(transform.Position.x, transform.Position.y);
+		bodyDef.angle = transform.Rotation.z;
+		bodyDef.bullet = true;
+
+		b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+
+		if (entity.HasComponent<BoxCollider2DComponent>())
+		{
+			auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+
+			b2PolygonShape boxShape;
+			boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
+	
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &boxShape;
+			fixtureDef.isSensor = bc2d.IsTrigger;
+
+			fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_Scene);
+			fixtureDef.userData.uuid = entity.GetUUID();
+
+			b2Fixture* fixture = body->CreateFixture(&fixtureDef);
+			bc2d.RuntimeFixture = fixture;
+			bc2d.RuntimeBody = body;
+		}
+		else if (entity.HasComponent<CircleCollider2DComponent>())
+		{
+			auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+
+			b2CircleShape circleShape;
+			circleShape.m_p.Set(transform.Position.x + cc2d.Offset.x, transform.Position.y + cc2d.Offset.y);
+			circleShape.m_radius = cc2d.Radius;
+
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &circleShape;
+			fixtureDef.isSensor = cc2d.IsTrigger;
+
+			fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_Scene);
+			fixtureDef.userData.uuid = entity.GetUUID();
+
+			b2Fixture* fixture = body->CreateFixture(&fixtureDef);
+			cc2d.RuntimeFixture = fixture;
+			cc2d.RuntimeBody = body;
 		}
 	}
 

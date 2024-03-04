@@ -192,6 +192,32 @@ namespace Daybreak
 	void Scene::OnPhysicsUpdate(DeltaTime dt)
 	{
 		// Set data for Box2D
+		{
+			auto boxview = m_Registry.view<BoxCollider2DComponent>();
+
+			for (auto e : boxview)
+			{
+				Entity entity = { e, this };
+				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+
+				b2Body* body = (b2Body*)bc2d.RuntimeBody;
+				body->SetEnabled(bc2d.Enabled);
+			}
+		}
+
+		{
+			auto boxview = m_Registry.view<CircleCollider2DComponent>();
+
+			for (auto e : boxview)
+			{
+				Entity entity = { e, this };
+				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+
+				b2Body* body = (b2Body*)cc2d.RuntimeBody;
+				body->SetEnabled(cc2d.Enabled);
+			}
+		}
+
 		auto view = m_Registry.view<Rigidbody2DComponent>();
 
 		for (auto e : view)
@@ -208,7 +234,7 @@ namespace Daybreak
 		float startTime = Time::GetTime();
 		while (m_LastUpdateTime < startTime)
 		{
-			m_PhysicsSim2D.FixedStepSimulation();
+			m_PhysicsSim2D->FixedStepSimulation();
 			m_LastUpdateTime += 0.016f; // For now this is the fixed delta time
 		}
 
@@ -233,20 +259,46 @@ namespace Daybreak
 
 	void Scene::OnPhysicsStart()
 	{
-		m_PhysicsSim2D.InitSimulation(this);
+		m_PhysicsSim2D->InitSimulation(this);
 
-		auto view = m_Registry.view<Rigidbody2DComponent>();
-
-		for (auto e : view)
 		{
-			Entity entity = { e, this };
-			m_PhysicsSim2D.AddEntity(entity);
+			auto view = m_Registry.view<BoxCollider2DComponent>();
+
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				if (entity.HasComponent<Rigidbody2DComponent>())
+				{
+					m_PhysicsSim2D->AddColliderWithRigidbody(entity);
+				}
+				else
+				{
+					m_PhysicsSim2D->AddCollider(entity);
+				}
+			}
+		}
+
+		{
+			auto view = m_Registry.view<CircleCollider2DComponent>();
+
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				if (entity.HasComponent<Rigidbody2DComponent>())
+				{
+					m_PhysicsSim2D->AddColliderWithRigidbody(entity);
+				}
+				else
+				{
+					m_PhysicsSim2D->AddCollider(entity);
+				}
+			}
 		}
 	}
 
 	void Scene::OnPhysicsStop()
 	{
-		m_PhysicsSim2D.ShutdownSimulation();
+		m_PhysicsSim2D->ShutdownSimulation();
 	}
 
 	Entity Scene::GetEntityByName(std::string_view name)

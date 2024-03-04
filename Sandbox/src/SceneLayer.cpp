@@ -22,7 +22,7 @@ SceneLayer::SceneLayer()
 	rb2d.Restitution = 0.00f;
 	// rb2d.RestitutionThreshold = 2.0f;
 	auto& bc2d = playerEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
-	bc2d.Size = { 0.5f, 0.5f };
+	bc2d.Size = { 0.1f, 0.5f };
 	bc2d.Offset.y = 0.04f;
 
 	const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
@@ -94,8 +94,11 @@ SceneLayer::SceneLayer()
 	// backgroundSr.PixelsPerUnit = 1064;
 
 	auto test = m_Scene->CreateEntity("testsprite");
+
 	auto& testsr = test.AddComponent<Daybreak::SpriteRendererComponent>(texture);
-	
+	auto& testtrans = test.GetComponent<Daybreak::TransformComponent>();
+	testtrans.Position.y = -1;
+	auto& testbc2d = test.AddComponent<Daybreak::BoxCollider2DComponent>();
 
 	Daybreak::SceneSerializer serializer(m_Scene);
 	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");

@@ -50,7 +50,8 @@ namespace Daybreak
 
 	private:
 		entt::registry m_Registry;
-		PhysicsSim2D m_PhysicsSim2D;
+		Scope<PhysicsSim2D> m_PhysicsSim2D = CreateScope<PhysicsSim2D>();
+		// PhysicsSim2D m_PhysicsSim2D;
 		float m_LastUpdateTime = 0.0f;
 
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
