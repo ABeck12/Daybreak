@@ -5,7 +5,6 @@
 #include "Daybreak/Scene/Components.h"
 #include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Renderer/Renderer2D.h"
-#include "Daybreak/Physics/Physics2DUtils.h"
 #include "Daybreak/Core/Time.h"
 #include "Daybreak/Scene/ScriptableEntity.h"
 #include "Daybreak/Renderer/RenderCommand.h"

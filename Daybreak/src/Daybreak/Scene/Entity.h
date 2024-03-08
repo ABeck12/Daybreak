@@ -62,7 +62,7 @@ namespace Daybreak
 		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
 
 	private:
-		entt::entity m_EntityHandle{ entt::null };
-		Scene* m_Scene = nullptr; //TODO: This could be turned into a weak ref system
+		Scene* m_Scene = nullptr; // TODO: This could be turned into a weak ref system
+		entt::entity m_EntityHandle { entt::null };
 	};
 }
