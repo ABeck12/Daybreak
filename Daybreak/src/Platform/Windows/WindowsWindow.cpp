@@ -16,7 +16,7 @@ namespace Daybreak
 		DB_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps& props)
+	WindowsWindow::WindowsWindow(const WindowSpecifications& props)
 	{
 		Init(props);
 	}
@@ -26,7 +26,7 @@ namespace Daybreak
 		Shutdown();
 	}
 
-	void WindowsWindow::Init(const WindowProps& props)
+	void WindowsWindow::Init(const WindowSpecifications& props)
 	{
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;

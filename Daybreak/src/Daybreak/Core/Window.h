@@ -6,7 +6,7 @@
 
 namespace Daybreak
 {
-	struct WindowProps
+	struct WindowSpecifications
 	{
 		std::string Title = "Daybreak Engine";
 		uint32_t Width = 1280;
@@ -32,6 +32,6 @@ namespace Daybreak
 
 		virtual void* GetNativeWindow() const = 0;
 	
-		static Scope<Window> Create(const WindowProps& props = WindowProps());
+		static Scope<Window> Create(const WindowSpecifications& props = WindowSpecifications());
 	};	
 }

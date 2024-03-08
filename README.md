@@ -15,7 +15,6 @@ Fix pch file in premake
 
 # To Do List
 ### For Renderer2D:
-    Sprit sizing  needs to be changed such that we can have a huge sprite at scale 1. Look at how unity works with pixls per unit options.
     Font rendering
     Finish framebuffer class and add dynamic amounts of framebuffer attachments
     Graphics Context
@@ -29,13 +28,12 @@ Fix pch file in premake
 
 ### For Physics2D:
     IsColliding function
-    Adding of forces/impulse
     Physics Layers -> rework as enums instead of actual numbers
     Check for memory leaks from box2d userdata and scene ptr. Do I need to delete scene*? Do box2d userdatas need to be manually deleted?
 
 ### Scene
     Component and Entity active or not
-        Includes rendering and physics too
+        Includes rendering
     Scene saving and loading
     Add OnScenePlay and OnSceneStop
     Relationship components

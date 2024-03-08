@@ -14,10 +14,17 @@
 
 namespace Daybreak
 {
+	struct ApplicationSpecifications
+	{
+		WindowSpecifications WindowSpec;
+		// bool UseGPUHighPerformance = false;
+	};
+
+
 	class Application
 	{
 	public:
-		Application();
+		Application(ApplicationSpecifications spec = ApplicationSpecifications());
 		virtual ~Application();
 
 		void Run();
@@ -32,17 +39,19 @@ namespace Daybreak
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
 
-
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
+	private:
 		Scope<Window> m_Window;
 		bool m_Running = true;
 		bool m_Minimized = false;
+		ApplicationSpecifications m_AppSpec;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
 		float m_LastFrameTime = 0.0f;
+
 	private:
 		static Application* s_Instance;
 	};

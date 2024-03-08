@@ -143,6 +143,43 @@ namespace Daybreak
 		return out;
 	}
 
+	// Temporary
+	YAML::Emitter& operator<<(YAML::Emitter& out, const Ref<Texture2D>& texture)
+	{
+		out << YAML::BeginMap;
+		out << YAML::Key << "Filepath" << YAML::Value << texture->GetFilepath();
+		out << YAML::Key << "Specifications";
+		out << YAML::BeginMap;
+		out << YAML::Key << "Width" << YAML::Value << texture->GetTexutreSpecifications().Width;
+		out << YAML::Key << "Height" << YAML::Value << texture->GetTexutreSpecifications().Height;
+		switch (texture->GetTexutreSpecifications().Format)
+		{
+			case ImageFormat::RGB:
+				out << YAML::Key << "Format" << YAML::Value << "RGB";
+				break;
+			case ImageFormat::RGBA:
+				out << YAML::Key << "Format" << YAML::Value << "RGBA";
+				break;
+			case ImageFormat::None:
+				out << YAML::Key << "Format" << YAML::Value << "None";
+				DB_CORE_ERROR("Can't serialize image type \"None\"");
+				break;
+		}
+		switch (texture->GetTexutreSpecifications().Filter)
+		{
+			case TextureFilterType::Point:
+				out << YAML::Key << "Filter" << YAML::Value << "Point";
+				break;
+			case TextureFilterType::Bilinear:
+				out << YAML::Key << "Filter" << YAML::Value << "Bilinear";
+				break;					
+		}
+		out << YAML::EndMap;
+		out << YAML::EndMap;
+
+		return out;
+	}
+
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		DB_CORE_ASSERT(entity.HasComponent<IDComponent>(), "Entity does not have ID Component");
@@ -192,37 +229,7 @@ namespace Daybreak
 
 			auto& sr = entity.GetComponent<SpriteRendererComponent>();
 
-			out << YAML::Key << "Sprite";
-			out << YAML::BeginMap;
-			out << YAML::Key << "Filepath" << YAML::Value << sr.Sprite->GetFilepath();
-			out << YAML::Key << "Specifications";
-			out << YAML::BeginMap;
-			out << YAML::Key << "Width" << YAML::Value << sr.Sprite->GetTexutreSpecifications().Width;
-			out << YAML::Key << "Height" << YAML::Value << sr.Sprite->GetTexutreSpecifications().Height;
-			switch (sr.Sprite->GetTexutreSpecifications().Format)
-			{
-				case ImageFormat::RGB:
-					out << YAML::Key << "Format" << YAML::Value << "RGB";
-					break;
-				case ImageFormat::RGBA:
-					out << YAML::Key << "Format" << YAML::Value << "RGBA";
-					break;
-				case ImageFormat::None:
-					out << YAML::Key << "Format" << YAML::Value << "None";
-					DB_CORE_ERROR("Can't serialize image type \"None\"");
-					break;
-			}
-			switch (sr.Sprite->GetTexutreSpecifications().Filter)
-			{
-				case TextureFilterType::Point:
-					out << YAML::Key << "Filter" << YAML::Value << "Point";
-					break;
-				case TextureFilterType::Bilinear:
-					out << YAML::Key << "Filter" << YAML::Value << "Bilinear";
-					break;					
-			}
-			out << YAML::EndMap; //Specifications
-			out << YAML::EndMap; //Sprite
+			out << YAML::Key << "Sprite" << YAML::Value << sr.Sprite;
 
 			out << YAML::Key << "TintColor" << YAML::Value << sr.TintColor;
 			out << YAML::Key << "TilingFactor" << YAML::Value << sr.TilingFactor;

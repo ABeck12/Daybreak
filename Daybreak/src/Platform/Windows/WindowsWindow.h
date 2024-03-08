@@ -10,7 +10,7 @@ namespace Daybreak
 	class WindowsWindow : public Window
 	{
 	public:
-		WindowsWindow(const WindowProps& props);
+		WindowsWindow(const WindowSpecifications& props);
 		virtual ~WindowsWindow();
 		void OnUpdate() override;
 
@@ -24,7 +24,7 @@ namespace Daybreak
 		virtual void* GetNativeWindow() const { return m_Window; }
 
 	private:
-		virtual void Init(const WindowProps& props);
+		virtual void Init(const WindowSpecifications& props);
 		virtual void Shutdown();
 
 	private:

@@ -4,7 +4,8 @@
 #include "GameLayer.h"
 #include "SceneLayer.h"
 
-extern "C" {
+extern "C"
+{
 	// __declspec(dllexport) DWORD NvOptimusEnablement = 1;
 	//__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
@@ -12,11 +13,12 @@ extern "C" {
 class Sandbox : public Daybreak::Application
 {
 public:
-	Sandbox()
+	Sandbox(Daybreak::ApplicationSpecifications spec)
+		: Daybreak::Application(spec)
 	{
-		//PushLayer(new GameLayer());
 		PushLayer(new SceneLayer());
 	}
+
 	~Sandbox()
 	{
 	}
@@ -24,5 +26,7 @@ public:
 
 Daybreak::Application* Daybreak::CreateApplication()
 {
-	return new Sandbox();
+	ApplicationSpecifications spec;
+	Sandbox* sandbox = new Sandbox(spec);
+	return sandbox;
 }

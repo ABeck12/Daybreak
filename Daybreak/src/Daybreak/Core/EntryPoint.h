@@ -1,4 +1,7 @@
 #pragma once
+
+#include "Daybreak/Core/Application.h"
+
 extern Daybreak::Application* Daybreak::CreateApplication();
 
 int main(int argc, char** argv)
