@@ -154,7 +154,7 @@ namespace Daybreak
 
 	void Scene::RenderScene()
 	{
-	auto cameraEntity = GetActiveCameraEntity();
+		auto cameraEntity = GetActiveCameraEntity();
 
 		glm::mat4 translation = glm::translate(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Position);
 		glm::mat4 rotation = glm::toMat4(glm::quat(cameraEntity.GetComponent<TransformComponent>().Rotation));
@@ -170,7 +170,7 @@ namespace Daybreak
 				auto& transform = entity.GetComponent<TransformComponent>();
 				auto& anim = entity.GetComponent<AnimatorComponent>();
 
-				Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);		
+				Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);
 			}
 		}
 
@@ -259,6 +259,7 @@ namespace Daybreak
 
 	void Scene::OnPhysicsStart()
 	{
+		m_PhysicsSim2D = new PhysicsSim2D();
 		m_PhysicsSim2D->InitSimulation(this);
 
 		{
@@ -294,11 +295,14 @@ namespace Daybreak
 				}
 			}
 		}
+		PhysicsSim2D::SetActiveSim(this->m_PhysicsSim2D);
 	}
 
 	void Scene::OnPhysicsStop()
 	{
+		PhysicsSim2D::SetActiveSim(nullptr);
 		m_PhysicsSim2D->ShutdownSimulation();
+		delete m_PhysicsSim2D;
 	}
 
 	Entity Scene::GetEntityByName(std::string_view name)

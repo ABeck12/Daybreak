@@ -33,6 +33,9 @@ namespace Daybreak
 		void AddLinearImpulse(const Rigidbody2DComponent& rb2d, const glm::vec2& impulse);
 		void AddAngularImpulse(const Rigidbody2DComponent& rb2d, const float& impulse);
 
+		// Rework into a project class
+		static PhysicsSim2D* GetActiveSim() { return s_ActiveSim; }
+
 	private:
 		Scene* m_Scene;
 		b2World* m_PhysicsWorld;
@@ -40,6 +43,12 @@ namespace Daybreak
 		ContactFilter* m_ContactFilter;
 
 		float m_LastUpdateTime = 0.0f;
-	};
-}
 
+	private:
+		static void SetActiveSim(PhysicsSim2D* sim) { s_ActiveSim = sim; }
+		static PhysicsSim2D* s_ActiveSim;
+
+		friend Scene;
+	};
+
+}

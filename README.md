@@ -28,6 +28,7 @@ Fix pch file in premake
 
 ### For Physics2D:
     IsColliding function
+    Rework static s_ActiveSim pointer into a project class
     Physics Layers -> rework as enums instead of actual numbers
     Check for memory leaks from box2d userdata and scene ptr. Do I need to delete scene*? Do box2d userdatas need to be manually deleted?
 

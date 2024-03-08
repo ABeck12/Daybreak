@@ -4,7 +4,6 @@
 
 #include "Daybreak/Scene/Scene.h"
 #include "Daybreak/Scene/Entity.h"
-#include "Daybreak/Physics/Physics2DUtils.h"
 #include "Daybreak/Scene/ScriptableEntity.h"
 #include "Daybreak/Core/UUID.h"
 
@@ -12,6 +11,37 @@
 
 namespace Daybreak
 {
+	PhysicsSim2D* PhysicsSim2D::s_ActiveSim = nullptr;
+
+	namespace Utils
+	{
+		inline b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType bodyType)
+		{
+			switch (bodyType)
+			{
+				case Rigidbody2DComponent::BodyType::Static: return b2_staticBody;
+				case Rigidbody2DComponent::BodyType::Dynamic: return b2_dynamicBody;
+				case Rigidbody2DComponent::BodyType::Kinematic: return b2_kinematicBody;
+			}
+
+			DB_CORE_ASSERT(false, "Unknown body type");
+			return b2_staticBody;
+		}
+
+		inline Rigidbody2DComponent::BodyType Rigidbody2DTypeFromBox2DBody(b2BodyType bodyType)
+		{
+			switch (bodyType)
+			{
+				case b2_staticBody: return Rigidbody2DComponent::BodyType::Static;
+				case b2_dynamicBody: return Rigidbody2DComponent::BodyType::Dynamic;
+				case b2_kinematicBody: return Rigidbody2DComponent::BodyType::Kinematic;
+			}
+
+			DB_CORE_ASSERT(false, "Unknown body type");
+			return Rigidbody2DComponent::BodyType::Static;
+		}
+	}
+
 	class ContactListener : public b2ContactListener
 	{
 		void BeginContact(b2Contact* contact)
@@ -84,7 +114,8 @@ namespace Daybreak
 	public:
 		bool m_Hit;
 
-		RaycastCallback() : m_Hit(false) {}
+		RaycastCallback()
+			: m_Hit(false) {}
 
 		float ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
 		{
@@ -148,7 +179,7 @@ namespace Daybreak
 
 			b2PolygonShape boxShape;
 			boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
-	
+
 			b2FixtureDef fixtureDef;
 			fixtureDef.shape = &boxShape;
 			fixtureDef.density = rb2d.Density;
@@ -223,7 +254,7 @@ namespace Daybreak
 
 			b2PolygonShape boxShape;
 			boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
-	
+
 			b2FixtureDef fixtureDef;
 			fixtureDef.shape = &boxShape;
 			fixtureDef.isSensor = bc2d.IsTrigger;

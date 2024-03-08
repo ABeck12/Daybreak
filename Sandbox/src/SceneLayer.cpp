@@ -18,12 +18,12 @@ SceneLayer::SceneLayer()
 	// auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
 	auto& rb2d = playerEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	rb2d.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
-	rb2d.FixedRotation = true;
+	// rb2d.FixedRotation = true;
 	rb2d.Restitution = 0.00f;
 	// rb2d.RestitutionThreshold = 2.0f;
 	auto& bc2d = playerEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
-	bc2d.Size = { 0.1f, 0.5f };
-	bc2d.Offset.y = 0.04f;
+	bc2d.Size = { 0.1f, 0.48f };
+	// bc2d.Offset.y = 0.04f;
 
 	const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
 	float width = 50.;
@@ -48,13 +48,12 @@ SceneLayer::SceneLayer()
 	// anim.Source = animSource;
 
 
-
 	cameraEntity = m_Scene->CreateEntity(playerEntity, "Camera");
 	auto& cameraComp = cameraEntity.AddComponent<Daybreak::CameraComponent>();
 	cameraComp.Primary = true;
 	cameraComp.Camera.SetProjection(glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 75.0f));
 	// cameraComp.Camera.SetProjection(glm::ortho(0.0f,1280.0f,0.0f,720.0f,0.1f,75.0f));
-	float swidth = 1280.0f/100;
+	float swidth = 1280.0f / 100;
 	float sheight = 720.0f / 100;
 	// float swidth = 16.0f;
 	// float sheight = 9.0f;
@@ -79,14 +78,14 @@ SceneLayer::SceneLayer()
 	fbspec.Height = 720;
 	m_FrameBuffer = Daybreak::FrameBuffer::Create(fbspec);
 
-	
+
 	// DB_LOG(floorsr.Sprite->GetFilepath());
 	// floorEntity.GetComponent<Daybreak::RelationshipComponent>().ParentEntity = &cameraEntity;
 	// m_Scene->CreateEntity(floorEntity, "TestChild");
 	auto& tileTexture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TileGrid.png");
 
 	auto background = m_Scene->CreateEntity("Background");
-	auto backgroundSprite = Daybreak::Texture2D::Create({ 1280,720, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Background.png");
+	auto backgroundSprite = Daybreak::Texture2D::Create({ 1280, 720, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Background.png");
 	auto& backgroundTransform = background.GetComponent<Daybreak::TransformComponent>();
 	backgroundTransform.Position.z = -1;
 	auto& backgroundSr = background.AddComponent<Daybreak::SpriteRendererComponent>();
@@ -97,7 +96,7 @@ SceneLayer::SceneLayer()
 
 	auto& testsr = test.AddComponent<Daybreak::SpriteRendererComponent>(texture);
 	auto& testtrans = test.GetComponent<Daybreak::TransformComponent>();
-	testtrans.Position.y = -1;
+	testtrans.Position.y = -2;
 	auto& testbc2d = test.AddComponent<Daybreak::BoxCollider2DComponent>();
 
 	Daybreak::SceneSerializer serializer(m_Scene);
@@ -230,9 +229,9 @@ void SceneLayer::OnImGuiRender()
 	// ImGui::End();
 
 
-	// ImGui::Begin("ImGui Layer");
-	// ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-	// ImGui::End();
+	ImGui::Begin("ImGui Layer");
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	ImGui::End();
 
 	// ImGui::Begin("Box Entity");
 	// ImGui::SliderFloat("Roation", &playerEntity.GetComponent<Daybreak::TransformComponent>().Rotation.z,-3.14f,3.14f);
@@ -361,7 +360,7 @@ void SceneLayer::DrawGrid()
 
 	for (int i = -numLines; i < numLines; i++)
 	{
-		Daybreak::Renderer2D::DrawLine({(float)i+0.5f, -length,0.0f}, {(float)i+0.5f, length,0.0f}, lineColor);
+		Daybreak::Renderer2D::DrawLine({ (float)i + 0.5f, -length, 0.0f }, { (float)i + 0.5f, length, 0.0f }, lineColor);
 		Daybreak::Renderer2D::DrawLine({ -length, (float)i + 0.5f, 0.0f }, { length, (float)i + 0.5f, 0.0f }, lineColor);
 
 		// Daybreak::Renderer2D::DrawLine({(float)i, -length,0.0f}, {(float)i, length,0.0f}, {1.0f,1.0f,1.0f,1.0f});
