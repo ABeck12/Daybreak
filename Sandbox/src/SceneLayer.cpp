@@ -99,8 +99,16 @@ SceneLayer::SceneLayer()
 	testtrans.Position.y = -2;
 	auto& testbc2d = test.AddComponent<Daybreak::BoxCollider2DComponent>();
 
+
 	Daybreak::SceneSerializer serializer(m_Scene);
 	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+
+
+	auto testscn = Daybreak::CreateRef<Daybreak::Scene>();
+
+	auto serializer2 = Daybreak::SceneSerializer(testscn);
+	serializer2.Deserialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	serializer2.Serialize("../Sandbox/assets/scenes/SceneLayer2.dbscn");
 }
 
 void SceneLayer::OnAttach()
@@ -115,6 +123,14 @@ void SceneLayer::OnDetach()
 
 void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 {
+
+	const std::type_info& typeInfo = typeid(*m_Scene);
+
+	// std::cout << "Type: " << typeInfo.name() << std::endl;
+	playerEntity = m_Scene->GetEntityByName("Player");
+	cameraEntity = m_Scene->GetEntityByName("Camera");
+	floorEntity = m_Scene->GetEntityByName("Floor");
+	// DB_LOG(glm::mat4(1.0f)[0]);
 	// m_FrameBuffer->Bind();
 	// m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position.z = -1;
 	// DB_LOG("player {} background {}", playerEntity.GetComponent<Daybreak::TransformComponent>().Position, m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position);

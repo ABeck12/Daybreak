@@ -33,13 +33,13 @@ namespace Daybreak
 		RelationshipComponent(const RelationshipComponent&) = default;
 	};
 
-	struct ActiveComponent
-	{
-		bool Active = true;
+	// struct ActiveComponent
+	// {
+	// 	bool Active = true;
 
-		ActiveComponent() = default;
-		ActiveComponent(const ActiveComponent&) = default;
-	};
+	// 	ActiveComponent() = default;
+	// 	ActiveComponent(const ActiveComponent&) = default;
+	// };
 
 	struct TransformComponent
 	{
@@ -69,7 +69,7 @@ namespace Daybreak
 		Ref<Texture2D> Sprite;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float TilingFactor = 1.0f;
-		uint32_t PixelsPerUnit = 128; //TODO: move to a sprite asset class
+		uint32_t PixelsPerUnit = 128; // TODO: move to a sprite asset class
 		// uint8_t RenderLayer = 0;
 
 		SpriteRendererComponent() = default;
@@ -85,7 +85,7 @@ namespace Daybreak
 			Perspective,
 			Orthographic
 		};
-		
+
 		Camera Camera;
 		bool Primary = false; // Move this to the scene class
 		ProjectionType Type = ProjectionType::Perspective;
@@ -164,7 +164,7 @@ namespace Daybreak
 		bool IsPlaying = true;
 		Ref<AnimationSource> Source;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-		uint32_t PixelsPerUnit = 128; //TODO: move to a sprite asset class
+		uint32_t PixelsPerUnit = 128; // TODO: move to a sprite asset class
 
 
 		AnimatorComponent() = default;
@@ -173,10 +173,12 @@ namespace Daybreak
 
 	// Forward decleration
 	class ScriptableEntity;
+#define ToString(T) #T
 
 	struct NativeScriptComponent
 	{
 		ScriptableEntity* Instance = nullptr;
+		std::string TypeName = "";
 
 		ScriptableEntity* (*InstantiateScript)();
 		void (*DestroyScript)(NativeScriptComponent*);
@@ -184,6 +186,9 @@ namespace Daybreak
 		template<typename T>
 		void Bind()
 		{
+			TypeName = std::string(typeid(T).name()).erase(0, 6);
+			DB_LOG(TypeName);
+
 			InstantiateScript = []()
 			{
 				return static_cast<ScriptableEntity*>(new T());

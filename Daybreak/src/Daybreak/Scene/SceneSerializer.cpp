@@ -4,7 +4,7 @@
 #include "Daybreak/Scene/Components.h"
 #include "Daybreak/Scene/Entity.h"
 
-#define YAML_CPP_DLL 
+#define YAML_CPP_DLL
 #define YAML_CPP_STATIC_DEFINE
 #include <yaml-cpp/yaml.h>
 #include <fstream>
@@ -88,6 +88,34 @@ namespace YAML
 	};
 
 	template<>
+	struct convert<glm::mat4>
+	{
+		static Node encode(const glm::mat4& mat)
+		{
+			Node node;
+			node.push_back(mat[0]);
+			node.push_back(mat[1]);
+			node.push_back(mat[2]);
+			node.push_back(mat[3]);
+			node.SetStyle(EmitterStyle::Flow);
+			// node.push_back((uint64_t)uuid);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::mat4& mat)
+		{
+			if (!node.IsSequence() || node.size() != 4)
+				return false;
+			mat[0] = node[0].as<glm::vec4>();
+			mat[1] = node[1].as<glm::vec4>();
+			mat[2] = node[2].as<glm::vec4>();
+			mat[3] = node[3].as<glm::vec4>();
+
+			return true;
+		}
+	};
+
+	template<>
 	struct convert<Daybreak::UUID>
 	{
 		static Node encode(const Daybreak::UUID& uuid)
@@ -103,9 +131,7 @@ namespace YAML
 			return true;
 		}
 	};
-
 }
-
 
 
 namespace Daybreak
@@ -135,11 +161,8 @@ namespace Daybreak
 	{
 		out << YAML::Flow;
 		out << YAML::BeginSeq;
-		out	<< m[0][0] << m[0][1] << m[0][1] << m[0][1];
-		out	<< m[1][0] << m[1][1] << m[1][2] << m[1][3];
-		out	<< m[2][0] << m[2][1] << m[2][2] << m[2][3];
-		out	<< m[3][0] << m[3][1] << m[3][2] << m[3][3];
-		out	<< YAML::EndSeq;
+		out << m[0] << m[1] << m[2] << m[3];
+		out << YAML::EndSeq;
 		return out;
 	}
 
@@ -160,7 +183,7 @@ namespace Daybreak
 			case ImageFormat::RGBA:
 				out << YAML::Key << "Format" << YAML::Value << "RGBA";
 				break;
-			case ImageFormat::None:
+			default:
 				out << YAML::Key << "Format" << YAML::Value << "None";
 				DB_CORE_ERROR("Can't serialize image type \"None\"");
 				break;
@@ -172,7 +195,7 @@ namespace Daybreak
 				break;
 			case TextureFilterType::Bilinear:
 				out << YAML::Key << "Filter" << YAML::Value << "Bilinear";
-				break;					
+				break;
 		}
 		out << YAML::EndMap;
 		out << YAML::EndMap;
@@ -243,7 +266,7 @@ namespace Daybreak
 		}
 		if (entity.HasComponent<Rigidbody2DComponent>())
 		{
-			out << YAML::Key << "BoxCollider2DComponent";
+			out << YAML::Key << "Rigidbody2DComponent";
 			out << YAML::BeginMap;
 
 			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
@@ -262,6 +285,7 @@ namespace Daybreak
 			}
 			out << YAML::Key << "ContinuousDetection" << YAML::Value << rb2d.ContinuousDetection;
 			out << YAML::Key << "Velocity" << YAML::Value << rb2d.Velocity;
+			out << YAML::Key << "FixedRotation" << YAML::Value << rb2d.FixedRotation;
 			out << YAML::Key << "Mass" << YAML::Value << rb2d.Mass;
 			out << YAML::Key << "GravityScale" << YAML::Value << rb2d.GravityScale;
 			out << YAML::Key << "AngularDrag" << YAML::Value << rb2d.AngularDrag;
@@ -283,6 +307,7 @@ namespace Daybreak
 			out << YAML::Key << "Offset" << YAML::Value << bc2d.Offset;
 			out << YAML::Key << "CollisionLayer" << YAML::Value << bc2d.CollisionLayer;
 			out << YAML::Key << "IsTrigger" << YAML::Value << bc2d.IsTrigger;
+			out << YAML::Key << "Enabled" << YAML::Value << bc2d.Enabled;
 
 			out << YAML::EndMap;
 		}
@@ -291,11 +316,13 @@ namespace Daybreak
 			out << YAML::Key << "CircleCollider2DComponent";
 			out << YAML::BeginMap;
 
-			auto& bc2d = entity.GetComponent<CircleCollider2DComponent>();
-			out << YAML::Key << "Size" << YAML::Value << bc2d.Radius;
-			out << YAML::Key << "Offset" << YAML::Value << bc2d.Offset;
-			out << YAML::Key << "CollisionLayer" << YAML::Value << bc2d.CollisionLayer;
-			out << YAML::Key << "IsTrigger" << YAML::Value << bc2d.IsTrigger;
+			auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+			out << YAML::Key << "Size" << YAML::Value << cc2d.Radius;
+			out << YAML::Key << "Offset" << YAML::Value << cc2d.Offset;
+			out << YAML::Key << "CollisionLayer" << YAML::Value << cc2d.CollisionLayer;
+			out << YAML::Key << "IsTrigger" << YAML::Value << cc2d.IsTrigger;
+			out << YAML::Key << "Enabled" << YAML::Value << cc2d.Enabled;
+
 
 			out << YAML::EndMap;
 		}
@@ -306,14 +333,32 @@ namespace Daybreak
 
 			auto& cc = entity.GetComponent<CameraComponent>();
 
-			// out << YAML::Key << "CameraProjection" << YAML::Value << cc.Camera.GetProjection();
+			out << YAML::Key << "CameraProjection" << YAML::Value << cc.Camera.GetProjection();
 			out << YAML::Key << "Primary" << YAML::Value << cc.Primary;
+			switch (cc.Type)
+			{
+				case (CameraComponent::ProjectionType::Orthographic):
+					out << YAML::Key << "Type" << YAML::Value << "Orthographic";
+					break;
+				case (CameraComponent::ProjectionType::Perspective):
+					out << YAML::Key << "Type" << YAML::Value << "Perspective";
+					break;
+			}
 
 			out << YAML::EndMap;
-			DB_CORE_WARN("CameraComponent serialization not fully implemented");
 		}
 		if (entity.HasComponent<NativeScriptComponent>())
 		{
+			out << YAML::Key << "NativeScriptComponent";
+			out << YAML::BeginMap;
+
+			auto& nsc = entity.GetComponent<NativeScriptComponent>();
+			// const std::type_info& typeInfo = typeid(*nsc.Instance);
+
+
+			out << YAML::Key << "TypeName" << YAML::Value << nsc.TypeName;
+			out << YAML::EndMap;
+
 			DB_CORE_WARN("NativeScriptComponent serialization not implemented");
 		}
 
@@ -329,19 +374,20 @@ namespace Daybreak
 	void SceneSerializer::Serialize(const std::string& filepath)
 	{
 		YAML::Emitter out;
+		out.SetIndent(4);
 
 		out << YAML::BeginMap;
 		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
 
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 		m_Scene->m_Registry.each([&](auto entityID)
-		{
+								 {
 			Entity entity = { entityID, m_Scene.get() };
 			if (!entity)
 				return;
 
-			SerializeEntity(out, entity);
-		});
+			SerializeEntity(out, entity); });
+
 		out << YAML::EndSeq;
 
 		out << YAML::EndMap;
@@ -350,55 +396,156 @@ namespace Daybreak
 		fout << out.c_str();
 	}
 
-    bool SceneSerializer::Deserialize(const std::string& filepath)
+	bool SceneSerializer::Deserialize(const std::string& filepath)
 	{
-		DB_CORE_WARN("Deserialize function not implemented");
-		return false;
-		// YAML::Node data;
-		// try
-		// {
-		// 	data = YAML::LoadFile(filepath);
-		// }
-		// catch (YAML::ParserException e)
-		// {
-		// 	DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", filepath, e.what());
-		// 	return false;
-		// }
+		// DB_CORE_WARN("Deserialize function not implemented");
+		// return false;
+		YAML::Node data;
+		try
+		{
+			data = YAML::LoadFile(filepath);
+		}
+		catch (YAML::ParserException e)
+		{
+			DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", filepath, e.what());
+			return false;
+		}
 
-		// if (!data["Scene"])
-		// 	return false;
+		if (!data["Scene"])
+			return false;
 
-		// std::string sceneName = data["Scene"].as<std::string>();
-		// DB_CORE_LOG("Deserializing scene '{0}'", sceneName);
+		std::string sceneName = data["Scene"].as<std::string>();
+		DB_CORE_LOG("Deserializing scene: \"{0}\"", sceneName);
 
-		// auto entities = data["Entities"];
-		// if (entities)
-		// {
-		// 	for (auto entity : entities)
-		// 	{
-		// 		uint64_t uuid = entity["Entity"].as<uint64_t>();
+		auto entities = data["Entities"];
 
-		// 		std::string name;
-		// 		auto tagComponent = entity["TagComponent"];
-		// 		if (tagComponent)
-		// 			name = tagComponent["Tag"].as<std::string>();
+		if (entities)
+		{
+			// for (auto entity : entities)
+			for (size_t i = entities.size(); i > 0; --i)
+			{
+				auto entity = entities[i - 1];
+				uint64_t uuid = entity["Entity"].as<uint64_t>();
 
-		// 		DB_CORE_LOG("Deserialized entity with ID = {0}, name = {1}", uuid, name);
+				std::string name;
+				auto tagComponent = entity["TagComponent"];
+				if (tagComponent)
+				{
+					name = tagComponent["Tag"].as<std::string>();
+				}
 
-		// 		Entity deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
+				DB_CORE_LOG("  Deserialized entity: \"{1}\", ID = {0}", uuid, name);
 
-		// 		auto transformComponent = entity["TransformComponent"];
-		// 		if (transformComponent)
-		// 		{
-		// 			// Entities always have transforms
-		// 			auto& tc = deserializedEntity.GetComponent<TransformComponent>();
-		// 			tc.Position = transformComponent["Position"].as<glm::vec3>();
-		// 			tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
-		// 			tc.Scale = transformComponent["Scale"].as<glm::vec3>();
-		// 		}
-		// 	}
-		// }
+				Entity deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
 
-		// return true;
+				auto transformComponent = entity["TransformComponent"];
+				if (transformComponent)
+				{
+					// Entities always have transforms
+					auto& tc = deserializedEntity.GetComponent<TransformComponent>();
+					tc.Position = transformComponent["Position"].as<glm::vec3>();
+					tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
+					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
+				}
+				auto relationshipComponent = entity["RelationshipComponent"];
+				if (relationshipComponent)
+				{
+					auto& rc = deserializedEntity.GetComponent<RelationshipComponent>();
+					rc.ParentID = relationshipComponent["ParentID"].as<uint64_t>();
+					rc.AmountOfChildren = relationshipComponent["AmountOfChildren"].as<uint32_t>();
+					rc.ChildrenIDs = relationshipComponent["ChildrenIDs"].as<std::vector<UUID>>();
+				}
+				auto cameraComponent = entity["CameraComponent"];
+				if (cameraComponent)
+				{
+					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
+					cc.Camera.SetProjection(cameraComponent["CameraProjection"].as<glm::mat4>());
+					cc.Primary = cameraComponent["Primary"].as<bool>();
+					std::string type = cameraComponent["Type"].as<std::string>();
+					if (type == "Orthograpthic")
+						cc.Type = CameraComponent::ProjectionType::Orthographic;
+					else if (type == "Perspective")
+						cc.Type = CameraComponent::ProjectionType::Perspective;
+				}
+				auto bc2dComponent = entity["BoxCollider2DComponent"];
+				if (bc2dComponent)
+				{
+					auto& bc2d = deserializedEntity.AddComponent<BoxCollider2DComponent>();
+					bc2d.Size = bc2dComponent["Size"].as<glm::vec2>();
+					bc2d.Offset = bc2dComponent["Offset"].as<glm::vec2>();
+					bc2d.CollisionLayer = bc2dComponent["CollisionLayer"].as<uint16_t>();
+					bc2d.IsTrigger = bc2dComponent["IsTrigger"].as<bool>();
+					bc2d.Enabled = bc2dComponent["Enabled"].as<bool>();
+				}
+				auto cc2dComponent = entity["CircleCollider2DComponent"];
+				if (cc2dComponent)
+				{
+					auto& cc2d = deserializedEntity.AddComponent<CircleCollider2DComponent>();
+					cc2d.Radius = cc2dComponent["Radius"].as<float>();
+					cc2d.Offset = cc2dComponent["Offset"].as<glm::vec2>();
+					cc2d.CollisionLayer = cc2dComponent["CollisionLayer"].as<uint16_t>();
+					cc2d.IsTrigger = cc2dComponent["IsTrigger"].as<bool>();
+					cc2d.Enabled = cc2dComponent["Enabled"].as<bool>();
+				}
+				auto rb2dComponent = entity["Rigidbody2DComponent"];
+				if (rb2dComponent)
+				{
+					auto& rb2d = deserializedEntity.AddComponent<Rigidbody2DComponent>();
+					std::string type = rb2dComponent["Type"].as<std::string>();
+					if (type == "Dynamic")
+						rb2d.Type = Rigidbody2DComponent::BodyType::Dynamic;
+					else if (type == "Static")
+						rb2d.Type = Rigidbody2DComponent::BodyType::Static;
+					else if (type == "kinematic")
+						rb2d.Type = Rigidbody2DComponent::BodyType::Kinematic;
+					rb2d.ContinuousDetection = rb2dComponent["ContinuousDetection"].as<bool>();
+					rb2d.Velocity = rb2dComponent["Velocity"].as<glm::vec2>();
+					rb2d.FixedRotation = rb2dComponent["FixedRotation"].as<bool>();
+					rb2d.Mass = rb2dComponent["Mass"].as<float>();
+					rb2d.GravityScale = rb2dComponent["GravityScale"].as<float>();
+					rb2d.AngularDrag = rb2dComponent["AngularDrag"].as<float>();
+					rb2d.LinearDrag = rb2dComponent["LinearDrag"].as<float>();
+					rb2d.Density = rb2dComponent["Density"].as<float>();
+					rb2d.Friction = rb2dComponent["Friction"].as<float>();
+					rb2d.Restitution = rb2dComponent["Restitution"].as<float>();
+					rb2d.RestitutionThreshold = rb2dComponent["RestitutionThreshold"].as<float>();
+				}
+				auto animComponent = entity["AnimatorComponent"];
+				if (animComponent)
+				{
+					auto& anim = deserializedEntity.AddComponent<AnimatorComponent>();
+
+					DB_CORE_WARN("AnimatorComponent deserialization not implemented");
+				}
+				auto srComponent = entity["SpriteRendererComponent"];
+				if (srComponent)
+				{
+					auto& sr = deserializedEntity.AddComponent<SpriteRendererComponent>();
+
+					auto filepath = srComponent["Sprite"]["Filepath"].as<std::string>();
+					TextureSpecifications spec;
+					spec.Height = srComponent["Sprite"]["Specifications"]["Height"].as<uint32_t>();
+					spec.Width = srComponent["Sprite"]["Specifications"]["Width"].as<uint32_t>();
+
+					if (srComponent["Sprite"]["Specifications"]["Format"].as<std::string>() == "RGB")
+						spec.Format = Daybreak::ImageFormat::RGB;
+					else if (srComponent["Sprite"]["Specifications"]["Format"].as<std::string>() == "RGBA")
+						spec.Format = Daybreak::ImageFormat::RGBA;
+
+					if (srComponent["Sprite"]["Specifications"]["Filter"].as<std::string>() == "Point")
+						spec.Filter = Daybreak::TextureFilterType::Point;
+					else if (srComponent["Sprite"]["Specifications"]["Filter"].as<std::string>() == "Bilinear")
+						spec.Filter = Daybreak::TextureFilterType::Bilinear;
+
+					sr.Sprite = Texture2D::Create(spec, filepath);
+					sr.TintColor = srComponent["TintColor"].as<glm::vec4>();
+					sr.TilingFactor = srComponent["TilingFactor"].as<float>();
+					sr.PixelsPerUnit = srComponent["PixelsPerUnit"].as<uint32_t>();
+				}
+			}
+			return true;
+		}
+
+		return true;
 	}
 }
