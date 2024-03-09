@@ -173,7 +173,6 @@ namespace Daybreak
 
 	// Forward decleration
 	class ScriptableEntity;
-#define ToString(T) #T
 
 	struct NativeScriptComponent
 	{
@@ -187,7 +186,6 @@ namespace Daybreak
 		void Bind()
 		{
 			TypeName = std::string(typeid(T).name()).erase(0, 6);
-			DB_LOG(TypeName);
 
 			InstantiateScript = []()
 			{
