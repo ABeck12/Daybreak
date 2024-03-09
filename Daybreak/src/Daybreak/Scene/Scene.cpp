@@ -81,13 +81,13 @@ namespace Daybreak
 	{
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 													  {
-				// TODO: Move to Scene::OnScenePlay
-				if (!nsc.Instance)
-				{
-					nsc.Instance = nsc.InstantiateScript();
-					nsc.Instance->m_Entity = Entity{ entity, this };
-					nsc.Instance->OnCreate();
-				} });
+			// TODO: Move to Scene::OnScenePlay
+			if (!nsc.Instance)
+			{
+				nsc.Instance = nsc.InstantiateScript(nsc.TypeName);
+				nsc.Instance->m_Entity = Entity{ entity, this };
+				nsc.Instance->OnCreate();
+			} });
 
 		OnPhysicsStart();
 	}
@@ -112,7 +112,7 @@ namespace Daybreak
 				// This runs here to catch any nsc that are instianted during scene play
 				if (!nsc.Instance)
 				{
-					nsc.Instance = nsc.InstantiateScript();
+					nsc.Instance = nsc.InstantiateScript(nsc.TypeName);
 					nsc.Instance->m_Entity = Entity{ entity, this };
 					nsc.Instance->OnCreate();
 				}
@@ -132,7 +132,7 @@ namespace Daybreak
 				// TODO: Move to Scene::OnSceneStop
 				if (!nsc.Instance)
 				{
-					nsc.Instance = nsc.InstantiateScript();
+					nsc.Instance = nsc.InstantiateScript(nsc.TypeName);
 					nsc.Instance->m_Entity = Entity{ entity, this };
 					nsc.Instance->OnDestroy();
 				} });

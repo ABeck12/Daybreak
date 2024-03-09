@@ -6,6 +6,7 @@
 #include "Daybreak/Renderer/Camera.h"
 #include "Daybreak/Core/UUID.h"
 #include "Daybreak/AssetSource/AnimationSource.h"
+#include "Daybreak/Scene/ScriptableEntityRegistry.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -179,17 +180,33 @@ namespace Daybreak
 		ScriptableEntity* Instance = nullptr;
 		std::string TypeName = "";
 
-		ScriptableEntity* (*InstantiateScript)();
+		ScriptableEntity* (*InstantiateScript)(const std::string&);
 		void (*DestroyScript)(NativeScriptComponent*);
 
 		template<typename T>
 		void Bind()
 		{
 			TypeName = std::string(typeid(T).name()).erase(0, 6);
+			ScriptableEntityRegistry::RegisterType<T>();
 
-			InstantiateScript = []()
+			InstantiateScript = [](const std::string&)
 			{
 				return static_cast<ScriptableEntity*>(new T());
+			};
+			DestroyScript = [](NativeScriptComponent* nsc)
+			{
+				delete nsc->Instance;
+				nsc->Instance = nullptr;
+			};
+		}
+
+		void RuntimeBind(const std::string& typeName)
+		{
+			TypeName = typeName;
+
+			InstantiateScript = [](const std::string& name)
+			{
+				return ScriptableEntityRegistry::GetRegisteredType(name);
 			};
 			DestroyScript = [](NativeScriptComponent* nsc)
 			{

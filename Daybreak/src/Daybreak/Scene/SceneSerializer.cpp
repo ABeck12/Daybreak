@@ -262,6 +262,11 @@ namespace Daybreak
 		}
 		if (entity.HasComponent<AnimatorComponent>())
 		{
+			out << YAML::Key << "AnimatorComponent";
+			out << YAML::BeginMap;
+
+			out << YAML::EndMap;
+
 			DB_CORE_WARN("AnimatorComponent serialization not implemented");
 		}
 		if (entity.HasComponent<Rigidbody2DComponent>())
@@ -541,6 +546,14 @@ namespace Daybreak
 					sr.TintColor = srComponent["TintColor"].as<glm::vec4>();
 					sr.TilingFactor = srComponent["TilingFactor"].as<float>();
 					sr.PixelsPerUnit = srComponent["PixelsPerUnit"].as<uint32_t>();
+				}
+
+				auto nscComponent = entity["NativeScriptComponent"];
+				if (nscComponent)
+				{
+					auto& nsc = deserializedEntity.AddComponent<NativeScriptComponent>();
+
+					nsc.RuntimeBind(nscComponent["TypeName"].as<std::string>());
 				}
 			}
 			return true;

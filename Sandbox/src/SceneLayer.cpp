@@ -92,7 +92,7 @@ SceneLayer::SceneLayer()
 	backgroundSr.Sprite = backgroundSprite;
 	// backgroundSr.PixelsPerUnit = 1064;
 
-	auto test = m_Scene->CreateEntity("testsprite");
+	auto test = m_Scene->CreateEntity("Box");
 
 	auto& testsr = test.AddComponent<Daybreak::SpriteRendererComponent>(texture);
 	auto& testtrans = test.GetComponent<Daybreak::TransformComponent>();
@@ -101,14 +101,21 @@ SceneLayer::SceneLayer()
 
 
 	Daybreak::SceneSerializer serializer(m_Scene);
-	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	// serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
 
 
-	auto testscn = Daybreak::CreateRef<Daybreak::Scene>();
+	// auto testscn = Daybreak::CreateRef<Daybreak::Scene>();
+	// m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
 
-	auto serializer2 = Daybreak::SceneSerializer(testscn);
-	serializer2.Deserialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
-	serializer2.Serialize("../Sandbox/assets/scenes/SceneLayer2.dbscn");
+	// auto serializer2 = Daybreak::SceneSerializer(m_Scene);
+	// serializer2.Deserialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	// serializer2.Serialize("../Sandbox/assets/scenes/SceneLayer2.dbscn");
+	DB_REGISTER_SCRIPTABLE_ENTITY(MoveableComponent);
+	// Daybreak::ScriptableEntityRegistry::RegisterType<MoveableComponent>();
+	for (const auto& pair : Daybreak::ScriptableEntityRegistry::GetRegistry())
+	{
+		DB_LOG(pair.first);
+	}
 }
 
 void SceneLayer::OnAttach()
@@ -123,8 +130,6 @@ void SceneLayer::OnDetach()
 
 void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 {
-
-	const std::type_info& typeInfo = typeid(*m_Scene);
 
 	// std::cout << "Type: " << typeInfo.name() << std::endl;
 	playerEntity = m_Scene->GetEntityByName("Player");
@@ -182,7 +187,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	m_Scene->OnRuntimeUpdate(dt);
 	DrawGrid();
 	// m_FrameBuffer->Unbind();
-	// DrawColliders();
+	DrawColliders();
 }
 
 void SceneLayer::OnEvent(Daybreak::Event& event)
