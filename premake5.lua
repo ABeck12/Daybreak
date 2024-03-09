@@ -55,6 +55,7 @@ newaction
 		os.rmdir("./Daybreak/imgui/.vscode")
 		os.rmdir("./Daybreak/yaml-cpp/.vscode/c_cpp_properties.json")
 		os.rmdir("./Sandbox/.vscode")
+		os.rmdir(".vscode")
 		print("Done")
 	end
 }
