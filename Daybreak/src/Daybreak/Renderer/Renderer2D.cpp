@@ -25,7 +25,7 @@ namespace Daybreak
 		glm::vec4 Color;
 
 		// Editor-Only;
-		//int EntityID;
+		// int EntityID;
 	};
 
 	struct Renderer2DData
@@ -68,18 +68,18 @@ namespace Daybreak
 	void Renderer2D::Init()
 	{
 		// Quads
-		s_Data.QuadShader = Shader::Create("Renderer2D_QuadShader", "../Sandbox/assets/Renderer2D_QuadShader.glsl");
+		s_Data.QuadShader = Shader::Create("Renderer2D_QuadShader", "../Sandbox/assets/shaders/Renderer2D_QuadShader.glsl");
 
 		s_Data.QuadVA = VertexArray::Create();
 		s_Data.QuadVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
 		s_Data.QuadVB->SetLayout({
-				{ RenderDataTypes::Float3, std::string("a_Position") },
-				{ RenderDataTypes::Float2, std::string("a_TexCoord") },
-				{ RenderDataTypes::Float4, std::string("a_Color") },
-				{ RenderDataTypes::Float, std::string("a_TexIndex") },
-				{ RenderDataTypes::Float, std::string("a_TilingFactor") },
-				{ RenderDataTypes::Int, std::string("a_EntityID") },
-			});
+			{ RenderDataTypes::Float3, std::string("a_Position") },
+			{ RenderDataTypes::Float2, std::string("a_TexCoord") },
+			{ RenderDataTypes::Float4, std::string("a_Color") },
+			{ RenderDataTypes::Float, std::string("a_TexIndex") },
+			{ RenderDataTypes::Float, std::string("a_TilingFactor") },
+			{ RenderDataTypes::Int, std::string("a_EntityID") },
+		});
 		s_Data.QuadVA->AddVertexBuffer(s_Data.QuadVB);
 		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
 
@@ -109,8 +109,8 @@ namespace Daybreak
 
 		s_Data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
 		s_Data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPositions[2] = { 0.5f,  0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[2] = { 0.5f, 0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPositions[3] = { -0.5f, 0.5f, 0.0f, 1.0f };
 
 		int32_t samplers[s_Data.MaxTextureSlots];
 		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
@@ -121,17 +121,14 @@ namespace Daybreak
 
 
 		// Lines
-		s_Data.LineShader = Shader::Create("Renderer2D_LineShader", "../Sandbox/assets/Renderer2D_LineShader.glsl");
+		s_Data.LineShader = Shader::Create("Renderer2D_LineShader", "../Sandbox/assets/shaders/Renderer2D_LineShader.glsl");
 
 		s_Data.LineVA = VertexArray::Create();
 		s_Data.LineVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(LineVertex));
-		s_Data.LineVB->SetLayout({
-				{ RenderDataTypes::Float3, std::string("a_Position") },
-				{ RenderDataTypes::Float4, std::string("a_Color") }
-			});
+		s_Data.LineVB->SetLayout({ { RenderDataTypes::Float3, std::string("a_Position") },
+								   { RenderDataTypes::Float4, std::string("a_Color") } });
 		s_Data.LineVA->AddVertexBuffer(s_Data.LineVB);
 		s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxVertices];
-
 	}
 
 	void Renderer2D::Shutdown()
@@ -196,7 +193,7 @@ namespace Daybreak
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const glm::vec4& tintColor)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		DrawQuad(transform, texture, tintColor);
 	}
 
@@ -219,8 +216,8 @@ namespace Daybreak
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRenderer, int entityID)
 	{
 		if (spriteRenderer.Sprite)
-			DrawQuad(glm::scale(transform, { (float)spriteRenderer.Sprite->GetWidth() / (float)spriteRenderer.PixelsPerUnit,  (float)spriteRenderer.Sprite->GetHeight() / (float)spriteRenderer.PixelsPerUnit, 1.0f }),
-				spriteRenderer.Sprite, spriteRenderer.TintColor, spriteRenderer.TilingFactor, (int)entityID);
+			DrawQuad(glm::scale(transform, { (float)spriteRenderer.Sprite->GetWidth() / (float)spriteRenderer.PixelsPerUnit, (float)spriteRenderer.Sprite->GetHeight() / (float)spriteRenderer.PixelsPerUnit, 1.0f }),
+					 spriteRenderer.Sprite, spriteRenderer.TintColor, spriteRenderer.TilingFactor, (int)entityID);
 		else
 			DrawQuad(transform, s_Data.WhiteTexture, spriteRenderer.TintColor, spriteRenderer.TilingFactor, entityID);
 	}
@@ -228,10 +225,10 @@ namespace Daybreak
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const AnimatorComponent& anim, int entityID)
 	{
 		Renderer2D::DrawQuad(glm::scale(transform, { (float)anim.Source->GetCurrentKeyFrame().Sprite->GetWidth() / anim.PixelsPerUnit, (float)anim.Source->GetCurrentKeyFrame().Sprite->GetHeight() / anim.PixelsPerUnit, 1.0f }),
-			anim.Source->GetCurrentKeyFrame().Sprite, anim.TintColor, 1.0f, (int)entityID);
+							 anim.Source->GetCurrentKeyFrame().Sprite, anim.TintColor, 1.0f, (int)entityID);
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform,const Ref<Texture2D>& texture, const glm::vec4& tintColor, const float& tilingFactor, int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec4& tintColor, const float& tilingFactor, int entityID)
 	{
 		constexpr size_t quadVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
@@ -255,9 +252,9 @@ namespace Daybreak
 				NextBatch();
 			textureIndex = (float)s_Data.TextureSlotIndex;
 			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
-			s_Data.TextureSlotIndex++;	
+			s_Data.TextureSlotIndex++;
 		}
-		//float tilingFactor = 0.0f;
+		// float tilingFactor = 0.0f;
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
@@ -278,12 +275,12 @@ namespace Daybreak
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		DrawQuad(transform, subtexture, tintColor);
 	}
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor, const float& tilingFactor, int entityID)
-	{	
+	{
 		constexpr size_t quadVertexCount = 4;
 		const Ref<Texture2D> texture = subtexture->GetTexture();
 
@@ -309,9 +306,9 @@ namespace Daybreak
 				NextBatch();
 			textureIndex = (float)s_Data.TextureSlotIndex;
 			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
-			s_Data.TextureSlotIndex++;	
+			s_Data.TextureSlotIndex++;
 		}
-		//float tilingFactor = 0.0f;
+		// float tilingFactor = 0.0f;
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
@@ -365,14 +362,14 @@ namespace Daybreak
 	{
 		s_Data.LineVertexBufferPtr->Position = pos1;
 		s_Data.LineVertexBufferPtr->Color = color;
-		//s_Data.QuadVertexBufferPtr->EntityID = entityID;
+		// s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.LineVertexBufferPtr++;
 
 		s_Data.LineVertexBufferPtr->Position = pos2;
 		s_Data.LineVertexBufferPtr->Color = color;
-		//s_Data.QuadVertexBufferPtr->EntityID = entityID;
+		// s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.LineVertexBufferPtr++;
-		
+
 		s_Data.LineVertexCount += 2;
 	}
 
