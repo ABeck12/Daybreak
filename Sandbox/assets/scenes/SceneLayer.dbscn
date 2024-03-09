@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 8475970488157879469
+  - Entity: 8191907309002796915
     TagComponent:
       Tag: testsprite
     RelationshipComponent:
@@ -9,7 +9,7 @@ Entities:
       ChildrenIDs:
         []
     TransformComponent:
-      Position: [0, -1, 0]
+      Position: [0, -2, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
@@ -28,7 +28,7 @@ Entities:
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
-  - Entity: 13234486112094865771
+  - Entity: 15953601132502546229
     TagComponent:
       Tag: Background
     RelationshipComponent:
@@ -51,7 +51,7 @@ Entities:
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
       PixelsPerUnit: 128
-  - Entity: 8942970002807926975
+  - Entity: 11742473269684402621
     TagComponent:
       Tag: Floor
     RelationshipComponent:
@@ -91,11 +91,11 @@ Entities:
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
-  - Entity: 761419428405229904
+  - Entity: 16171304229564175854
     TagComponent:
       Tag: Camera
     RelationshipComponent:
-      ParentID: 10354100007601204076
+      ParentID: 16485976572188845116
       AmountOfChildren: 0
       ChildrenIDs:
         []
@@ -105,14 +105,14 @@ Entities:
       Scale: [1, 1, 1]
     CameraComponent:
       Primary: true
-  - Entity: 10354100007601204076
+  - Entity: 16485976572188845116
     TagComponent:
       Tag: Player
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 1
       ChildrenIDs:
-        - 761419428405229904
+        - 16171304229564175854
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
@@ -130,7 +130,7 @@ Entities:
       Restitution: 0
       RestitutionThreshold: 0.5
     BoxCollider2DComponent:
-      Size: [0.100000001, 0.5]
-      Offset: [0, 0.0399999991]
+      Size: [0.100000001, 0.479999989]
+      Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false

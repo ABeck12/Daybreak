@@ -18,7 +18,7 @@ SceneLayer::SceneLayer()
 	// auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
 	auto& rb2d = playerEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	rb2d.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
-	// rb2d.FixedRotation = true;
+	rb2d.FixedRotation = true;
 	rb2d.Restitution = 0.00f;
 	// rb2d.RestitutionThreshold = 2.0f;
 	auto& bc2d = playerEntity.AddComponent<Daybreak::BoxCollider2DComponent>();

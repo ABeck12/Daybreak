@@ -1,2 +1,2 @@
 call vendor\premake\premake5.exe clean
-PAUSE
+@REM PAUSE
