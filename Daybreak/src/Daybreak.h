@@ -33,10 +33,10 @@
 #include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Scene/Components.h"
 #include "Daybreak/Scene/ScriptableEntity.h"
+#include "Daybreak/Scene/SceneSerializer.h"
 
 #include "Daybreak/Audio/AudioEngine.h"
 #include "Daybreak/Audio/AudioClip.h"
 
-//Temp? Maybe?
+// Temp? Maybe?
 #include <Daybreak/Math/GlmToString.h>
-
