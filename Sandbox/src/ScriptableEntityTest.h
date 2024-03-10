@@ -9,7 +9,7 @@ public:
 	{
 		m_Transform = GetComponent<Daybreak::TransformComponent>();
 		m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
-		// m_Anim = GetComponent<Daybreak::AnimatorComponent>();
+		m_Anim = GetComponent<Daybreak::AnimatorComponent>();
 
 		const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
 		float width = 50.;
