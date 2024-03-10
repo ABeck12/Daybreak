@@ -32,7 +32,6 @@ namespace Daybreak
 
 		virtual const FrameBufferSpecifications& GetSpecification() const = 0;
 		virtual const uint32_t GetAttachmentRendererID(uint32_t index = 0) const = 0;
-		// virtual const uint32_t GetColorAttachmentRendererID() const = 0;
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 
 		static Ref<FrameBuffer> Create(const FrameBufferSpecifications& spec);
