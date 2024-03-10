@@ -138,6 +138,7 @@ namespace Daybreak
 
 		BodyType Type = BodyType::Static;
 		bool ContinuousDetection = false;
+		bool AllowSleep = true;
 		// bool Awake = true;
 
 		glm::vec2 Velocity = { 0.0f, 0.0f };

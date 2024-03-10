@@ -164,6 +164,7 @@ namespace Daybreak
 		bodyDef.position.Set(transform.Position.x, transform.Position.y);
 		bodyDef.angle = transform.Rotation.z;
 		bodyDef.bullet = rb2d.ContinuousDetection;
+		bodyDef.allowSleep = rb2d.AllowSleep;
 
 		b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
 		body->SetFixedRotation(rb2d.FixedRotation);
@@ -245,6 +246,7 @@ namespace Daybreak
 		bodyDef.position.Set(transform.Position.x, transform.Position.y);
 		bodyDef.angle = transform.Rotation.z;
 		bodyDef.bullet = true;
+		bodyDef.allowSleep = false;
 
 		b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
 

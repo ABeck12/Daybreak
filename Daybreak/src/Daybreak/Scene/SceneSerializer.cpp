@@ -289,6 +289,7 @@ namespace Daybreak
 					break;
 			}
 			out << YAML::Key << "ContinuousDetection" << YAML::Value << rb2d.ContinuousDetection;
+			out << YAML::Key << "AllowSleep" << YAML::Value << rb2d.AllowSleep;
 			out << YAML::Key << "Velocity" << YAML::Value << rb2d.Velocity;
 			out << YAML::Key << "FixedRotation" << YAML::Value << rb2d.FixedRotation;
 			out << YAML::Key << "Mass" << YAML::Value << rb2d.Mass;
@@ -505,6 +506,7 @@ namespace Daybreak
 					else if (type == "kinematic")
 						rb2d.Type = Rigidbody2DComponent::BodyType::Kinematic;
 					rb2d.ContinuousDetection = rb2dComponent["ContinuousDetection"].as<bool>();
+					rb2d.AllowSleep = rb2dComponent["AllowSleep"].as<bool>();
 					rb2d.Velocity = rb2dComponent["Velocity"].as<glm::vec2>();
 					rb2d.FixedRotation = rb2dComponent["FixedRotation"].as<bool>();
 					rb2d.Mass = rb2dComponent["Mass"].as<float>();
