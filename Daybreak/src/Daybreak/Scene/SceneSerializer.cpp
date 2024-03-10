@@ -382,7 +382,7 @@ namespace Daybreak
 		out.SetIndent(4);
 
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
+		out << YAML::Key << "Scene" << YAML::Value << m_Scene->m_SceneName;
 
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 		m_Scene->m_Registry.each([&](auto entityID)
@@ -420,6 +420,7 @@ namespace Daybreak
 			return false;
 
 		std::string sceneName = data["Scene"].as<std::string>();
+		m_Scene->m_SceneName = sceneName;
 		DB_CORE_LOG("Deserializing scene: \"{0}\"", sceneName);
 
 		auto entities = data["Entities"];

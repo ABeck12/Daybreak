@@ -17,7 +17,7 @@ namespace Daybreak
 	class Scene
 	{
 	public:
-		Scene();
+		Scene(const std::string& name = "Untitled");
 		~Scene();
 
 		void OnRuntimeStart();
@@ -49,6 +49,7 @@ namespace Daybreak
 		inline void OnPhysicsStop();
 
 	private:
+		std::string m_SceneName;
 		entt::registry m_Registry;
 		PhysicsSim2D* m_PhysicsSim2D;
 		float m_LastUpdateTime = 0.0f;
