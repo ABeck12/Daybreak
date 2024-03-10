@@ -76,6 +76,17 @@ namespace Daybreak
 			}
 		}
 
+		if (entity.HasComponent<Rigidbody2DComponent>() || entity.HasComponent<CircleCollider2DComponent>() || entity.HasComponent<BoxCollider2DComponent>())
+		{
+			m_PhysicsSim2D->RemoveEntity(entity);
+		}
+
+		if (entity.HasComponent<NativeScriptComponent>())
+		{
+			auto nsc = entity.GetComponent<NativeScriptComponent>();
+			nsc.Instance->OnDestroy();
+		}
+
 		m_EntityMap.erase(entity.GetUUID());
 		m_Registry.destroy(entity);
 	}
@@ -133,6 +144,7 @@ namespace Daybreak
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 													  {
 				// TODO: Move to Scene::OnSceneStop
+				// This NEEDS to be fixed. Not every nsc will have an active instance?						  
 				if (!nsc.Instance)
 				{
 					nsc.Instance = nsc.InstantiateScript(nsc.TypeName);

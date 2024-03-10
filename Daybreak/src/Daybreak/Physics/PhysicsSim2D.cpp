@@ -289,6 +289,33 @@ namespace Daybreak
 		}
 	}
 
+	void PhysicsSim2D::RemoveEntity(Entity& entity)
+	{
+		if (entity.HasComponent<BoxCollider2DComponent>())
+		{
+			auto bc2d = entity.GetComponent<BoxCollider2DComponent>();
+			m_PhysicsWorld->DestroyBody((b2Body*)bc2d.RuntimeBody);
+			bc2d.RuntimeBody = nullptr;
+			bc2d.RuntimeFixture = nullptr;
+		}
+		else if (entity.HasComponent<BoxCollider2DComponent>())
+		{
+			auto cc2d = entity.GetComponent<CircleCollider2DComponent>();
+			m_PhysicsWorld->DestroyBody((b2Body*)cc2d.RuntimeBody);
+			cc2d.RuntimeBody = nullptr;
+			cc2d.RuntimeFixture = nullptr;
+		}
+		else if (entity.HasComponent<Rigidbody2DComponent>())
+		{
+			auto rb2d = entity.GetComponent<Rigidbody2DComponent>();
+			if (rb2d.RuntimeBody)
+			{
+				m_PhysicsWorld->DestroyBody((b2Body*)rb2d.RuntimeBody);
+				rb2d.RuntimeBody = nullptr;
+			}
+		}
+	}
+
 	bool PhysicsSim2D::RayCast(const glm::vec2& startPos, const glm::vec2& endPos)
 	{
 		RaycastCallback callback;

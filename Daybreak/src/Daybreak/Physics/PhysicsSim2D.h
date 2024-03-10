@@ -19,6 +19,9 @@ namespace Daybreak
 		void FixedStepSimulation();
 		void ShutdownSimulation();
 
+		void RemoveEntity(Entity& entity);
+		// void AddEntity(Entity& entity);
+
 		void AddColliderWithRigidbody(Entity& entity);
 		void AddCollider(Entity& entity);
 
@@ -45,6 +48,7 @@ namespace Daybreak
 		float m_LastUpdateTime = 0.0f;
 
 	private:
+		// Rework into a project class
 		static void SetActiveSim(PhysicsSim2D* sim) { s_ActiveSim = sim; }
 		static PhysicsSim2D* s_ActiveSim;
 
