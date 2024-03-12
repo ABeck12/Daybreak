@@ -252,7 +252,14 @@ namespace Daybreak
 
 			auto& sr = entity.GetComponent<SpriteRendererComponent>();
 
-			out << YAML::Key << "Sprite" << YAML::Value << sr.Sprite;
+			if (sr.Sprite)
+			{
+				out << YAML::Key << "Sprite" << YAML::Value << sr.Sprite;
+			}
+			else
+			{
+				out << YAML::Key << "Sprite" << YAML::Value << YAML::Null;
+			}
 
 			out << YAML::Key << "TintColor" << YAML::Value << sr.TintColor;
 			out << YAML::Key << "TilingFactor" << YAML::Value << sr.TilingFactor;
@@ -262,8 +269,15 @@ namespace Daybreak
 		}
 		if (entity.HasComponent<AnimatorComponent>())
 		{
+			auto& anim = entity.GetComponent<AnimatorComponent>();
+
 			out << YAML::Key << "AnimatorComponent";
 			out << YAML::BeginMap;
+
+			out << YAML::Key << "Source" << YAML::Value << YAML::Null;
+			out << YAML::Key << "IsPlaying" << YAML::Value << anim.IsPlaying;
+			out << YAML::Key << "TintColor" << YAML::Value << anim.TintColor;
+			out << YAML::Key << "PixelsPerUnit" << YAML::Value << anim.PixelsPerUnit;
 
 			out << YAML::EndMap;
 
@@ -359,8 +373,6 @@ namespace Daybreak
 			out << YAML::BeginMap;
 
 			auto& nsc = entity.GetComponent<NativeScriptComponent>();
-			// const std::type_info& typeInfo = typeid(*nsc.Instance);
-
 
 			out << YAML::Key << "TypeName" << YAML::Value << nsc.TypeName;
 			out << YAML::EndMap;
@@ -523,6 +535,10 @@ namespace Daybreak
 				{
 					auto& anim = deserializedEntity.AddComponent<AnimatorComponent>();
 
+					anim.IsPlaying = animComponent["IsPlaying"].as<bool>();
+					anim.TintColor = animComponent["TintColor"].as<glm::vec4>();
+					anim.PixelsPerUnit = animComponent["PixelsPerUnit"].as<uint32_t>();
+
 					DB_CORE_WARN("AnimatorComponent deserialization not implemented");
 				}
 				auto srComponent = entity["SpriteRendererComponent"];
@@ -530,22 +546,28 @@ namespace Daybreak
 				{
 					auto& sr = deserializedEntity.AddComponent<SpriteRendererComponent>();
 
-					auto filepath = srComponent["Sprite"]["Filepath"].as<std::string>();
-					TextureSpecifications spec;
-					spec.Height = srComponent["Sprite"]["Specifications"]["Height"].as<uint32_t>();
-					spec.Width = srComponent["Sprite"]["Specifications"]["Width"].as<uint32_t>();
+					if (!srComponent["Sprite"].IsNull())
+					{
+						DB_LOG(srComponent["Sprite"]["Filepath"].as<std::string>());
 
-					if (srComponent["Sprite"]["Specifications"]["Format"].as<std::string>() == "RGB")
-						spec.Format = Daybreak::ImageFormat::RGB;
-					else if (srComponent["Sprite"]["Specifications"]["Format"].as<std::string>() == "RGBA")
-						spec.Format = Daybreak::ImageFormat::RGBA;
+						auto filepath = srComponent["Sprite"]["Filepath"].as<std::string>();
+						TextureSpecifications spec;
+						spec.Height = srComponent["Sprite"]["Specifications"]["Height"].as<uint32_t>();
+						spec.Width = srComponent["Sprite"]["Specifications"]["Width"].as<uint32_t>();
 
-					if (srComponent["Sprite"]["Specifications"]["Filter"].as<std::string>() == "Point")
-						spec.Filter = Daybreak::TextureFilterType::Point;
-					else if (srComponent["Sprite"]["Specifications"]["Filter"].as<std::string>() == "Bilinear")
-						spec.Filter = Daybreak::TextureFilterType::Bilinear;
+						if (srComponent["Sprite"]["Specifications"]["Format"].as<std::string>() == "RGB")
+							spec.Format = Daybreak::ImageFormat::RGB;
+						else if (srComponent["Sprite"]["Specifications"]["Format"].as<std::string>() == "RGBA")
+							spec.Format = Daybreak::ImageFormat::RGBA;
 
-					sr.Sprite = Texture2D::Create(spec, filepath);
+						if (srComponent["Sprite"]["Specifications"]["Filter"].as<std::string>() == "Point")
+							spec.Filter = Daybreak::TextureFilterType::Point;
+						else if (srComponent["Sprite"]["Specifications"]["Filter"].as<std::string>() == "Bilinear")
+							spec.Filter = Daybreak::TextureFilterType::Bilinear;
+
+						sr.Sprite = Texture2D::Create(spec, filepath);
+					}
+
 					sr.TintColor = srComponent["TintColor"].as<glm::vec4>();
 					sr.TilingFactor = srComponent["TilingFactor"].as<float>();
 					sr.PixelsPerUnit = srComponent["PixelsPerUnit"].as<uint32_t>();
