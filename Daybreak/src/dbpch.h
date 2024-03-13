@@ -16,6 +16,8 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <map>
+#include <set>
 
 #include <glm/glm.hpp>
 #include <Daybreak/Math/GlmToString.h>
