@@ -116,7 +116,7 @@ namespace Daybreak
 				auto& anim = entity.GetComponent<AnimatorComponent>();
 				if (anim.IsPlaying)
 				{
-					anim.Source->UpdateSource(dt);
+					anim.Controller->Update(dt);
 				}
 			}
 		}

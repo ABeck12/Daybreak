@@ -11,6 +11,9 @@ public:
 		m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
 		m_Anim = GetComponent<Daybreak::AnimatorComponent>();
 
+		// m_Anim.Controller = Daybreak::CreateRef<Daybreak::AnimationController>();
+		GetComponent<Daybreak::AnimatorComponent>().Controller = Daybreak::CreateRef<Daybreak::AnimationController>();
+
 		const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
 		float width = 50.;
 		float height = 37.;
@@ -27,7 +30,7 @@ public:
 		auto& run6 = Daybreak::SubTexture2D::Create(spriteSheet, { 6, 9 }, { width, height });
 
 		uint32_t framesPerAnimationFrame = 10;
-		idleAnimation = Daybreak::CreateRef<Daybreak::AnimationSource>();
+		idleAnimation = Daybreak::CreateRef<Daybreak::Animation>();
 		idleAnimation->AddKeyFrame(idle1, framesPerAnimationFrame);
 		idleAnimation->AddKeyFrame(idle2, framesPerAnimationFrame);
 		idleAnimation->AddKeyFrame(idle3, framesPerAnimationFrame);
@@ -38,11 +41,11 @@ public:
 		};
 		idleAnimation->AddKeyFrame(idle1, framesPerAnimationFrame, action);
 
-		GetComponent<Daybreak::AnimatorComponent>().Source = idleAnimation;
+		// GetComponent<Daybreak::AnimatorComponent>().Source = idleAnimation;
 		GetComponent<Daybreak::AnimatorComponent>().PixelsPerUnit = 37;
 
 
-		runAnimation = Daybreak::CreateRef<Daybreak::AnimationSource>();
+		runAnimation = Daybreak::CreateRef<Daybreak::Animation>();
 		runAnimation->AddKeyFrame(run1, framesPerAnimationFrame);
 		runAnimation->AddKeyFrame(run2, framesPerAnimationFrame);
 		runAnimation->AddKeyFrame(run3, framesPerAnimationFrame);
@@ -50,6 +53,10 @@ public:
 		runAnimation->AddKeyFrame(run5, framesPerAnimationFrame);
 		runAnimation->AddKeyFrame(run6, framesPerAnimationFrame);
 		runAnimation->AddKeyFrame(run1, framesPerAnimationFrame);
+
+		GetComponent<Daybreak::AnimatorComponent>().Controller->AddAnimation("idle", idleAnimation);
+		GetComponent<Daybreak::AnimatorComponent>().Controller->AddAnimation("run", runAnimation);
+		GetComponent<Daybreak::AnimatorComponent>().Controller->ChangeAnimation("idle");
 	}
 
 	void OnUpdate(Daybreak::DeltaTime dt)
@@ -76,11 +83,13 @@ public:
 
 		if (abs(m_RB.Velocity.x) > 0.02f)
 		{
-			GetComponent<Daybreak::AnimatorComponent>().Source = runAnimation;
+			// GetComponent<Daybreak::AnimatorComponent>().Source = runAnimation;
+			GetComponent<Daybreak::AnimatorComponent>().Controller->ChangeAnimation("run");
 		}
 		else
 		{
-			GetComponent<Daybreak::AnimatorComponent>().Source = idleAnimation;
+			// GetComponent<Daybreak::AnimatorComponent>().Source = idleAnimation;
+			GetComponent<Daybreak::AnimatorComponent>().Controller->ChangeAnimation("idle");
 		}
 		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::G))
 		{
@@ -132,6 +141,6 @@ private:
 	bool test = false;
 
 
-	Daybreak::Ref<Daybreak::AnimationSource> idleAnimation;
-	Daybreak::Ref<Daybreak::AnimationSource> runAnimation;
+	Daybreak::Ref<Daybreak::Animation> idleAnimation;
+	Daybreak::Ref<Daybreak::Animation> runAnimation;
 };

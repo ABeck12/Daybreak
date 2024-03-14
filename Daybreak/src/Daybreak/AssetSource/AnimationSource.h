@@ -17,7 +17,7 @@ namespace Daybreak
 		AnimationAction Action;
 	};
 
-	class AnimationSource
+	class Animation
 	{
 	public:
 		void AddKeyFrame(const Ref<SubTexture2D>& subTexture, const uint32_t& numberFrames, const AnimationAction& action = nullptr);
@@ -25,21 +25,39 @@ namespace Daybreak
 		void AddAction(const uint32_t& startingFrame);
 
 		KeyFrame GetCurrentKeyFrame() const { return m_KeyFrames[m_CurrentKeyFrame]; }
-		uint32_t GetMaxKeyFrames() const { return (uint32_t)(m_KeyFrames.size()-1); }
+		uint32_t GetMaxKeyFrames() const { return (uint32_t)(m_KeyFrames.size() - 1); }
 
 		void SetLoopPlayback(bool loopPlayback) { m_LoopPlayback = loopPlayback; }
 
-		void UpdateSource(const DeltaTime dt);
 
 	private:
+		void Update(const DeltaTime dt);
 		void IncrementKeyFrame();
-		void ResetSource();
-		
+		void Reset();
+
 	private:
 		std::vector<KeyFrame> m_KeyFrames;
 
 		bool m_LoopPlayback = true;
 		uint32_t m_CurrentKeyFrame = 0;
 		float m_DisplayTime = 0.0f;
+
+		friend class AnimationController;
+	};
+
+	class AnimationController
+	{
+	public:
+		void AddAnimation(const std::string& name, const Ref<Animation> animation);
+		void RemoveAnimation(const std::string& name);
+
+		void Update(const DeltaTime dt) { m_ActiveAnimation->Update(dt); }
+
+		void ChangeAnimation(const std::string& name) { m_ActiveAnimation = m_AnimationMap[name]; }
+		const Ref<Animation>& GetActiveAnimation() const { return m_ActiveAnimation; }
+
+	private:
+		std::unordered_map<std::string, Ref<Animation>> m_AnimationMap;
+		Ref<Animation> m_ActiveAnimation;
 	};
 }

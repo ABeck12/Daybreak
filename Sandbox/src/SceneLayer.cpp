@@ -33,13 +33,13 @@ SceneLayer::SceneLayer()
 	auto& subtexture2 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 10 }, { width, height });
 	auto& subtexture3 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 10 }, { width, height });
 	auto& subtexture4 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 10 }, { width, height });
-	Daybreak::Ref<Daybreak::AnimationSource> animSource = Daybreak::CreateRef<Daybreak::AnimationSource>();
+	// Daybreak::Ref<Daybreak::AnimationSource> animSource = Daybreak::CreateRef<Daybreak::AnimationSource>();
 	auto& anim = playerEntity.AddComponent<Daybreak::AnimatorComponent>();
-	animSource->AddKeyFrame(subtexture1, 10);
-	animSource->AddKeyFrame(subtexture2, 10);
-	animSource->AddKeyFrame(subtexture3, 10);
-	animSource->AddKeyFrame(subtexture4, 10);
-	animSource->AddKeyFrame(subtexture1, 10);
+	// animSource->AddKeyFrame(subtexture1, 10);
+	// animSource->AddKeyFrame(subtexture2, 10);
+	// animSource->AddKeyFrame(subtexture3, 10);
+	// animSource->AddKeyFrame(subtexture4, 10);
+	// animSource->AddKeyFrame(subtexture1, 10);
 	// float step = 0.016f;
 	// animSource->AddKeyFrame({ subtexture1, 0 * step });
 	// animSource->AddKeyFrame({ subtexture2, 1 * step });
@@ -95,22 +95,22 @@ SceneLayer::SceneLayer()
 
 	auto test = m_Scene->CreateEntity("Box");
 
-	auto& testsr = test.AddComponent<Daybreak::SpriteRendererComponent>(texture);
+	auto& testsr = test.AddComponent<Daybreak::SpriteRendererComponent>();
 	auto& testtrans = test.GetComponent<Daybreak::TransformComponent>();
 	testtrans.Position.y = -2;
 	auto& testbc2d = test.AddComponent<Daybreak::BoxCollider2DComponent>();
 
 
 	Daybreak::SceneSerializer serializer(m_Scene);
-	// serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
 
 
 	// auto testscn = Daybreak::CreateRef<Daybreak::Scene>();
-	m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
+	// m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
 
 	DB_REGISTER_SCRIPTABLE_ENTITY(MoveableComponent);
-	auto serializer2 = Daybreak::SceneSerializer(m_Scene);
-	serializer2.Deserialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	// auto serializer2 = Daybreak::SceneSerializer(m_Scene);
+	// serializer2.Deserialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
 	// serializer2.Serialize("../Sandbox/assets/scenes/SceneLayer2.dbscn");
 	// Daybreak::ScriptableEntityRegistry::RegisterType<MoveableComponent>();
 	for (const auto& pair : Daybreak::ScriptableEntityRegistry::GetRegistry())

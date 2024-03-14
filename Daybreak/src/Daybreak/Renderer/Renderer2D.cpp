@@ -224,8 +224,8 @@ namespace Daybreak
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const AnimatorComponent& anim, int entityID)
 	{
-		Renderer2D::DrawQuad(glm::scale(transform, { (float)anim.Source->GetCurrentKeyFrame().Sprite->GetWidth() / anim.PixelsPerUnit, (float)anim.Source->GetCurrentKeyFrame().Sprite->GetHeight() / anim.PixelsPerUnit, 1.0f }),
-							 anim.Source->GetCurrentKeyFrame().Sprite, anim.TintColor, 1.0f, (int)entityID);
+		Renderer2D::DrawQuad(glm::scale(transform, { (float)anim.Controller->GetActiveAnimation()->GetCurrentKeyFrame().Sprite->GetWidth() / anim.PixelsPerUnit, (float)anim.Controller->GetActiveAnimation()->GetCurrentKeyFrame().Sprite->GetHeight() / anim.PixelsPerUnit, 1.0f }),
+							 anim.Controller->GetActiveAnimation()->GetCurrentKeyFrame().Sprite, anim.TintColor, 1.0f, (int)entityID);
 	}
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec4& tintColor, const float& tilingFactor, int entityID)
