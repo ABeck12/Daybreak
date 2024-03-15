@@ -66,7 +66,7 @@ namespace Daybreak
 	void OpenGLFrameBuffer::Bind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-		// glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 	}
 
 	void OpenGLFrameBuffer::Unbind() const
@@ -76,6 +76,7 @@ namespace Daybreak
 
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
 	{
+		m_AttachmentIDs.clear();
 		m_Specification.Height = height;
 		m_Specification.Width = width;
 		Remake();

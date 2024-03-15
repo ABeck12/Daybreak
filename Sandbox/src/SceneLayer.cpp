@@ -102,7 +102,7 @@ SceneLayer::SceneLayer()
 
 
 	Daybreak::SceneSerializer serializer(m_Scene);
-	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	// serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
 
 
 	// auto testscn = Daybreak::CreateRef<Daybreak::Scene>();
@@ -122,6 +122,8 @@ SceneLayer::SceneLayer()
 void SceneLayer::OnAttach()
 {
 	m_Scene->OnRuntimeStart();
+	Daybreak::SceneSerializer serializer(m_Scene);
+	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
 }
 
 void SceneLayer::OnDetach()
@@ -214,6 +216,7 @@ void SceneLayer::OnEvent(Daybreak::Event& event)
 		{
 			m_Scene->GetActiveCameraEntity().GetComponent<Daybreak::CameraComponent>().Camera.SetProjection(glm::perspective(glm::radians(45.0f), (float)e.GetWidth() / (float)e.GetHeight(), 0.1f, 75.0f));
 			// m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position.z *= -1;
+			m_FrameBuffer->Resize(e.GetWidth(), e.GetHeight());
 		}
 	}
 }
@@ -234,6 +237,7 @@ void SceneLayer::OnImGuiRender()
 		ImGui::SetNextWindowViewport(viewport->ID);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 1.0f, 0.0f });
 		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 	}
@@ -247,9 +251,12 @@ void SceneLayer::OnImGuiRender()
 	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 	ImGui::Begin("Image Test");
 	uint32_t textureID = m_FrameBuffer->GetAttachmentRendererID(0);
-	ImGui::Image((void*)textureID, ImVec2({ 1280, 720 }), { 0, 1 }, { 1, 0 });
+	uint32_t width = Daybreak::Application::Get().GetWindow().GetWidth();
+	uint32_t height = Daybreak::Application::Get().GetWindow().GetHeight();
+	ImGui::Image((void*)textureID, ImVec2({ (float)width, (float)height }), { 0, 1 }, { 1, 0 });
 	ImGui::End();
 	// ImGui::PopStyleVar();
+	ImGui::PopStyleVar();
 	ImGui::PopStyleVar();
 	ImGui::PopStyleVar();
 
