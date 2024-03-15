@@ -4,13 +4,20 @@
 
 namespace Daybreak
 {
-	void Animation::AddKeyFrame(const Ref<SubTexture2D>& subTexture, const uint32_t& numberFrames, const AnimationAction& action)
+	void Animation::AddKeyFrame(const Ref<SubTexture2D>& subTexture, uint32_t numberFrames, const AnimationAction& action)
 	{
 		KeyFrame frame;
 		frame.Sprite = subTexture;
 		frame.Duration = numberFrames * (1.0f / 60.0f);
 		frame.Action = action;
 		m_KeyFrames.emplace_back(frame);
+	}
+
+	void Animation::AddActionForKeyFrame(uint32_t frameIndex, const AnimationAction& action)
+	{
+		DB_CORE_ASSERT(frameIndex <= GetMaxKeyFrames(), "frameIndex is out of bounds. Cant add action to non-existent KeyFrame!");
+
+		m_KeyFrames[frameIndex].Action = action;
 	}
 
 	void Animation::Update(DeltaTime dt)
@@ -45,7 +52,7 @@ namespace Daybreak
 		m_DisplayTime = 0.0f;
 	}
 
-	void AnimationController::AddAnimation(const std::string& name, const Ref<Animation> animation)
+	void AnimationController::AddAnimation(const std::string& name, const Ref<Animation>& animation)
 	{
 		if (m_AnimationMap.find(name) != m_AnimationMap.end())
 		{

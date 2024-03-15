@@ -27,6 +27,5 @@ public:
 Daybreak::Application* Daybreak::CreateApplication()
 {
 	ApplicationSpecifications spec;
-	Sandbox* sandbox = new Sandbox(spec);
-	return sandbox;
+	return new Sandbox(spec);
 }

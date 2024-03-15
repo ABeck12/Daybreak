@@ -20,9 +20,9 @@ namespace Daybreak
 	class Animation
 	{
 	public:
-		void AddKeyFrame(const Ref<SubTexture2D>& subTexture, const uint32_t& numberFrames, const AnimationAction& action = nullptr);
+		void AddKeyFrame(const Ref<SubTexture2D>& subTexture, uint32_t numberFrames, const AnimationAction& action = nullptr);
 
-		void AddAction(const uint32_t& startingFrame);
+		void AddActionForKeyFrame(uint32_t frameIndex, const AnimationAction& action);
 
 		KeyFrame GetCurrentKeyFrame() const { return m_KeyFrames[m_CurrentKeyFrame]; }
 		uint32_t GetMaxKeyFrames() const { return (uint32_t)(m_KeyFrames.size() - 1); }
@@ -48,7 +48,7 @@ namespace Daybreak
 	class AnimationController
 	{
 	public:
-		void AddAnimation(const std::string& name, const Ref<Animation> animation);
+		void AddAnimation(const std::string& name, const Ref<Animation>& animation);
 		void RemoveAnimation(const std::string& name);
 
 		void Update(const DeltaTime dt) { m_ActiveAnimation->Update(dt); }
