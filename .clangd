@@ -1,5 +1,6 @@
 Diagnostics:
-  Suppress: [unused-includes, missing_type_specifier, value_reference_bind_to_temporary, lvalue_reference_bind_to_temporary]
+  # Suppress: [unused-includes, missing_type_specifier, value_reference_bind_to_temporary, lvalue_reference_bind_to_temporary]
+  Suppress: [unused-includes, missing_type_specifier]
 
 CompileFlags:
   Add: [-std=c++17]
