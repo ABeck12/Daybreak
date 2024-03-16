@@ -5,7 +5,7 @@
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Renderer/Camera.h"
 #include "Daybreak/Core/UUID.h"
-#include "Daybreak/AssetSource/AnimationSource.h"
+#include "Daybreak/Assets/Animation.h"
 #include "Daybreak/Scene/ScriptableEntityRegistry.h"
 #include "Daybreak/Scene/ScriptableEntity.h"
 
