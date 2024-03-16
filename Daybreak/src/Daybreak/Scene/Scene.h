@@ -3,7 +3,6 @@
 #include "dbpch.h"
 
 #include "Daybreak/Core/DeltaTime.h"
-#include "Daybreak/Scene/Components.h"
 #include "Daybreak/Physics/PhysicsSim2D.h"
 #include "Daybreak/Core/UUID.h"
 

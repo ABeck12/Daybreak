@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Daybreak/Core/DeltaTime.h"
-#include "Daybreak/Scene/Components.h"
+
+#include <glm/glm.hpp>
 
 class b2World;
 
@@ -11,6 +12,7 @@ namespace Daybreak
 	class Scene;
 	class ContactListener;
 	class ContactFilter;
+	struct Rigidbody2DComponent;
 
 	class PhysicsSim2D
 	{
@@ -36,7 +38,7 @@ namespace Daybreak
 		void AddLinearImpulse(const Rigidbody2DComponent& rb2d, const glm::vec2& impulse);
 		void AddAngularImpulse(const Rigidbody2DComponent& rb2d, const float& impulse);
 
-		// Rework into a project class
+		// TODO: Rework into a project class
 		static PhysicsSim2D* GetActiveSim() { return s_ActiveSim; }
 
 	private:

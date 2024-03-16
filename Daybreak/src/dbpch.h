@@ -1,5 +1,8 @@
 #pragma once
 
+// Fix for ImGui deprecation warnings
+#define _CRT_SECURE_NO_WARNINGS
+
 #ifndef NOMINMAX
 // See github.com/skypjack/entt/wiki/Frequently-Asked-Questions#warning-c4003-the-min-the-max-and-the-macro
 #define NOMINMAX

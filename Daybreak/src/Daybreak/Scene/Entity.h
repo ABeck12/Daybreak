@@ -58,8 +58,8 @@ namespace Daybreak
 		operator entt::entity() const { return m_EntityHandle; }
 		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
-		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
-		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
+		const std::string& GetName();
+		const UUID GetUUID();
 
 	private:
 		Scene* m_Scene = nullptr; // TODO: This could be turned into a weak ref system

@@ -5,6 +5,7 @@
 #include "Daybreak/Scene/Scene.h"
 #include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Scene/ScriptableEntity.h"
+#include "Daybreak/Scene/Components.h"
 #include "Daybreak/Core/UUID.h"
 
 #include "box2d/box2d.h"

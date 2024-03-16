@@ -7,6 +7,7 @@
 #include "Daybreak/Core/UUID.h"
 #include "Daybreak/AssetSource/AnimationSource.h"
 #include "Daybreak/Scene/ScriptableEntityRegistry.h"
+#include "Daybreak/Scene/ScriptableEntity.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
