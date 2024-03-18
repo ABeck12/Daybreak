@@ -23,7 +23,7 @@
 #include <set>
 
 #include <glm/glm.hpp>
-#include <Daybreak/Math/GlmToString.h>
+#include <Daybreak/Utils/GlmToString.h>
 
 #ifdef DB_PLATFORM_WINDOWS
 #include <Windows.h>
