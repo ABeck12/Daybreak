@@ -8,6 +8,7 @@
 
 namespace Daybreak
 {
+	// TODO: Make this not static and add it to the project when available
 	enum class AssetType
 	{
 		Texture2D,
@@ -48,6 +49,5 @@ namespace Daybreak
 	private:
 		static std::unordered_map<std::string, std::variant<Ref<Texture2D>, Ref<Animation>, Ref<AnimationController>>> s_AssetMap;
 		static std::unordered_map<std::string, AssetType> s_AssetTypeMap;
-
 	};
 }

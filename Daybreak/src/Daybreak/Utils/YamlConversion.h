@@ -100,7 +100,6 @@ namespace YAML
 			node.push_back(mat[2]);
 			node.push_back(mat[3]);
 			node.SetStyle(EmitterStyle::Flow);
-			// node.push_back((uint64_t)uuid);
 			return node;
 		}
 
