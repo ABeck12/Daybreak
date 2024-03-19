@@ -1,0 +1,8 @@
+Texture2D:
+  Filepath: Test.png
+  Specifications:
+    Width: 128
+    Height: 128
+    Format: RGBA
+    Filter: Point
+    PixelsPerUnit: 128

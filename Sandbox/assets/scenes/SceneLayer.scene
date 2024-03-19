@@ -1,8 +1,8 @@
-Scene: Untitled
+Scene: Test Scene
 Entities:
-  - Entity: 8191907309002796915
+  - Entity: 5993469286602838773
     TagComponent:
-      Tag: testsprite
+      Tag: Box
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 0
@@ -13,22 +13,16 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Sprite:
-        Filepath: ../Sandbox/assets/Test.png
-        Specifications:
-          Width: 128
-          Height: 128
-          Format: RGBA
-          Filter: Point
+      Sprite: ~
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
-      PixelsPerUnit: 128
     BoxCollider2DComponent:
       Size: [0.5, 0.5]
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
-  - Entity: 15953601132502546229
+      Enabled: true
+  - Entity: 8873963015384664683
     TagComponent:
       Tag: Background
     RelationshipComponent:
@@ -41,17 +35,10 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Sprite:
-        Filepath: ../Sandbox/assets/Background.png
-        Specifications:
-          Width: 1280
-          Height: 720
-          Format: RGBA
-          Filter: Point
+      Sprite: sprites/Background.sprite
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
-      PixelsPerUnit: 128
-  - Entity: 11742473269684402621
+  - Entity: 13672322952307053531
     TagComponent:
       Tag: Floor
     RelationshipComponent:
@@ -64,20 +51,15 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [15, 1, 1]
     SpriteRendererComponent:
-      Sprite:
-        Filepath: ../Sandbox/assets/Test.png
-        Specifications:
-          Width: 128
-          Height: 128
-          Format: RGBA
-          Filter: Point
+      Sprite: sprites/Test.sprite
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
-      PixelsPerUnit: 128
-    BoxCollider2DComponent:
+    Rigidbody2DComponent:
       Type: Static
       ContinuousDetection: false
+      AllowSleep: true
       Velocity: [0, 0]
+      FixedRotation: false
       Mass: 1
       GravityScale: 1
       AngularDrag: 1
@@ -91,11 +73,12 @@ Entities:
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
-  - Entity: 16171304229564175854
+      Enabled: true
+  - Entity: 16601575096613290469
     TagComponent:
       Tag: Camera
     RelationshipComponent:
-      ParentID: 16485976572188845116
+      ParentID: 8589151702384553179
       AmountOfChildren: 0
       ChildrenIDs:
         []
@@ -104,23 +87,31 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:
+      CameraProjection: [[1.35799515, 0, 0, 0], [0, 2.41421342, 0, 0], [0, 0, -1.00267017, -1], [0, 0, -0.200267017, 0]]
       Primary: true
-  - Entity: 16485976572188845116
+      Type: Perspective
+  - Entity: 8589151702384553179
     TagComponent:
       Tag: Player
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 1
       ChildrenIDs:
-        - 16171304229564175854
+        - 16601575096613290469
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-    BoxCollider2DComponent:
+    AnimatorComponent:
+      Controller: animations/playerController.controller
+      IsPlaying: true
+      TintColor: [1, 1, 1, 1]
+    Rigidbody2DComponent:
       Type: Dynamic
       ContinuousDetection: false
+      AllowSleep: false
       Velocity: [0, 0]
+      FixedRotation: true
       Mass: 1
       GravityScale: 1
       AngularDrag: 1
@@ -134,3 +125,6 @@ Entities:
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
+      Enabled: true
+    NativeScriptComponent:
+      TypeName: MoveableComponent

@@ -14,7 +14,7 @@ public:
 		// m_Anim.Controller = Daybreak::CreateRef<Daybreak::AnimationController>();
 		GetComponent<Daybreak::AnimatorComponent>().Controller = Daybreak::CreateRef<Daybreak::AnimationController>();
 
-		const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/adventurer-Sheet.png");
+		const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point, 37 }, "../Sandbox/assets/adventurer-Sheet.png");
 		float width = 50.;
 		float height = 37.;
 		auto& idle1 = Daybreak::SubTexture2D::Create(spriteSheet, { 0, 10 }, { width, height });
@@ -42,7 +42,7 @@ public:
 		idleAnimation->AddKeyFrame(idle1, framesPerAnimationFrame, action);
 
 		// GetComponent<Daybreak::AnimatorComponent>().Source = idleAnimation;
-		GetComponent<Daybreak::AnimatorComponent>().PixelsPerUnit = 37;
+		// GetComponent<Daybreak::AnimatorComponent>().PixelsPerUnit = 37;
 
 
 		runAnimation = Daybreak::CreateRef<Daybreak::Animation>();
@@ -57,6 +57,7 @@ public:
 		GetComponent<Daybreak::AnimatorComponent>().Controller->AddAnimation("idle", idleAnimation);
 		GetComponent<Daybreak::AnimatorComponent>().Controller->AddAnimation("run", runAnimation);
 		GetComponent<Daybreak::AnimatorComponent>().Controller->ChangeAnimation("idle");
+		GetComponent<Daybreak::AnimatorComponent>().Controller->SetStartupAnimation("idle");
 	}
 
 	void OnUpdate(Daybreak::DeltaTime dt)

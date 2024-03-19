@@ -21,6 +21,7 @@ namespace Daybreak
 	{
 	public:
 		void AddKeyFrame(const Ref<SubTexture2D>& subTexture, uint32_t numberFrames, const AnimationAction& action = nullptr);
+		void AddKeyFrame(const KeyFrame& frame);
 
 		void AddActionForKeyFrame(uint32_t frameIndex, const AnimationAction& action);
 
@@ -43,6 +44,7 @@ namespace Daybreak
 		float m_DisplayTime = 0.0f;
 
 		friend class AnimationController;
+		friend class AssetSerializer;
 	};
 
 	class AnimationController
@@ -55,9 +57,18 @@ namespace Daybreak
 
 		void ChangeAnimation(const std::string& name) { m_ActiveAnimation = m_AnimationMap[name]; }
 		const Ref<Animation>& GetActiveAnimation() const { return m_ActiveAnimation; }
+		void SetStartupAnimation(const std::string& name)
+		{
+			m_StartupAnimation = name;
+			m_ActiveAnimation = m_AnimationMap[name];
+		}
 
 	private:
 		std::unordered_map<std::string, Ref<Animation>> m_AnimationMap;
 		Ref<Animation> m_ActiveAnimation;
+
+		std::string m_StartupAnimation;
+
+		friend class AssetSerializer;
 	};
 }

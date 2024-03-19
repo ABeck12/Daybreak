@@ -15,8 +15,8 @@ namespace Daybreak
 		const Ref<Texture2D> GetTexture() const { return m_Texture; }
 		const uint32_t GetWidth() const { return m_Width; }
 		const uint32_t GetHeight() const { return m_Height; }
-		// const glm::vec2 GetMin() const { return m_TexCoords[0]; }
-		// const glm::vec2 GetMax() const { return m_TexCoords[2]; }
+		const glm::vec2 GetMin() const { return m_TexCoords[0]; }
+		const glm::vec2 GetMax() const { return m_TexCoords[2]; }
 
 		static Ref<SubTexture2D> Create(const Ref<Texture2D>& texture, const glm::vec2& coords, const glm::vec2& cellSize, const glm::vec2& cellCount = { 1, 1 });
 

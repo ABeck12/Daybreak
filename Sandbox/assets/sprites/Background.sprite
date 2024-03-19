@@ -1,0 +1,8 @@
+Texture2D:
+  Filepath: Background.png
+  Specifications:
+    Width: 1280
+    Height: 720
+    Format: RGBA
+    Filter: Point
+    PixelsPerUnit: 100

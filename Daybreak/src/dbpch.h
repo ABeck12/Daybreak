@@ -21,6 +21,7 @@
 #include <unordered_set>
 #include <map>
 #include <set>
+#include <filesystem>
 
 #include <glm/glm.hpp>
 #include <Daybreak/Utils/GlmToString.h>

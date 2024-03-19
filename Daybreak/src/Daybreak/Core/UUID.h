@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace Daybreak
 {
 
@@ -11,15 +13,17 @@ namespace Daybreak
 		UUID(const UUID&) = default;
 
 		operator uint64_t() const { return m_UUID; }
+
 	private:
 		uint64_t m_UUID;
 	};
 
 }
 
-namespace std 
+namespace std
 {
-	template <typename T> struct hash;
+	template<typename T>
+	struct hash;
 
 	template<>
 	struct hash<Daybreak::UUID>

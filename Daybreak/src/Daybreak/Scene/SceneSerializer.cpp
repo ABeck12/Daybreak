@@ -3,206 +3,12 @@
 #include "Daybreak/Scene/SceneSerializer.h"
 #include "Daybreak/Scene/Components.h"
 #include "Daybreak/Scene/Entity.h"
-
-#define YAML_CPP_DLL
-#define YAML_CPP_STATIC_DEFINE
-#include <yaml-cpp/yaml.h>
-#include <fstream>
-
-
-namespace YAML
-{
-	template<>
-	struct convert<glm::vec2>
-	{
-		static Node encode(const glm::vec2& rhs)
-		{
-			Node node;
-			node.push_back(rhs.x);
-			node.push_back(rhs.y);
-			node.SetStyle(EmitterStyle::Flow);
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::vec2& rhs)
-		{
-			if (!node.IsSequence() || node.size() != 2)
-				return false;
-
-			rhs.x = node[0].as<float>();
-			rhs.y = node[1].as<float>();
-			return true;
-		}
-	};
-
-	template<>
-	struct convert<glm::vec3>
-	{
-		static Node encode(const glm::vec3& rhs)
-		{
-			Node node;
-			node.push_back(rhs.x);
-			node.push_back(rhs.y);
-			node.push_back(rhs.z);
-			node.SetStyle(EmitterStyle::Flow);
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::vec3& rhs)
-		{
-			if (!node.IsSequence() || node.size() != 3)
-				return false;
-
-			rhs.x = node[0].as<float>();
-			rhs.y = node[1].as<float>();
-			rhs.z = node[2].as<float>();
-			return true;
-		}
-	};
-
-	template<>
-	struct convert<glm::vec4>
-	{
-		static Node encode(const glm::vec4& rhs)
-		{
-			Node node;
-			node.push_back(rhs.x);
-			node.push_back(rhs.y);
-			node.push_back(rhs.z);
-			node.push_back(rhs.w);
-			node.SetStyle(EmitterStyle::Flow);
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::vec4& rhs)
-		{
-			if (!node.IsSequence() || node.size() != 4)
-				return false;
-
-			rhs.x = node[0].as<float>();
-			rhs.y = node[1].as<float>();
-			rhs.z = node[2].as<float>();
-			rhs.w = node[3].as<float>();
-			return true;
-		}
-	};
-
-	template<>
-	struct convert<glm::mat4>
-	{
-		static Node encode(const glm::mat4& mat)
-		{
-			Node node;
-			node.push_back(mat[0]);
-			node.push_back(mat[1]);
-			node.push_back(mat[2]);
-			node.push_back(mat[3]);
-			node.SetStyle(EmitterStyle::Flow);
-			// node.push_back((uint64_t)uuid);
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::mat4& mat)
-		{
-			if (!node.IsSequence() || node.size() != 4)
-				return false;
-			mat[0] = node[0].as<glm::vec4>();
-			mat[1] = node[1].as<glm::vec4>();
-			mat[2] = node[2].as<glm::vec4>();
-			mat[3] = node[3].as<glm::vec4>();
-
-			return true;
-		}
-	};
-
-	template<>
-	struct convert<Daybreak::UUID>
-	{
-		static Node encode(const Daybreak::UUID& uuid)
-		{
-			Node node;
-			node.push_back((uint64_t)uuid);
-			return node;
-		}
-
-		static bool decode(const Node& node, Daybreak::UUID& uuid)
-		{
-			uuid = node.as<uint64_t>();
-			return true;
-		}
-	};
-}
-
+#include "Daybreak/Assets/AssetManager.h"
+#include "Daybreak/Assets/AssetSerializer.h"
+#include "Daybreak/Utils/YamlConversion.h"
 
 namespace Daybreak
 {
-	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
-	{
-		out << YAML::Flow;
-		out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
-		return out;
-	}
-
-	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
-	{
-		out << YAML::Flow;
-		out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
-		return out;
-	}
-
-	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v)
-	{
-		out << YAML::Flow;
-		out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
-		return out;
-	}
-
-	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::mat4& m)
-	{
-		out << YAML::Flow;
-		out << YAML::BeginSeq;
-		out << m[0] << m[1] << m[2] << m[3];
-		out << YAML::EndSeq;
-		return out;
-	}
-
-	// Temporary
-	YAML::Emitter& operator<<(YAML::Emitter& out, const Ref<Texture2D>& texture)
-	{
-		out << YAML::BeginMap;
-		out << YAML::Key << "Filepath" << YAML::Value << texture->GetFilepath();
-		out << YAML::Key << "Specifications";
-		out << YAML::BeginMap;
-		out << YAML::Key << "Width" << YAML::Value << texture->GetTexutreSpecifications().Width;
-		out << YAML::Key << "Height" << YAML::Value << texture->GetTexutreSpecifications().Height;
-		switch (texture->GetTexutreSpecifications().Format)
-		{
-			case ImageFormat::RGB:
-				out << YAML::Key << "Format" << YAML::Value << "RGB";
-				break;
-			case ImageFormat::RGBA:
-				out << YAML::Key << "Format" << YAML::Value << "RGBA";
-				break;
-			default:
-				out << YAML::Key << "Format" << YAML::Value << "None";
-				DB_CORE_ERROR("Can't serialize image type \"None\"");
-				break;
-		}
-		switch (texture->GetTexutreSpecifications().Filter)
-		{
-			case TextureFilterType::Point:
-				out << YAML::Key << "Filter" << YAML::Value << "Point";
-				break;
-			case TextureFilterType::Bilinear:
-				out << YAML::Key << "Filter" << YAML::Value << "Bilinear";
-				break;
-		}
-		out << YAML::EndMap;
-		out << YAML::EndMap;
-
-		return out;
-	}
-
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		DB_CORE_ASSERT(entity.HasComponent<IDComponent>(), "Entity does not have ID Component");
@@ -252,9 +58,11 @@ namespace Daybreak
 
 			auto& sr = entity.GetComponent<SpriteRendererComponent>();
 
-			if (sr.Sprite)
+			if (sr.Sprite && AssetManager::HasAssetRef(sr.Sprite))
 			{
-				out << YAML::Key << "Sprite" << YAML::Value << sr.Sprite;
+				std::string filepath = AssetManager::GetFilepathOfRef<Texture2D>(sr.Sprite);
+				AssetSerializer::SerializeSprite(sr.Sprite, filepath);
+				out << YAML::Key << "Sprite" << YAML::Value << filepath;
 			}
 			else
 			{
@@ -263,7 +71,6 @@ namespace Daybreak
 
 			out << YAML::Key << "TintColor" << YAML::Value << sr.TintColor;
 			out << YAML::Key << "TilingFactor" << YAML::Value << sr.TilingFactor;
-			out << YAML::Key << "PixelsPerUnit" << YAML::Value << sr.PixelsPerUnit;
 
 			out << YAML::EndMap;
 		}
@@ -274,14 +81,20 @@ namespace Daybreak
 			out << YAML::Key << "AnimatorComponent";
 			out << YAML::BeginMap;
 
-			out << YAML::Key << "Source" << YAML::Value << YAML::Null;
+			if (anim.Controller && AssetManager::HasAssetRef(anim.Controller))
+			{
+				std::string filepath = AssetManager::GetFilepathOfRef<AnimationController>(anim.Controller);
+				AssetSerializer::SerializeAnimationController(anim.Controller, filepath);
+				out << YAML::Key << "Controller" << YAML::Value << filepath;
+			}
+			else
+			{
+				out << YAML::Key << "Controller" << YAML::Value << YAML::Null;
+			}
 			out << YAML::Key << "IsPlaying" << YAML::Value << anim.IsPlaying;
 			out << YAML::Key << "TintColor" << YAML::Value << anim.TintColor;
-			out << YAML::Key << "PixelsPerUnit" << YAML::Value << anim.PixelsPerUnit;
 
 			out << YAML::EndMap;
-
-			DB_CORE_WARN("AnimatorComponent serialization not implemented");
 		}
 		if (entity.HasComponent<Rigidbody2DComponent>())
 		{
@@ -376,8 +189,6 @@ namespace Daybreak
 
 			out << YAML::Key << "TypeName" << YAML::Value << nsc.TypeName;
 			out << YAML::EndMap;
-
-			DB_CORE_WARN("NativeScriptComponent serialization not implemented");
 		}
 
 		out << YAML::EndMap;
@@ -392,7 +203,6 @@ namespace Daybreak
 	void SceneSerializer::Serialize(const std::string& filepath)
 	{
 		YAML::Emitter out;
-		out.SetIndent(4);
 
 		out << YAML::BeginMap;
 		out << YAML::Key << "Scene" << YAML::Value << m_Scene->m_SceneName;
@@ -416,8 +226,6 @@ namespace Daybreak
 
 	bool SceneSerializer::Deserialize(const std::string& filepath)
 	{
-		// DB_CORE_WARN("Deserialize function not implemented");
-		// return false;
 		YAML::Node data;
 		try
 		{
@@ -425,7 +233,7 @@ namespace Daybreak
 		}
 		catch (YAML::ParserException e)
 		{
-			DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", filepath, e.what());
+			DB_CORE_ERROR("Failed to load .scene file '{0}'\n     {1}", filepath, e.what());
 			return false;
 		}
 
@@ -440,7 +248,6 @@ namespace Daybreak
 
 		if (entities)
 		{
-			// for (auto entity : entities)
 			for (size_t i = entities.size(); i > 0; --i)
 			{
 				auto entity = entities[i - 1];
@@ -535,11 +342,13 @@ namespace Daybreak
 				{
 					auto& anim = deserializedEntity.AddComponent<AnimatorComponent>();
 
+					if (!animComponent["Controller"].IsNull())
+					{
+						anim.Controller = AssetSerializer::DeserializeAnimationController(animComponent["Controller"].as<std::string>());
+					}
+
 					anim.IsPlaying = animComponent["IsPlaying"].as<bool>();
 					anim.TintColor = animComponent["TintColor"].as<glm::vec4>();
-					anim.PixelsPerUnit = animComponent["PixelsPerUnit"].as<uint32_t>();
-
-					DB_CORE_WARN("AnimatorComponent deserialization not implemented");
 				}
 				auto srComponent = entity["SpriteRendererComponent"];
 				if (srComponent)
@@ -548,29 +357,11 @@ namespace Daybreak
 
 					if (!srComponent["Sprite"].IsNull())
 					{
-						DB_LOG(srComponent["Sprite"]["Filepath"].as<std::string>());
-
-						auto filepath = srComponent["Sprite"]["Filepath"].as<std::string>();
-						TextureSpecifications spec;
-						spec.Height = srComponent["Sprite"]["Specifications"]["Height"].as<uint32_t>();
-						spec.Width = srComponent["Sprite"]["Specifications"]["Width"].as<uint32_t>();
-
-						if (srComponent["Sprite"]["Specifications"]["Format"].as<std::string>() == "RGB")
-							spec.Format = Daybreak::ImageFormat::RGB;
-						else if (srComponent["Sprite"]["Specifications"]["Format"].as<std::string>() == "RGBA")
-							spec.Format = Daybreak::ImageFormat::RGBA;
-
-						if (srComponent["Sprite"]["Specifications"]["Filter"].as<std::string>() == "Point")
-							spec.Filter = Daybreak::TextureFilterType::Point;
-						else if (srComponent["Sprite"]["Specifications"]["Filter"].as<std::string>() == "Bilinear")
-							spec.Filter = Daybreak::TextureFilterType::Bilinear;
-
-						sr.Sprite = Texture2D::Create(spec, filepath);
+						sr.Sprite = AssetSerializer::DeserializeSprite(srComponent["Sprite"].as<std::string>());
 					}
 
 					sr.TintColor = srComponent["TintColor"].as<glm::vec4>();
 					sr.TilingFactor = srComponent["TilingFactor"].as<float>();
-					sr.PixelsPerUnit = srComponent["PixelsPerUnit"].as<uint32_t>();
 				}
 
 				auto nscComponent = entity["NativeScriptComponent"];

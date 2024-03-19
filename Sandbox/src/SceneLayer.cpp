@@ -6,6 +6,8 @@
 #include "Daybreak/Renderer/Texture.h"
 #include "ScriptableEntityTest.h"
 #include "Daybreak/Scene/SceneSerializer.h"
+#include "Daybreak/Assets/AssetSerializer.h"
+#include "Daybreak/Assets/AssetManager.h"
 
 SceneLayer::SceneLayer()
 	: Layer("SceneLayer")
@@ -65,7 +67,8 @@ SceneLayer::SceneLayer()
 	lastMousePos = Daybreak::Input::GetMousePosition();
 
 	floorEntity = m_Scene->CreateEntity("Floor");
-	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Test.png");
+	// auto texture = Daybreak::AssetSerializer::DeserializeSprite("sprites/Test.sprite");
+	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point, 128 }, "../Sandbox/assets/Test.png");
 	auto& floorsr = floorEntity.AddComponent<Daybreak::SpriteRendererComponent>(texture);
 	auto& floorrb2d = floorEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	auto& floorbc2d = floorEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
@@ -83,7 +86,7 @@ SceneLayer::SceneLayer()
 	// DB_LOG(floorsr.Sprite->GetFilepath());
 	// floorEntity.GetComponent<Daybreak::RelationshipComponent>().ParentEntity = &cameraEntity;
 	// m_Scene->CreateEntity(floorEntity, "TestChild");
-	auto& tileTexture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TileGrid.png");
+	// auto& tileTexture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/TileGrid.png");
 
 	auto background = m_Scene->CreateEntity("Background");
 	auto backgroundSprite = Daybreak::Texture2D::Create({ 1280, 720, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/Background.png");
@@ -91,6 +94,8 @@ SceneLayer::SceneLayer()
 	backgroundTransform.Position.z = -1;
 	auto& backgroundSr = background.AddComponent<Daybreak::SpriteRendererComponent>();
 	backgroundSr.Sprite = backgroundSprite;
+	Daybreak::AssetManager::AddAssetRef(backgroundSr.Sprite, "sprites/Background.sprite");
+
 	// backgroundSr.PixelsPerUnit = 1064;
 
 	auto test = m_Scene->CreateEntity("Box");
@@ -101,7 +106,7 @@ SceneLayer::SceneLayer()
 	auto& testbc2d = test.AddComponent<Daybreak::BoxCollider2DComponent>();
 
 
-	Daybreak::SceneSerializer serializer(m_Scene);
+	// Daybreak::SceneSerializer serializer(m_Scene);
 	// serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
 
 
@@ -110,20 +115,34 @@ SceneLayer::SceneLayer()
 
 	DB_REGISTER_SCRIPTABLE_ENTITY(MoveableComponent);
 	// auto serializer2 = Daybreak::SceneSerializer(m_Scene);
-	// serializer2.Deserialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	// serializer2.Deserialize("../Sandbox/assets/scenes/SceneLayer.scene");
 	// serializer2.Serialize("../Sandbox/assets/scenes/SceneLayer2.dbscn");
 	// Daybreak::ScriptableEntityRegistry::RegisterType<MoveableComponent>();
 	for (const auto& pair : Daybreak::ScriptableEntityRegistry::GetRegistry())
 	{
 		DB_LOG(pair.first);
 	}
+	// Daybreak::AssetSerializer::SerializeSprite(texture, "sprites/Test.sprite");
+	// auto testanim = Daybreak::AssetSerializer::DeserializeAnimation("animations/idle.anim");
+	// auto testanim2 = Daybreak::AssetSerializer::DeserializeAnimation("animations/idle.anim");
+
+	// auto cont1 = Daybreak::AssetSerializer::DeserializeAnimationController("animations/playerController.controller");
+	// auto cont2 = Daybreak::AssetSerializer::DeserializeAnimationController("animations/playerController.controller");
+	// playerEntity.GetComponent<Daybreak::AnimatorComponent>().Controller = cont1;
+
+	// auto tex1 = Daybreak::AssetSerializer::DeserializeSprite("sprites/adventurer-Sheet.sprite");
+
+	// DB_LOG(Daybreak::AssetManager::GetFilepathOfRef<Daybreak::Texture2D>(tex1));
 }
 
 void SceneLayer::OnAttach()
 {
 	m_Scene->OnRuntimeStart();
 	Daybreak::SceneSerializer serializer(m_Scene);
-	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.dbscn");
+	Daybreak::AssetManager::AddAssetRef(playerEntity.GetComponent<Daybreak::AnimatorComponent>().Controller, "animations/playerController.controller");
+	Daybreak::AssetManager::AddAssetRef(floorEntity.GetComponent<Daybreak::SpriteRendererComponent>().Sprite, "sprites/Test.sprite");
+	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.scene");
+	// Daybreak::AssetSerializer::SerializeAnimationController(playerEntity.GetComponent<Daybreak::AnimatorComponent>().Controller, "animations/playerController.controller");
 }
 
 void SceneLayer::OnDetach()

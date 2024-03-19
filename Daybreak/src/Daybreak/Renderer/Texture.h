@@ -7,12 +7,14 @@ namespace Daybreak
 	enum class ImageFormat
 	{
 		None = 0,
-		RGB, RGBA //CHANGE THIS OFF OF 8
+		RGB,
+		RGBA // CHANGE THIS OFF OF 8
 	};
 
 	enum class TextureFilterType
 	{
-		Bilinear, Point
+		Bilinear,
+		Point
 	};
 
 	struct TextureSpecifications
@@ -21,13 +23,14 @@ namespace Daybreak
 		uint32_t Height = 1;
 		ImageFormat Format = ImageFormat::RGBA;
 		TextureFilterType Filter = TextureFilterType::Point;
+		uint32_t PixelsPerUnit = 100;
 	};
 
 	class Texture
 	{
 	public:
 		~Texture() = default;
-		//static Ref<Texture> Create(const TextureSpecifications& textureSpecs, const std::string& filepath);
+		// static Ref<Texture> Create(const TextureSpecifications& textureSpecs, const std::string& filepath);
 
 		virtual const std::string& GetFilepath() const = 0;
 		virtual const TextureSpecifications& GetTexutreSpecifications() const = 0;
@@ -42,7 +45,6 @@ namespace Daybreak
 		virtual const void SetData(void* data, uint32_t size) const = 0;
 
 		virtual bool operator==(const Texture& other) const = 0;
-		
 	};
 
 	class Texture2D : public Texture

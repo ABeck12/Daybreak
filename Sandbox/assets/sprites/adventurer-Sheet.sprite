@@ -1,0 +1,8 @@
+Texture2D:
+  Filepath: adventurer-Sheet.png
+  Specifications:
+    Width: 350
+    Height: 407
+    Format: RGBA
+    Filter: Point
+    PixelsPerUnit: 37

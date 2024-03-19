@@ -1,0 +1,6 @@
+StartupAnimation: idle
+Animations:
+  - Name: idle
+    Filepath: animations/idle.anim
+  - Name: run
+    Filepath: animations/run.anim

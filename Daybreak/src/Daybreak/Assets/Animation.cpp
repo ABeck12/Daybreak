@@ -13,6 +13,11 @@ namespace Daybreak
 		m_KeyFrames.emplace_back(frame);
 	}
 
+	void Animation::AddKeyFrame(const KeyFrame& frame)
+	{
+		m_KeyFrames.emplace_back(frame);
+	}
+
 	void Animation::AddActionForKeyFrame(uint32_t frameIndex, const AnimationAction& action)
 	{
 		DB_CORE_ASSERT(frameIndex <= GetMaxKeyFrames(), "frameIndex is out of bounds. Cant add action to non-existent KeyFrame!");
