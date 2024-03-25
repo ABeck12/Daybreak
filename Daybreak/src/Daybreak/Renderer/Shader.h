@@ -16,6 +16,7 @@ namespace Daybreak
 
 		virtual void SetInt1(const std::string& name, const uint32_t value) const = 0;
 		virtual void SetIntArray(const std::string& name, int* values, uint32_t count) const = 0;
+		virtual void SetFloat(const std::string& name, const float& value) const = 0;
 		virtual void SetFloat2(const std::string& name, const glm::vec2& vec) const = 0;
 		virtual void SetFloat3(const std::string& name, const glm::vec3& vec) const = 0;
 		virtual void SetFloat4(const std::string& name, const glm::vec4& vec) const = 0;
@@ -31,7 +32,8 @@ namespace Daybreak
 	public:
 		static void Add(const std::string& name, const Ref<Shader>& shader);
 		Ref<Shader>& Load(const std::string& name);
+
 	private:
-		std::unordered_map <std::string, Ref<Shader>&> m_Shaders;
+		std::unordered_map<std::string, Ref<Shader>&> m_Shaders;
 	};
 }
