@@ -379,4 +379,10 @@ namespace Daybreak
 	{
 		DrawLine({ pos1.x, pos1.y, 0.0f }, { pos2.x, pos2.y, 0.0f }, color);
 	}
+
+	void Renderer2D::DrawLine(const glm::vec2& pos, float deg, float length, const glm::vec4& color)
+	{
+		float radians = glm::radians(deg);
+		DrawLine(pos, { pos.x + length * cos(radians), pos.y + length * sin(radians) }, color);
+	}
 }
