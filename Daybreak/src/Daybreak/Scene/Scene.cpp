@@ -11,6 +11,10 @@
 
 #include <box2d/box2d.h>
 
+// TEMPORARY
+#include <glad/glad.h>
+#include "Daybreak/Core/Input.h"
+
 namespace Daybreak
 {
 	Scene::Scene(const std::string& name)
@@ -137,6 +141,10 @@ namespace Daybreak
 		RenderScene();
 	}
 
+	static void RenderShadows()
+	{
+	}
+
 	void Scene::OnRuntimeEnd()
 	{
 		OnPhysicsStop();
@@ -166,6 +174,30 @@ namespace Daybreak
 		return {};
 	}
 
+	bool findIntersection(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3, glm::vec2 p4, glm::vec2& intersection)
+	{
+		// Calculate slope and y-intercept for the first line
+		float m1 = (p2.y - p1.y) / (p2.x - p1.x);
+		float c1 = p1.y - m1 * p1.x;
+
+		// Calculate slope and y-intercept for the second line
+		float m2 = (p4.y - p3.y) / (p4.x - p3.x);
+		float c2 = p3.y - m2 * p3.x;
+
+		// Check if lines are parallel
+		if (m1 == m2)
+		{
+			return false;
+		}
+
+		// Calculate intersection point
+		intersection.x = (c2 - c1) / (m1 - m2);
+		intersection.y = m1 * intersection.x + c1;
+		DB_LOG("{} {} {} {}", c1, c2, m1, m2);
+
+		return true;
+	}
+
 	void Scene::RenderScene()
 	{
 		auto cameraEntity = GetActiveCameraEntity();
@@ -175,6 +207,78 @@ namespace Daybreak
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Scale);
 
 		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
+		// Renderer2D::DrawQuad({ 1, 1 }, { 1, 1 }, { 1, 1, 1, 1 });
+		// Renderer2D::DrawQuad({ -2, -3 }, { 1, 2 }, { 1, 1, 1, 1 });
+		// Renderer2D::DrawQuad({ 6, -1 }, { 1, 1 }, { 1, 1, 1, 1 });
+		// Renderer2D::DrawQuad({ 5, 0 }, { 1, 1 }, { 1, 1, 1, 1 });
+		// Renderer2D::DrawQuad({ -3, 3 }, { 1, 1 }, { 1, 1, 1, 1 });
+		// Renderer2D::DrawQuad({ -5, 0 }, { 3, 3 }, { 1, 1, 1, 1 });
+
+		glm::vec2 mousePos = Input::GetMousePosition();
+		glm::mat4 cameramat = (scale * rotation * translation);
+		glm::mat4 vp = cameraEntity.GetComponent<CameraComponent>().Camera.GetProjection();
+		glm::vec4 ndcMouse = glm::vec4(2 * (mousePos.x / 1280) - 1, -2 * (mousePos.y / 720) + 1, 0, 0);
+		glm::vec3 camerapos = cameraEntity.GetComponent<TransformComponent>().Position;
+		glm::vec4 mouseWorldSpace(-camerapos.z * (glm::inverse(vp) * ndcMouse));
+		mouseWorldSpace.x -= camerapos.x;
+		mouseWorldSpace.y -= camerapos.y;
+
+		// Renderer2D::DrawQuad({ 1, 1 }, { 1, 1 }, { 1, 1, 1, 1 });
+		std::vector<std::pair<glm::vec2, glm::vec2>> lineSegments;
+		lineSegments.emplace_back(std::pair<glm::vec2, glm::vec2>({ 0.5, 0.5 }, { 0.5, 1.5 })); // West
+		lineSegments.emplace_back(std::pair<glm::vec2, glm::vec2>({ 0.5, 0.5 }, { 1.5, 0.5 })); // South
+		lineSegments.emplace_back(std::pair<glm::vec2, glm::vec2>({ 0.5, 1.5 }, { 1.5, 1.5 })); // North
+		lineSegments.emplace_back(std::pair<glm::vec2, glm::vec2>({ 1.5, 0.5 }, { 1.5, 1.5 })); // North
+
+		for (auto pair : lineSegments)
+		{
+			Renderer2D::DrawLine(pair.first, pair.second, glm::vec4(1.0, 0.5, 1.0, 1));
+			// Renderer2D::DrawLine({ 0, 0 }, pair.first, glm::vec4(1));
+			// Renderer2D::DrawLine({ 0, 0 }, pair.second, glm::vec4(1));
+		}
+
+		std::vector<glm::vec2> vertices;
+		vertices.emplace_back(glm::vec2(0.5, 0.5));
+		vertices.emplace_back(glm::vec2(0.5, 1.5));
+		vertices.emplace_back(glm::vec2(1.5, 1.5));
+		vertices.emplace_back(glm::vec2(1.5, 0.5));
+
+		// mouseWorldSpace *= 0.0f;
+		for (auto vertex : vertices)
+		{
+			for (auto pair : lineSegments)
+			{
+				glm::vec2 intersection = vertex;
+				if (findIntersection(mouseWorldSpace, vertex, pair.first, pair.second, intersection))
+				{
+				}
+				Renderer2D::DrawLine(mouseWorldSpace, intersection, { 1, 1, 1, 1 });
+			}
+		}
+
+
+		// Renderer2D::DrawLine({ 0, 0 }, 100.0f * mouseWorldSpace, glm::vec4(1));
+
+
+		// RenderShadows();
+		Renderer2D::EndScene();
+		return;
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		// glBlendFunc(GL_ONE, GL_ONE);
+		RenderCommand::SetClearColor(glm::vec4(0.0, 0.0, 0.0, 1.0));
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0));
+		glm::mat4 scale2 = glm::scale(glm::mat4(1.0), glm::vec3(4));
+		// Renderer2D::DrawPointLight(glm::mat4(1.0f), 0.5, 1.0, 1.0, { 1.0, 1.0, 1.0 });
+		Renderer2D::DrawPointLight(glm::vec3(0.0), 3.0, 1.0, { 1.0, 1.0, 1.0 });
+		// Renderer2D::DrawPointLight({ -1, 0, 0 }, 1.0, 1.0, { 1.0, 0.0, 1.0 });
+		// Renderer2D::EndScene();
+		// Renderer2D::DrawQuad({ 1, 1 }, { 1, 1 }, { 0, 0, 0, 1 });
+		// Renderer2D::DrawPointLight({ 5, -1 }, 0.5f, 1.0f, 10.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
+		Renderer2D::EndScene();
+
+		return;
+
 
 		{
 			auto view = m_Registry.view<TransformComponent, AnimatorComponent>();

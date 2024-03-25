@@ -28,6 +28,16 @@ namespace Daybreak
 		// int EntityID;
 	};
 
+	struct PointLightVertex
+	{
+		glm::vec3 WorldPosition;
+		glm::vec3 LocalPosition;
+		glm::vec3 Color;
+		float Radius;
+		float Intensity;
+		// float Falloff;
+	};
+
 	struct Renderer2DData
 	{
 		static const uint32_t MaxTextureSlots = 32;
@@ -61,6 +71,19 @@ namespace Daybreak
 
 		uint32_t TextureSlotIndex = 1;
 		std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
+
+		// ========
+		// Lighting
+		// ========
+
+		// Point Lights
+		Ref<VertexBuffer> PointLightVB;
+		Ref<VertexArray> PointLightVA;
+		Ref<Shader> PointLightShader;
+
+		uint32_t PointLightVertexCount = 0;
+		PointLightVertex* PointLightVertexBufferBase = nullptr;
+		PointLightVertex* PointLightVertexBufferPtr = nullptr;
 	};
 
 	static Renderer2DData s_Data;
@@ -129,12 +152,32 @@ namespace Daybreak
 								   { RenderDataTypes::Float4, std::string("a_Color") } });
 		s_Data.LineVA->AddVertexBuffer(s_Data.LineVB);
 		s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxVertices];
+
+
+		// Lighting
+		// s_Data.PointLightShader = Shader::Create("Renderer2D_PointLightShader", "../Sandbox/assets/shaders/Renderer2D_PointLightShader.glsl");
+		s_Data.PointLightShader = Shader::Create("Renderer2D_PointLightShader", "../Sandbox/assets/shaders/PointLightShader2.glsl");
+		s_Data.PointLightVA = VertexArray::Create();
+		s_Data.PointLightVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(PointLightVertex));
+		s_Data.PointLightVB->SetLayout({
+			{ RenderDataTypes::Float3, std::string("a_WorldPosition") },
+			{ RenderDataTypes::Float3, std::string("a_LocalPosition") },
+			{ RenderDataTypes::Float3, std::string("a_Color") },
+			{ RenderDataTypes::Float, std::string("a_Radius") },
+			{ RenderDataTypes::Float, std::string("a_Intensity") },
+			// { RenderDataTypes::Float, std::string("a_Falloff") },
+		});
+		s_Data.PointLightVA->AddVertexBuffer(s_Data.PointLightVB);
+		s_Data.PointLightVA->SetIndexBuffer(quadIB);
+		s_Data.PointLightVertexBufferBase = new PointLightVertex[s_Data.MaxVertices];
 	}
 
 	void Renderer2D::Shutdown()
 	{
 		delete[] s_Data.QuadVertexBufferBase;
 		delete[] s_Data.LineVertexBufferBase;
+
+		delete[] s_Data.PointLightVertexBufferBase;
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
@@ -151,7 +194,7 @@ namespace Daybreak
 
 	void Renderer2D::Flush()
 	{
-		if (s_Data.QuadIndexCount)
+		if (s_Data.QuadIndexCount > 0)
 		{
 			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase);
 			s_Data.QuadVB->SetData(s_Data.QuadVertexBufferBase, dataSize);
@@ -162,7 +205,7 @@ namespace Daybreak
 				s_Data.TextureSlots[i]->Bind(i);
 			RenderCommand::DrawIndexed(s_Data.QuadVA, s_Data.QuadIndexCount);
 		}
-		if (s_Data.LineVertexCount)
+		if (s_Data.LineVertexCount > 0)
 		{
 			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.LineVertexBufferPtr - (uint8_t*)s_Data.LineVertexBufferBase);
 			s_Data.LineVB->SetData(s_Data.LineVertexBufferBase, dataSize);
@@ -171,6 +214,16 @@ namespace Daybreak
 			s_Data.LineShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
 			RenderCommand::SetLineWidth(s_Data.DefaultLineWidth);
 			RenderCommand::DrawLines(s_Data.LineVA, s_Data.LineVertexCount);
+		}
+		if (s_Data.PointLightVertexCount > 0)
+		{
+			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.PointLightVertexBufferPtr - (uint8_t*)s_Data.PointLightVertexBufferBase);
+			s_Data.PointLightVB->SetData(s_Data.PointLightVertexBufferBase, dataSize);
+
+			s_Data.PointLightShader->Bind();
+			s_Data.PointLightShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
+
+			RenderCommand::DrawIndexed(s_Data.PointLightVA, s_Data.PointLightVertexCount);
 		}
 	}
 
@@ -183,6 +236,9 @@ namespace Daybreak
 
 		s_Data.LineVertexCount = 0;
 		s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
+
+		s_Data.PointLightVertexCount = 0;
+		s_Data.PointLightVertexBufferPtr = s_Data.PointLightVertexBufferBase;
 	}
 
 	void Renderer2D::NextBatch()
@@ -378,5 +434,22 @@ namespace Daybreak
 	void Renderer2D::DrawLine(const glm::vec2& pos1, const glm::vec2& pos2, const glm::vec4& color)
 	{
 		DrawLine({ pos1.x, pos1.y, 0.0f }, { pos2.x, pos2.y, 0.0f }, color);
+	}
+
+	void Renderer2D::DrawPointLight(const glm::vec3& position, float radius, float intensity, const glm::vec3& color)
+	{
+		glm::mat4 translation = glm::translate(glm::mat4(1.0), position);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0), glm::vec3(2 * radius));
+		for (size_t i = 0; i < 4; i++)
+		{
+			s_Data.PointLightVertexBufferPtr->WorldPosition = (scale * translation) * s_Data.QuadVertexPositions[i];
+			s_Data.PointLightVertexBufferPtr->LocalPosition = s_Data.QuadVertexPositions[i] * 2.0f;
+			s_Data.PointLightVertexBufferPtr->Color = color;
+			// s_Data.PointLightVertexBufferPtr->Color = { 1.0, 0.5, 0.2 };
+			s_Data.PointLightVertexBufferPtr->Radius = radius;
+			s_Data.PointLightVertexBufferPtr->Intensity = intensity;
+			s_Data.PointLightVertexBufferPtr++;
+		}
+		s_Data.PointLightVertexCount += 6;
 	}
 }
