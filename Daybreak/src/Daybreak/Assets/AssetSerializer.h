@@ -10,6 +10,8 @@ namespace Daybreak
 	class AssetSerializer
 	{
 	public:
+		AssetSerializer() = delete;
+
 		static void SerializeSprite(const Ref<Texture2D>& texture, const std::string& localFilepath);
 		static void SerializeAnimation(const Ref<Animation>& anim, const std::string& localFilepath);
 		static void SerializeAnimationController(const Ref<AnimationController>& controller, const std::string& localFilepath);

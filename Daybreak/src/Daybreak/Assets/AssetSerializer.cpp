@@ -177,7 +177,7 @@ namespace Daybreak
 		{
 			data = YAML::LoadFile(DB_ASSET_DIR + localFilepath);
 		}
-		catch (YAML::ParserException e)
+		catch (const YAML::ParserException& e)
 		{
 			DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
 		}
@@ -219,7 +219,7 @@ namespace Daybreak
 		{
 			data = YAML::LoadFile(DB_ASSET_DIR + localFilepath);
 		}
-		catch (YAML::ParserException e)
+		catch (const YAML::ParserException& e)
 		{
 			DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
 		}
@@ -265,7 +265,7 @@ namespace Daybreak
 		{
 			data = YAML::LoadFile(DB_ASSET_DIR + localFilepath);
 		}
-		catch (YAML::ParserException e)
+		catch (const YAML::ParserException& e)
 		{
 			DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
 		}
