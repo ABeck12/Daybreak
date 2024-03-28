@@ -51,30 +51,38 @@ namespace Daybreak
 		icon.pixels = stbi_load(props.IconFilepath.c_str(), &width, &height, &bpp, 0);
 		icon.width = width;
 		icon.height = height;
-		glfwSetWindowIcon(m_Window, 1, &icon);
+		
+		if (icon.pixels)
+		{
+			glfwSetWindowIcon(m_Window, 1, &icon);
+			stbi_image_free(icon.pixels);
+		}
+		else
+		{
+			DB_CORE_ERROR("Could not set window icon!");
+			DB_CORE_ERROR("Failed to load texture {}. {}", props.IconFilepath, stbi_failure_reason());
+		}
 
 		SetVSync(true);
 
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-		{
+								  {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				data.Width = width;
 				data.Height = height;
 
 				WindowResizeEvent event(width, height);
-				data.EventCallback(event);
-		});
+				data.EventCallback(event); });
 
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-		{
+								   {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				WindowCloseEvent event;
-				data.EventCallback(event);
-		});
+				data.EventCallback(event); });
 
 		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-			{
+						   {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				switch (action)
@@ -97,19 +105,17 @@ namespace Daybreak
 					data.EventCallback(event);
 					break;
 				}
-				}
-			});
+				} });
 
 		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
-			{
+							{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				KeyTypedEvent event(keycode);
-				data.EventCallback(event);
-			});
+				data.EventCallback(event); });
 
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
-			{
+								   {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				switch (action)
@@ -126,24 +132,21 @@ namespace Daybreak
 					data.EventCallback(event);
 					break;
 				}
-				}
-			});
+				} });
 
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
-			{
+							  {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				MouseScrolledEvent event((float)xOffset, (float)yOffset);
-				data.EventCallback(event);
-			});
+				data.EventCallback(event); });
 
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
-			{
+								 {
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				MouseMovedEvent event((float)xPos, (float)yPos);
-				data.EventCallback(event);
-			});
+				data.EventCallback(event); });
 	}
 
 	void WindowsWindow::Shutdown()

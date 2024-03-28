@@ -6,7 +6,8 @@
 
 namespace Daybreak
 {
-	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) : m_Name(name)
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+		: m_Name(name)
 	{
 		m_RendererID = glCreateProgram();
 
@@ -22,7 +23,8 @@ namespace Daybreak
 		glDeleteShader(fs);
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& name, const std::string& filepath) : m_Name(name)
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& filepath)
+		: m_Name(name)
 	{
 		std::ifstream stream(filepath);
 
@@ -104,32 +106,32 @@ namespace Daybreak
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform2f(location, vec.x, vec.y);
 	}
-	
+
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform3f(location, vec.x, vec.y, vec.z);
 	}
-	
+
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& vec) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
 	}
-	
+
 	void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniformMatrix3fv(location, 1, GL_FALSE, &mat[0][0]);
 	}
-	
+
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
 	}
-	 
-	//Please make this better this was copied over from the openGL test renderer
+
+	// Please make this better this was copied over from the openGL test renderer
 	uint32_t OpenGLShader::CompileShader(uint32_t shaderType, const std::string& shaderSrc)
 	{
 		if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER)

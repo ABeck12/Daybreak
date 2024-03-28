@@ -28,7 +28,7 @@ namespace Daybreak
 			{
 				return it->second();
 			}
-			DB_CORE_ASSERT(false, "ScriptableEntity is not registered!");
+			DB_CORE_ASSERT(false, "ScriptableEntity {} is not registered!", typeName);
 			return nullptr;
 		}
 

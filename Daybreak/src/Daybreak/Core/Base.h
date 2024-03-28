@@ -7,9 +7,16 @@
 #error "Only Windows Supported"
 #endif
 
+#ifdef DB_PLATFORM_WINDOWS
+#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+// #elif DB_PLATFORM_LINUX | DB_PLATFORM_MAC
+// #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+#endif
+
 #ifdef DB_ENABLE_ASSERTS
-#define DB_ASSERT(x, ...) { if(!(x)) { DB_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-#define DB_CORE_ASSERT(x, ...) { if(!(x)) { DB_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#define DB_MAKE_ASSERT_MESSAGE(msg, ...) fmt::format(msg,__VA_ARGS__)
+#define DB_ASSERT(x, msg, ...) { if(!(x)) { DB_ERROR("Assertion Failed in file {0} on line {1}: {2}", __FILENAME__, __LINE__, DB_MAKE_ASSERT_MESSAGE(msg, __VA_ARGS__)); __debugbreak(); } }
+#define DB_CORE_ASSERT(x, msg, ...) { if(!(x)) { DB_CORE_ERROR("Assertion Failed in file {0} on line {1}: {2}", __FILENAME__, __LINE__, DB_MAKE_ASSERT_MESSAGE(msg, __VA_ARGS__)); __debugbreak(); } }
 #else
 #define DB_ASSERT(x, ...)
 #define DB_CORE_ASSERT(x, ...)
@@ -39,13 +46,4 @@ namespace Daybreak
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
-
-	//template<typename T>
-	//using WeakRef = std::weak_ptr<T>;
-	//template<typename T, typename ... Args>
-	//constexpr WeakRef<T> CreateWeakRef(Args&& ... args)
-	//{
-	//	return std::
-	//}
-
 }

@@ -10,7 +10,7 @@
 
 namespace Daybreak
 {
-	static std::string GetParentDirectory(const std::string& filepath, const std::string& directory)
+	static std::string GetPathFromParentDirectory(const std::string& filepath, const std::string& directory)
 	{
 		std::filesystem::path path(filepath);
 
@@ -24,23 +24,10 @@ namespace Daybreak
 		return path.string();
 	}
 
-	static std::string ChangeFileExtension(const std::string& filePath, const std::string& newExtension)
-	{
-		size_t dotPos = filePath.find_last_of('.');
-		if (dotPos != std::string::npos)
-		{
-			return filePath.substr(0, dotPos + 1) + newExtension;
-		}
-		else
-		{
-			return filePath + '.' + newExtension;
-		}
-	}
-
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Ref<Texture2D>& texture)
 	{
 		out << YAML::BeginMap;
-		out << YAML::Key << "Filepath" << YAML::Value << GetParentDirectory(texture->GetFilepath(), "assets");
+		out << YAML::Key << "Filepath" << YAML::Value << GetPathFromParentDirectory(texture->GetFilepath(), "assets");
 		out << YAML::Key << "Specifications";
 		out << YAML::BeginMap;
 		out << YAML::Key << "Width" << YAML::Value << texture->GetTexutreSpecifications().Width;
@@ -108,7 +95,7 @@ namespace Daybreak
 			else
 			{
 				std::filesystem::path spritePath = frame.Sprite->GetTexture()->GetFilepath();
-				outFilepath = "sprites/" + ChangeFileExtension(spritePath.filename().string(), "sprite");
+				outFilepath = "sprites/" + spritePath.replace_extension("sprite").string();
 				AssetManager::AddAssetRef(frame.Sprite->GetTexture(), outFilepath);
 			}
 			SerializeSprite(frame.Sprite->GetTexture(), outFilepath);
@@ -179,7 +166,7 @@ namespace Daybreak
 		}
 		catch (const YAML::ParserException& e)
 		{
-			DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
+			DB_CORE_ERROR("Failed to load .sprite file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
 		}
 
 		auto texture2D = data["Texture2D"];
@@ -221,7 +208,7 @@ namespace Daybreak
 		}
 		catch (const YAML::ParserException& e)
 		{
-			DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
+			DB_CORE_ERROR("Failed to load .anim file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
 		}
 
 		auto keyFrames = data["KeyFrames"];
@@ -267,7 +254,7 @@ namespace Daybreak
 		}
 		catch (const YAML::ParserException& e)
 		{
-			DB_CORE_ERROR("Failed to load .dbscn file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
+			DB_CORE_ERROR("Failed to load .controller file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
 		}
 
 		Ref<AnimationController> controller = CreateRef<AnimationController>();

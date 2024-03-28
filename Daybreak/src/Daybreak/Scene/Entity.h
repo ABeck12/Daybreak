@@ -19,7 +19,7 @@ namespace Daybreak
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
-			DB_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
+			DB_CORE_ASSERT(!HasComponent<T>(), "Entity already has component {}!", typeid(T).name());
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
 			return component;
 		}
@@ -27,7 +27,7 @@ namespace Daybreak
 		template<typename T>
 		T& GetComponent()
 		{
-			DB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+			DB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component {}!", typeid(T).name());
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
 		}
 
@@ -40,7 +40,7 @@ namespace Daybreak
 		template<typename T>
 		void RemoveComponent()
 		{
-			DB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+			DB_CORE_ASSERT(HasComponent<T>(), "Entity does not have component {}!", typeid(T).name());
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
 

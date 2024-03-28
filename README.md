@@ -57,3 +57,4 @@ Fix pch file in premake
 
 ### High Priority:
     Add in timing and function profiling 
+    Fix local filepaths when not running exe from vscode
