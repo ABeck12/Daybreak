@@ -32,6 +32,9 @@ Fix pch file in premake
     Physics Layers -> rework as enums instead of actual numbers
     Check for memory leaks from box2d userdata and scene ptr. Do I need to delete scene*? Do box2d userdatas need to be manually deleted?
 
+### Project:
+    This should own the physics sim, AssetManager, ScriptableEntity registries
+
 ### Scene
     Component and Entity active or not
         Includes rendering
