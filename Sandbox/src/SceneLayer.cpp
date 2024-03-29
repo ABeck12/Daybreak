@@ -158,7 +158,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 	cameraEntity = m_Scene->GetEntityByName("Camera");
 	floorEntity = m_Scene->GetEntityByName("Floor");
 	// DB_LOG(glm::mat4(1.0f)[0]);
-	m_FrameBuffer->Bind();
+	// m_FrameBuffer->Bind();
 	// m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position.z = -1;
 	// DB_LOG("player {} background {}", playerEntity.GetComponent<Daybreak::TransformComponent>().Position, m_Scene->GetEntityByName("Background").GetComponent<Daybreak::TransformComponent>().Position);
 
@@ -208,7 +208,7 @@ void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)
 
 	m_Scene->OnRuntimeUpdate(dt);
 	DrawGrid();
-	m_FrameBuffer->Unbind();
+	// m_FrameBuffer->Unbind();
 	DrawColliders();
 }
 
@@ -245,39 +245,39 @@ void SceneLayer::OnImGuiRender()
 	ImGuiIO& io = ImGui::GetIO();
 
 	// ImGuiIO& io = ImGui::GetIO();
-	static bool opt_fullscreen_persistant = true;
-	bool opt_fullscreen = opt_fullscreen_persistant;
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-	if (opt_fullscreen)
-	{
-		ImGuiViewport* viewport = ImGui::GetMainViewport();
-		ImGui::SetNextWindowPos(viewport->Pos);
-		ImGui::SetNextWindowSize(viewport->Size);
-		ImGui::SetNextWindowViewport(viewport->ID);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 1.0f, 0.0f });
-		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-	}
+	// static bool opt_fullscreen_persistant = true;
+	// bool opt_fullscreen = opt_fullscreen_persistant;
+	// ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	// if (opt_fullscreen)
+	// {
+	// 	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	// 	ImGui::SetNextWindowPos(viewport->Pos);
+	// 	ImGui::SetNextWindowSize(viewport->Size);
+	// 	ImGui::SetNextWindowViewport(viewport->ID);
+	// 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	// 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	// 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 1.0f, 0.0f });
+	// 	window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+	// 	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	// }
 
-	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-	{
-		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
-	}
+	// if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	// {
+	// 	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+	// 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+	// }
 
-	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-	ImGui::Begin("Image Test");
-	uint32_t textureID = m_FrameBuffer->GetAttachmentRendererID(0);
-	uint32_t width = Daybreak::Application::Get().GetWindow().GetWidth();
-	uint32_t height = Daybreak::Application::Get().GetWindow().GetHeight();
-	ImGui::Image((void*)textureID, ImVec2({ (float)width, (float)height }), { 0, 1 }, { 1, 0 });
-	ImGui::End();
+	// ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+	// ImGui::Begin("Image Test");
+	// uint32_t textureID = m_FrameBuffer->GetAttachmentRendererID(0);
+	// uint32_t width = Daybreak::Application::Get().GetWindow().GetWidth();
+	// uint32_t height = Daybreak::Application::Get().GetWindow().GetHeight();
+	// ImGui::Image((void*)textureID, ImVec2({ (float)width, (float)height }), { 0, 1 }, { 1, 0 });
+	// ImGui::End();
+	// // ImGui::PopStyleVar();
 	// ImGui::PopStyleVar();
-	ImGui::PopStyleVar();
-	ImGui::PopStyleVar();
-	ImGui::PopStyleVar();
+	// ImGui::PopStyleVar();
+	// ImGui::PopStyleVar();
 
 
 	ImGui::Begin("ImGui Layer");

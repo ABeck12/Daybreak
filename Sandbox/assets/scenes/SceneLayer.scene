@@ -1,6 +1,6 @@
 Scene: Test Scene
 Entities:
-  - Entity: 5993469286602838773
+  - Entity: 10616627966083807066
     TagComponent:
       Tag: Box
     RelationshipComponent:
@@ -22,7 +22,7 @@ Entities:
       CollisionLayer: 0
       IsTrigger: false
       Enabled: true
-  - Entity: 8873963015384664683
+  - Entity: 7622924313198126550
     TagComponent:
       Tag: Background
     RelationshipComponent:
@@ -38,7 +38,7 @@ Entities:
       Sprite: sprites/Background.sprite
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
-  - Entity: 13672322952307053531
+  - Entity: 15716352420939806158
     TagComponent:
       Tag: Floor
     RelationshipComponent:
@@ -74,11 +74,11 @@ Entities:
       CollisionLayer: 0
       IsTrigger: false
       Enabled: true
-  - Entity: 16601575096613290469
+  - Entity: 11403053491194060344
     TagComponent:
       Tag: Camera
     RelationshipComponent:
-      ParentID: 8589151702384553179
+      ParentID: 15395440304351909262
       AmountOfChildren: 0
       ChildrenIDs:
         []
@@ -90,14 +90,14 @@ Entities:
       CameraProjection: [[1.35799515, 0, 0, 0], [0, 2.41421342, 0, 0], [0, 0, -1.00267017, -1], [0, 0, -0.200267017, 0]]
       Primary: true
       Type: Perspective
-  - Entity: 8589151702384553179
+  - Entity: 15395440304351909262
     TagComponent:
       Tag: Player
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 1
       ChildrenIDs:
-        - 16601575096613290469
+        - 11403053491194060344
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]

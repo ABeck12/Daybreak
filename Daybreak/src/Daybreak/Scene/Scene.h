@@ -57,5 +57,8 @@ namespace Daybreak
 
 		friend class Entity;
 		friend class SceneSerializer;
+
+		// For Editor
+		friend class HierarchyPannel;
 	};
 }

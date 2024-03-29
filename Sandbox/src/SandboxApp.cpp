@@ -1,8 +1,11 @@
 #include <Daybreak.h>
 #include <Daybreak/Core/EntryPoint.h>
 
-#include "GameLayer.h"
 #include "SceneLayer.h"
+
+#include <DaybreakEditor.h>
+
+#include "ScriptableEntityTest.h"
 
 extern "C"
 {
@@ -16,7 +19,9 @@ public:
 	Sandbox(Daybreak::ApplicationSpecifications spec)
 		: Daybreak::Application(spec)
 	{
-		PushLayer(new SceneLayer());
+		DB_REGISTER_SCRIPTABLE_ENTITY(MoveableComponent);
+		// PushLayer(new SceneLayer());
+		PushLayer(new Daybreak::EditorLayer("../Sandbox/assets/scenes/SceneLayer.scene"));
 	}
 
 	~Sandbox()

@@ -1,5 +1,5 @@
-project "Sandbox"
-	kind "ConsoleApp"
+project "DaybreakEditor"
+    kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "On"
@@ -10,13 +10,13 @@ project "Sandbox"
 	files
 	{
 		"src/**.h",
-		"src/**.cpp"
+		"src/**.cpp",
 	}
 	
 	includedirs
 	{
 		"../Daybreak/src",
-		"../DaybreakEditor/src",
+		"../Daybreak/vendor/box2d/include",
 		"../Daybreak/vendor/spdlog/include",
 		"../Daybreak/vendor/glad/include",
 		"../Daybreak/vendor/glfw/include",
@@ -25,19 +25,17 @@ project "Sandbox"
 		"../Daybreak/vendor/stb_image",
 		"../Daybreak/vendor/entt/include",
 		"../Daybreak/vendor/miniaudio",
-		"../Daybreak/vendor/box2d/include",
 		"../Daybreak/vendor/yaml-cpp/include",
+		"src"
 	}
 
 	links
 	{
-		"Daybreak",
-		"DaybreakEditor",
+        "Daybreak"
 	}
-
-	filter "system:windows"
+    
+    filter "system:windows"
 		systemversion "latest"
-
 		defines
 		{
 			"DB_PLATFORM_WINDOWS",
@@ -52,7 +50,6 @@ project "Sandbox"
 		symbols "On"
 		runtime "Debug"
 
-
 	filter "configurations:Release"
 		defines 
 		{
@@ -62,16 +59,3 @@ project "Sandbox"
 		symbols "On"
 		runtime "Release"
 		optimize "on"
-
-
-	-- filter "configurations:Dist"
-	-- 	defines 
-	-- 	{
-	-- 		"DB_DIST"
-	-- 	}
-	-- 	symbols "On"
-
-	-- buildoptions
-	-- {
-    --     "/MT"
-    -- }

@@ -79,5 +79,6 @@ group "Dependencies"
 group ""
 
 include "Daybreak"
+include "DaybreakEditor"
 include "Sandbox"
 
