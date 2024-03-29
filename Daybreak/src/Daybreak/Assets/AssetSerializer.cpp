@@ -95,7 +95,7 @@ namespace Daybreak
 			else
 			{
 				std::filesystem::path spritePath = frame.Sprite->GetTexture()->GetFilepath();
-				outFilepath = "sprites/" + spritePath.replace_extension("sprite").string();
+				outFilepath = "sprites/" + GetPathFromParentDirectory(spritePath.replace_extension("sprite").string(), "assets");
 				AssetManager::AddAssetRef(frame.Sprite->GetTexture(), outFilepath);
 			}
 			SerializeSprite(frame.Sprite->GetTexture(), outFilepath);
@@ -197,7 +197,7 @@ namespace Daybreak
 	{
 		if (AssetManager::HasAssetRef(localFilepath))
 		{
-			DB_LOG("Asset manager has file {}", localFilepath);
+			DB_CORE_LOG("Asset manager has file {}", localFilepath);
 			return AssetManager::GetAssetRef<Animation>(localFilepath);
 		}
 
@@ -243,7 +243,7 @@ namespace Daybreak
 	{
 		if (AssetManager::HasAssetRef(localFilepath))
 		{
-			DB_LOG("Asset manager has file {}", localFilepath);
+			DB_CORE_LOG("Asset manager has file {}", localFilepath);
 			return AssetManager::GetAssetRef<AnimationController>(localFilepath);
 		}
 
