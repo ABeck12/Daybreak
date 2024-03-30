@@ -17,6 +17,9 @@ namespace Daybreak
 		void DrawEntityRow(Entity entity);
 		void DrawInspectorComponents(Entity entity);
 
+		template<typename T>
+		void DisplayAddComponentEntry(const std::string& entryName);
+
 	private:
 		Entity m_SelectionContext;
 		Ref<Scene> m_ActiveScene;

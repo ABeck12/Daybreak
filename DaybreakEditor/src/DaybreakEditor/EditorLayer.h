@@ -2,7 +2,7 @@
 
 #include <Daybreak.h>
 
-#include "DaybreakEditor/Panels/HierarchyPanel.h"
+#include "DaybreakEditor/Pannels/HierarchyPannel.h"
 
 namespace Daybreak
 {

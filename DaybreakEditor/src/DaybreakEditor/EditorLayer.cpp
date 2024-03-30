@@ -2,6 +2,8 @@
 
 #include <imgui.h>
 
+#include <glfw/glfw3.h>
+
 namespace Daybreak
 {
 	EditorLayer::EditorLayer(const std::string& startupSceneFilepath)
@@ -17,6 +19,8 @@ namespace Daybreak
 		m_SceneFilepath = startupSceneFilepath;
 
 		m_HierarchyPannel = HierarchyPannel(m_Scene);
+
+		Application::Get().GetWindow().SetMaximized(true);
 	}
 
 	void EditorLayer::OnAttach()
