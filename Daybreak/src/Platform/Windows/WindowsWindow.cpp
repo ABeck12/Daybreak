@@ -31,6 +31,7 @@ namespace Daybreak
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
+		m_Data.Maximized = props.Maximized;
 
 		DB_CORE_INFO("Creating window \"{0}\" ({1}x{2})", props.Title, props.Width, props.Height);
 
@@ -42,6 +43,11 @@ namespace Daybreak
 			s_GLFWInitialized = true;
 		}
 
+		if (m_Data.Maximized)
+		{
+			glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+		}
+
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
 		glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -51,7 +57,7 @@ namespace Daybreak
 		icon.pixels = stbi_load(props.IconFilepath.c_str(), &width, &height, &bpp, 0);
 		icon.width = width;
 		icon.height = height;
-		
+
 		if (icon.pixels)
 		{
 			glfwSetWindowIcon(m_Window, 1, &icon);
@@ -169,6 +175,16 @@ namespace Daybreak
 			glfwSwapInterval(0);
 
 		m_Data.VSync = enabled;
+	}
+
+	void WindowsWindow::SetMaximized(bool maximized)
+	{
+		if (maximized)
+			glfwMaximizeWindow(m_Window);
+		else
+			glfwRestoreWindow(m_Window);
+
+		m_Data.Maximized = maximized;
 	}
 
 	bool WindowsWindow::IsVSync() const

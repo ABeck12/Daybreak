@@ -19,6 +19,7 @@ namespace Daybreak
 
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
+		void SetMaximized(bool maximized) override;
 		bool IsVSync() const override;
 
 		virtual void* GetNativeWindow() const override { return m_Window; }
@@ -36,6 +37,7 @@ namespace Daybreak
 			std::string Title;
 			unsigned int Width, Height;
 			bool VSync;
+			bool Maximized;
 
 			EventCallbackFn EventCallback;
 		};
