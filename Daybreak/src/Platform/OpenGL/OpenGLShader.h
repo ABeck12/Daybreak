@@ -6,7 +6,7 @@
 
 namespace Daybreak
 {
-	class OpenGLShader : public Shader
+	class OpenGLShader final : public Shader
 	{
 	public:
 		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
@@ -29,6 +29,7 @@ namespace Daybreak
 
 	private:
 		uint32_t CompileShader(uint32_t shaderType, const std::string& shaderSrc);
+
 	private:
 		uint32_t m_RendererID;
 		std::string m_Name;

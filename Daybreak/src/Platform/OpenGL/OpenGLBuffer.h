@@ -6,7 +6,7 @@
 
 namespace Daybreak
 {
-	class OpenGLVertexBuffer : public VertexBuffer
+	class OpenGLVertexBuffer final : public VertexBuffer
 	{
 	public:
 		OpenGLVertexBuffer(const float* vertices, uint32_t size);
@@ -21,12 +21,13 @@ namespace Daybreak
 
 		virtual const BufferLayout& GetLayout() const override { return m_Layout; }
 		virtual void SetLayout(const BufferLayout& layout) override { m_Layout = layout; }
+
 	private:
 		uint32_t m_RendererID;
 		BufferLayout m_Layout;
 	};
 
-	class OpenGLIndexBuffer : public IndexBuffer
+	class OpenGLIndexBuffer final : public IndexBuffer
 	{
 	public:
 		OpenGLIndexBuffer(const uint32_t* indeces, uint32_t count);
@@ -36,6 +37,7 @@ namespace Daybreak
 		virtual void Unbind() const override;
 
 		virtual uint32_t GetCount() const override { return m_Count; }
+
 	private:
 		uint32_t m_RendererID;
 		uint32_t m_Count;

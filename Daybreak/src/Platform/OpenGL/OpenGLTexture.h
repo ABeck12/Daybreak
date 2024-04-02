@@ -6,7 +6,7 @@
 
 namespace Daybreak
 {
-	class OpenGLTexture2D : public Texture2D
+	class OpenGLTexture2D final : public Texture2D
 	{
 	public:
 		OpenGLTexture2D(const TextureSpecifications& textureSpecs);
@@ -26,6 +26,7 @@ namespace Daybreak
 		virtual const void SetData(void* data, uint32_t size) const override;
 
 		virtual bool operator==(const Texture& other) const override { return m_RendererID == other.GetRendererID(); }
+
 	private:
 		uint32_t m_RendererID;
 		TextureSpecifications m_Specification;
@@ -33,5 +34,5 @@ namespace Daybreak
 		uint32_t m_Width, m_Height;
 		unsigned char* m_LocalBuffer;
 	};
-	
+
 }

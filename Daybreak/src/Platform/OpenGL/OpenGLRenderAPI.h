@@ -6,7 +6,7 @@
 
 namespace Daybreak
 {
-	class OpenGLRenderAPI : public RenderAPI
+	class OpenGLRenderAPI final : public RenderAPI
 	{
 	public:
 		virtual void Init() override;
@@ -19,6 +19,5 @@ namespace Daybreak
 		virtual void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount) override;
 
 		virtual void SetLineWidth(float width) override;
-
 	};
 }

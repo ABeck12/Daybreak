@@ -4,7 +4,7 @@
 
 namespace Daybreak
 {
-	class OpenGLFrameBuffer : public FrameBuffer
+	class OpenGLFrameBuffer final : public FrameBuffer
 	{
 	public:
 		OpenGLFrameBuffer(const FrameBufferSpecifications& spec);
