@@ -100,7 +100,7 @@ namespace Daybreak
 		glm::vec2 Size = { 0.5f, 0.5f };
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		uint16_t CollisionLayer = 0;
+		uint32_t CollisionLayer = 0;
 		bool IsTrigger = false;
 		bool Enabled = true;
 
@@ -116,7 +116,7 @@ namespace Daybreak
 		float Radius = 0.5f;
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		uint16_t CollisionLayer = 0;
+		uint32_t CollisionLayer = 0;
 		bool IsTrigger = false;
 		bool Enabled = true;
 
