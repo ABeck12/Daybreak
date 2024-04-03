@@ -59,19 +59,19 @@ namespace Daybreak
 
 	void AnimationController::AddAnimation(const std::string& name, const Ref<Animation>& animation)
 	{
-		if (m_AnimationMap.find(name) != m_AnimationMap.end())
-		{
-			DB_CORE_ASSERT(false, "Controller already has animation {}", name);
-		}
+		DB_CORE_ASSERT(m_AnimationMap.find(name) == m_AnimationMap.end(), "Controller already has animation {}", name);
 		m_AnimationMap[name] = animation;
+	}
+
+	void AnimationController::ChangeAnimation(const std::string& name)
+	{
+		DB_CORE_ASSERT(m_AnimationMap.find(name) != m_AnimationMap.end(), "Controller does not have animation {}", name);
+		m_ActiveAnimation = m_AnimationMap[name];
 	}
 
 	void AnimationController::RemoveAnimation(const std::string& name)
 	{
-		if (m_AnimationMap.find(name) == m_AnimationMap.end())
-		{
-			DB_CORE_ASSERT(false, "Controller does not have animation {} to remove", name);
-		}
+		DB_CORE_ASSERT(m_AnimationMap.find(name) != m_AnimationMap.end(), "Controller does not have animation {} to remove", name);
 		m_AnimationMap.erase(name);
 	}
 }

@@ -23,15 +23,15 @@ namespace Daybreak
 															 std::is_same<T, AnimationController>::value ||
 															 std::is_same<T, Texture2D>::value,
 														 int>::type = 0>
-		static Ref<T>& GetAssetRef(const std::string& localFilepath)
+		static Ref<T>& GetAssetRef(const std::filesystem::path& localFilepath)
 		{
 			return std::get<Ref<T>>(s_AssetMap[localFilepath]);
 		}
 
 		template<typename T>
-		static void AddAssetRef(const Ref<T> asset, const std::string& localFilepath);
+		static void AddAssetRef(const Ref<T> asset, const std::filesystem::path& localFilepath);
 
-		static bool HasAssetRef(const std::string& localFilepath);
+		static bool HasAssetRef(const std::filesystem::path& localFilepath);
 		static bool HasAssetRef(const Ref<Texture2D>& texture);
 		static bool HasAssetRef(const Ref<Animation>& anim);
 		static bool HasAssetRef(const Ref<AnimationController>& controller);
@@ -44,10 +44,10 @@ namespace Daybreak
 
 
 		template<typename T>
-		static const std::string GetFilepathOfRef(const Ref<T> asset);
+		static const std::filesystem::path GetFilepathOfRef(const Ref<T> asset);
 
 	private:
-		static std::unordered_map<std::string, std::variant<Ref<Texture2D>, Ref<Animation>, Ref<AnimationController>>> s_AssetMap;
-		static std::unordered_map<std::string, AssetType> s_AssetTypeMap;
+		static std::unordered_map<std::filesystem::path, std::variant<Ref<Texture2D>, Ref<Animation>, Ref<AnimationController>>> s_AssetMap;
+		static std::unordered_map<std::filesystem::path, AssetType> s_AssetTypeMap;
 	};
 }

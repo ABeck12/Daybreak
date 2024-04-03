@@ -55,7 +55,7 @@ namespace Daybreak
 
 		void Update(const DeltaTime dt) { m_ActiveAnimation->Update(dt); }
 
-		void ChangeAnimation(const std::string& name) { m_ActiveAnimation = m_AnimationMap[name]; }
+		void ChangeAnimation(const std::string& name);
 		const Ref<Animation>& GetActiveAnimation() const { return m_ActiveAnimation; }
 		void SetStartupAnimation(const std::string& name)
 		{

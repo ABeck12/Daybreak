@@ -10,10 +10,10 @@ namespace Daybreak
 	{
 	public:
 		OpenGLTexture2D(const TextureSpecifications& textureSpecs);
-		OpenGLTexture2D(const TextureSpecifications& textureSpecs, const std::string& filepath);
+		OpenGLTexture2D(const TextureSpecifications& textureSpecs, const std::filesystem::path& filepath);
 		virtual ~OpenGLTexture2D();
 
-		virtual const std::string& GetFilepath() const override { return m_Filepath; }
+		virtual const std::filesystem::path& GetFilepath() const override { return m_Filepath; }
 		virtual const TextureSpecifications& GetTexutreSpecifications() const override { return m_Specification; }
 
 		virtual const uint32_t GetWidth() const override { return m_Specification.Width; }
@@ -30,7 +30,7 @@ namespace Daybreak
 	private:
 		uint32_t m_RendererID;
 		TextureSpecifications m_Specification;
-		std::string m_Filepath;
+		std::filesystem::path m_Filepath;
 		uint32_t m_Width, m_Height;
 		unsigned char* m_LocalBuffer;
 	};

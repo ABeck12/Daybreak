@@ -60,7 +60,7 @@ namespace Daybreak
 
 			if (sr.Sprite && AssetManager::HasAssetRef(sr.Sprite))
 			{
-				std::string filepath = AssetManager::GetFilepathOfRef<Texture2D>(sr.Sprite);
+				std::filesystem::path filepath = AssetManager::GetFilepathOfRef<Texture2D>(sr.Sprite);
 				AssetSerializer::SerializeSprite(sr.Sprite, filepath);
 				out << YAML::Key << "Sprite" << YAML::Value << filepath;
 			}
@@ -83,7 +83,7 @@ namespace Daybreak
 
 			if (anim.Controller && AssetManager::HasAssetRef(anim.Controller))
 			{
-				std::string filepath = AssetManager::GetFilepathOfRef<AnimationController>(anim.Controller);
+				std::filesystem::path filepath = AssetManager::GetFilepathOfRef<AnimationController>(anim.Controller);
 				AssetSerializer::SerializeAnimationController(anim.Controller, filepath);
 				out << YAML::Key << "Controller" << YAML::Value << filepath;
 			}
@@ -150,7 +150,7 @@ namespace Daybreak
 			out << YAML::BeginMap;
 
 			auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
-			out << YAML::Key << "Size" << YAML::Value << cc2d.Radius;
+			out << YAML::Key << "Radius" << YAML::Value << cc2d.Radius;
 			out << YAML::Key << "Offset" << YAML::Value << cc2d.Offset;
 			out << YAML::Key << "CollisionLayer" << YAML::Value << cc2d.CollisionLayer;
 			out << YAML::Key << "IsTrigger" << YAML::Value << cc2d.IsTrigger;
@@ -233,7 +233,7 @@ namespace Daybreak
 		}
 		catch (YAML::ParserException e)
 		{
-			DB_CORE_ERROR("Failed to load .scene file '{0}'\n     {1}", filepath, e.what());
+			DB_CORE_ERROR("Failed to load .scene file \"{0}\"\n     {1}", filepath, e.what());
 			return false;
 		}
 
@@ -346,6 +346,10 @@ namespace Daybreak
 					{
 						anim.Controller = AssetSerializer::DeserializeAnimationController(animComponent["Controller"].as<std::string>());
 					}
+					else
+					{
+						DB_CORE_WARN("Controller for entity \"{}\" is null!", deserializedEntity.GetName());
+					}
 
 					anim.IsPlaying = animComponent["IsPlaying"].as<bool>();
 					anim.TintColor = animComponent["TintColor"].as<glm::vec4>();
@@ -358,6 +362,10 @@ namespace Daybreak
 					if (!srComponent["Sprite"].IsNull())
 					{
 						sr.Sprite = AssetSerializer::DeserializeSprite(srComponent["Sprite"].as<std::string>());
+					}
+					else
+					{
+						DB_CORE_WARN("  Sprite for entity \"{}\" is null!", deserializedEntity.GetName());
 					}
 
 					sr.TintColor = srComponent["TintColor"].as<glm::vec4>();

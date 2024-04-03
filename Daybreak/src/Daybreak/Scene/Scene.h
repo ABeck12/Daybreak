@@ -40,6 +40,8 @@ namespace Daybreak
 			return m_Registry.view<Components...>();
 		}
 
+		const std::string& GetName() { return m_SceneName; }
+
 	private:
 		inline void RenderScene();
 

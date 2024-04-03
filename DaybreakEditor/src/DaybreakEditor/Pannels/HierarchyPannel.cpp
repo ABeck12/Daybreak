@@ -1,6 +1,47 @@
 #include "DaybreakEditor/Pannels/HierarchyPannel.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
+#include <misc/cpp/imgui_stdlib.h>
+// #include <glm/gtc/type_ptr.hpp>
+
+static void DragVec3(const std::string& label, glm::vec3& vec)
+{
+	ImGui::PushID(label.c_str());
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2 { 4, 4 });
+
+	ImGui::DragFloat("##X", &vec.x, 0.1f, 0.0f, 0.0f, "X: %.3f");
+	ImGui::SameLine();
+	ImGui::PopItemWidth();
+
+	ImGui::DragFloat("##Y", &vec.y, 0.1f, 0.0f, 0.0f, "Y: %.3f");
+	ImGui::SameLine();
+	ImGui::PopItemWidth();
+
+	ImGui::DragFloat(label.c_str(), &vec.z, 0.1f, 0.0f, 0.0f, "Z: %.3f");
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+	ImGui::PopID();
+}
+
+static void DragVec2(const std::string& label, glm::vec2& vec)
+{
+	ImGui::PushID(label.c_str());
+	ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2 { 4, 4 });
+
+	ImGui::DragFloat("##X", &vec.x, 0.1f, 0.0f, 0.0f, "X: %.3f");
+	ImGui::SameLine();
+	ImGui::PopItemWidth();
+
+	ImGui::DragFloat(label.c_str(), &vec.y, 0.1f, 0.0f, 0.0f, "Y: %.3f");
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+	ImGui::PopID();
+}
 
 namespace Daybreak
 {
@@ -13,6 +54,8 @@ namespace Daybreak
 	{
 		ImGui::Begin("Hierarchy");
 
+		ImGui::Text(m_ActiveScene->GetName().c_str());
+		ImGui::Separator();
 		ImGui::Text("Entities:");
 		ImGui::Separator();
 		m_ActiveScene->m_Registry.each([&](auto entityID)
@@ -20,6 +63,8 @@ namespace Daybreak
 							DrawEntityRow(entity); });
 
 		ImGui::Separator();
+		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("Add Entity").x) / 2);
+
 		if (ImGui::Button("Add Entity"))
 		{
 			m_SelectionContext = m_ActiveScene->CreateEntity("Entity");
@@ -82,97 +127,167 @@ namespace Daybreak
 
 	void HierarchyPannel::DrawInspectorComponents(Entity entity)
 	{
-		ImGui::Text(entity.GetName().c_str());
+		auto& tag = entity.GetComponent<TagComponent>().Tag;
+
+		char buffer[256];
+		memset(buffer, 0, sizeof(buffer));
+		strncpy_s(buffer, sizeof(buffer), tag.c_str(), sizeof(buffer));
+		if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+		{
+			tag = std::string(buffer);
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Add Component"))
+		{
+			ImGui::OpenPopup("Add Component");
+		}
+		if (ImGui::BeginPopup("Add Component"))
+		{
+			ImGui::SeparatorText("Components");
+			DisplayAddComponentEntry<CameraComponent>("Camera");
+			DisplayAddComponentEntry<SpriteRendererComponent>("SpriteRenderer");
+			DisplayAddComponentEntry<Rigidbody2DComponent>("Rigidbody2D");
+			DisplayAddComponentEntry<BoxCollider2DComponent>("BoxCollider2D");
+			DisplayAddComponentEntry<CircleCollider2DComponent>("CircleCollider2D");
+
+			ImGui::EndPopup();
+		}
 		ImGui::Separator();
 
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
+		// ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen;
 
-		if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), flags, "TransformComponent"))
+		ImGui::AlignTextToFramePadding();
+		if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), flags, "Transform"))
 		{
 			auto& transform = entity.GetComponent<TransformComponent>();
-			ImGui::InputFloat3("Position", &transform.Position.x);
-			ImGui::InputFloat3("Rotation", &transform.Rotation.x);
-			ImGui::InputFloat3("Scale", &transform.Scale.x);
+			DragVec3("Position", transform.Position);
+			DragVec3("Rotation", transform.Rotation);
+			DragVec3("Scale", transform.Scale);
 			ImGui::Separator();
 			ImGui::TreePop();
 		}
 		if (entity.HasComponent<SpriteRendererComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), flags, "SpriteRendererComponent"))
+			ImGui::AlignTextToFramePadding();
+			bool open = ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), flags, "SpriteRenderer");
+			ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+			bool remove = ImGui::Button("Remove");
+
+			if (open)
 			{
 				auto& sr = entity.GetComponent<SpriteRendererComponent>();
-				ImGui::InputFloat4("Tint Color", &sr.TintColor.x);
+				ImGui::ColorEdit4("Tint Color", &sr.TintColor.x);
 				ImGui::InputFloat("Tiling Factor", &sr.TilingFactor);
+				// if (sr.TilingFactor < 0)
+				// {
+				// 	sr.TilingFactor = 0;
+				// }
 				ImGui::Text("Add sprite filepath");
-				if (ImGui::Button("Remove"))
-				{
-					entity.RemoveComponent<SpriteRendererComponent>();
-				}
 				ImGui::Separator();
 				ImGui::TreePop();
+			}
+			if (remove)
+			{
+				entity.RemoveComponent<SpriteRendererComponent>();
 			}
 		}
 		if (entity.HasComponent<CameraComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), flags, "CameraComponent"))
+			ImGui::AlignTextToFramePadding();
+			bool open = ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), flags, "Camera");
+			ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+			bool remove = ImGui::Button("Remove");
+
+			if (open)
 			{
 				auto& camera = entity.GetComponent<CameraComponent>();
 				ImGui::Checkbox("Primary", &camera.Primary);
 				ImGui::Text("Add projection type");
-				if (ImGui::Button("Remove"))
-				{
-					entity.RemoveComponent<CameraComponent>();
-				}
 				ImGui::Separator();
 				ImGui::TreePop();
+			}
+			if (remove)
+			{
+				entity.RemoveComponent<CameraComponent>();
 			}
 		}
 		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(BoxCollider2DComponent).hash_code(), flags, "BoxCollider2DComponent"))
+			ImGui::AlignTextToFramePadding();
+			bool open = ImGui::TreeNodeEx((void*)typeid(BoxCollider2DComponent).hash_code(), flags, "BoxCollider2D");
+			ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+			bool remove = ImGui::Button("Remove");
+
+			if (open)
 			{
 				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-				ImGui::InputFloat2("Size", &bc2d.Size.x);
-				ImGui::InputFloat2("Offset", &bc2d.Offset.x);
-				ImGui::Text("Add Collision Layer here TODO");
-				// ImGui::InputInt("Collision Layer", &((int)bc2d.CollisionLayer));
-				ImGui::Checkbox("IsTriggr", &bc2d.IsTrigger);
+				DragVec2("Size", bc2d.Size);
+				DragVec2("Offset", bc2d.Offset);
+				int input = bc2d.CollisionLayer;
+				ImGui::InputInt("Collision Layer", &input);
+				bc2d.CollisionLayer = (uint32_t)std::clamp<int>(input, 0, 32);
+				ImGui::Checkbox("IsTrigger", &bc2d.IsTrigger);
 				ImGui::Checkbox("Enabled", &bc2d.Enabled);
-				if (ImGui::Button("Remove"))
-				{
-					entity.RemoveComponent<BoxCollider2DComponent>();
-				}
 				ImGui::Separator();
 				ImGui::TreePop();
+			}
+			if (remove)
+			{
+				entity.RemoveComponent<BoxCollider2DComponent>();
 			}
 		}
 		if (entity.HasComponent<CircleCollider2DComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(CircleCollider2DComponent).hash_code(), flags, "CircleCollider2DComponent"))
+			ImGui::AlignTextToFramePadding();
+			bool open = ImGui::TreeNodeEx((void*)typeid(CircleCollider2DComponent).hash_code(), flags, "CircleCollider2D");
+			ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+			bool remove = ImGui::Button("Remove");
+
+			if (open)
 			{
 				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
-				ImGui::InputFloat("Radius", &cc2d.Radius);
-				ImGui::InputFloat2("Offset", &cc2d.Offset.x);
-				ImGui::Text("Add Collision Layer here TODO");
-				// ImGui::InputInt("Collision Layer", &((int)cc2d.CollisionLayer));
-				ImGui::Checkbox("IsTriggr", &cc2d.IsTrigger);
+				ImGui::DragFloat("Radius", &cc2d.Radius, 0.005f, 0.0f, FLT_MAX, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+				DragVec2("Offset", cc2d.Offset);
+				int input = cc2d.CollisionLayer;
+				ImGui::InputInt("Collision Layer", &input);
+				cc2d.CollisionLayer = (uint32_t)std::clamp<int>(input, 0, 32);
+				ImGui::Checkbox("IsTrigger", &cc2d.IsTrigger);
 				ImGui::Checkbox("Enabled", &cc2d.Enabled);
-				if (ImGui::Button("Remove"))
-				{
-					entity.RemoveComponent<CircleCollider2DComponent>();
-				}
 				ImGui::Separator();
 				ImGui::TreePop();
+			}
+
+			if (remove)
+			{
+				entity.RemoveComponent<CircleCollider2DComponent>();
 			}
 		}
 		if (entity.HasComponent<Rigidbody2DComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(Rigidbody2DComponent).hash_code(), flags, "Rigidbody2DComponent"))
+			ImGui::AlignTextToFramePadding();
+			bool open = ImGui::TreeNodeEx((void*)typeid(Rigidbody2DComponent).hash_code(), flags, "Rigidbody2D");
+			ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+			bool remove = ImGui::Button("Remove");
+
+			if (open)
 			{
 				auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+				int intType = (int)rb2d.Type;
+				ImGui::Combo("Body Type", &intType, "Static\0Dynamic\0Kinematic\0\0");
+				rb2d.Type = (Rigidbody2DComponent::BodyType)intType;
+				switch (intType)
+				{
+					case 0: rb2d.Type = Rigidbody2DComponent::BodyType::Static; break;
+					case 1: rb2d.Type = Rigidbody2DComponent::BodyType::Dynamic; break;
+					case 2: rb2d.Type = Rigidbody2DComponent::BodyType::Kinematic; break;
+				}
+
 				ImGui::Checkbox("Continuous Detection", &rb2d.ContinuousDetection);
 				ImGui::Checkbox("Allow Sleep", &rb2d.AllowSleep);
-				ImGui::InputFloat2("Velocity", &rb2d.Velocity.x);
+				DragVec2("Velocity", rb2d.Velocity);
 				ImGui::InputFloat("Mass", &rb2d.Mass);
 				ImGui::InputFloat("Gravity Scale", &rb2d.GravityScale);
 				ImGui::InputFloat("Angular Drag", &rb2d.AngularDrag);
@@ -181,60 +296,56 @@ namespace Daybreak
 				ImGui::InputFloat("Friction", &rb2d.Friction);
 				ImGui::InputFloat("Restitution", &rb2d.Restitution);
 				ImGui::InputFloat("Restitution Threshold", &rb2d.RestitutionThreshold);
-				if (ImGui::Button("Remove"))
-				{
-					entity.RemoveComponent<Rigidbody2DComponent>();
-				}
-
 				ImGui::Separator();
 				ImGui::TreePop();
+			}
+
+			if (remove)
+			{
+				entity.RemoveComponent<Rigidbody2DComponent>();
 			}
 		}
 		if (entity.HasComponent<AnimatorComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(AnimatorComponent).hash_code(), flags, "AnimatorComponent"))
+			ImGui::AlignTextToFramePadding();
+			bool open = ImGui::TreeNodeEx((void*)typeid(AnimatorComponent).hash_code(), flags, "Animator");
+			ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+			bool remove = ImGui::Button("Remove");
+
+			if (open)
 			{
 				auto& anim = entity.GetComponent<AnimatorComponent>();
 				ImGui::Checkbox("IsPlaying", &anim.IsPlaying);
-				ImGui::InputFloat4("Tint Color", &anim.TintColor.x);
+				ImGui::ColorEdit4("Tint Color", &anim.TintColor.x);
 				ImGui::Text("Add anim controller filepath");
-				if (ImGui::Button("Remove"))
-				{
-					entity.RemoveComponent<AnimatorComponent>();
-				}
 				ImGui::Separator();
 				ImGui::TreePop();
+			}
+
+			if (remove)
+			{
+				entity.RemoveComponent<AnimatorComponent>();
 			}
 		}
 		if (entity.HasComponent<NativeScriptComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(NativeScriptComponent).hash_code(), flags, "NativeScriptComponent"))
+			ImGui::AlignTextToFramePadding();
+			bool open = ImGui::TreeNodeEx((void*)typeid(NativeScriptComponent).hash_code(), flags, "NativeScript");
+			ImGui::SameLine(ImGui::GetWindowWidth() - 60);
+			bool remove = ImGui::Button("Remove");
+
+			if (open)
 			{
 				auto& nsc = entity.GetComponent<NativeScriptComponent>();
 				ImGui::Text(nsc.TypeName.c_str());
-				if (ImGui::Button("Remove"))
-				{
-					entity.RemoveComponent<NativeScriptComponent>();
-				}
 				ImGui::Separator();
 				ImGui::TreePop();
 			}
-		}
 
-
-		if (ImGui::Button("Add Component"))
-		{
-			ImGui::OpenPopup("Add Component");
-		}
-		if (ImGui::BeginPopup("Add Component"))
-		{
-			DisplayAddComponentEntry<CameraComponent>("Camera");
-			DisplayAddComponentEntry<SpriteRendererComponent>("SpriteRenderer");
-			DisplayAddComponentEntry<Rigidbody2DComponent>("Rigidbody2D");
-			DisplayAddComponentEntry<BoxCollider2DComponent>("BoxCollider2D");
-			DisplayAddComponentEntry<CircleCollider2DComponent>("CircleCollider2D");
-
-			ImGui::EndPopup();
+			if (remove)
+			{
+				entity.RemoveComponent<AnimatorComponent>();
+			}
 		}
 	}
 

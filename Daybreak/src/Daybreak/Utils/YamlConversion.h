@@ -8,6 +8,7 @@
 #define YAML_CPP_STATIC_DEFINE
 #include <yaml-cpp/yaml.h>
 #include <fstream>
+#include <filesystem>
 
 #include <glm/glm.hpp>
 
@@ -132,6 +133,23 @@ namespace YAML
 			return true;
 		}
 	};
+
+	template<>
+	struct convert<std::filesystem::path>
+	{
+		static Node encode(const std::filesystem::path& path)
+		{
+			Node node;
+			node.push_back(path);
+			return node;
+		}
+
+		static bool decode(const Node& node, std::filesystem::path& path)
+		{
+			path = std::filesystem::path(node.as<std::string>());
+			return true;
+		}
+	};
 }
 
 namespace Daybreak
@@ -163,6 +181,12 @@ namespace Daybreak
 		out << YAML::BeginSeq;
 		out << m[0] << m[1] << m[2] << m[3];
 		out << YAML::EndSeq;
+		return out;
+	}
+
+	inline YAML::Emitter& operator<<(YAML::Emitter& out, const std::filesystem::path& path)
+	{
+		out << path.string();
 		return out;
 	}
 }

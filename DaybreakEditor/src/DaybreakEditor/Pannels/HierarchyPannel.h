@@ -12,6 +12,7 @@ namespace Daybreak
 
 		void Render();
 		void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
+		void SetScene(const Ref<Scene>& scene) { m_ActiveScene = scene; }
 
 	private:
 		void DrawEntityRow(Entity entity);

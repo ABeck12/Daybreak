@@ -18,10 +18,15 @@ namespace Daybreak
 		virtual void OnImGuiRender() override;
 
 	private:
+		void SaveScene();
+
+	private:
 		std::string m_SceneFilepath;
 		Ref<Scene> m_Scene;
+		Ref<Scene> m_RuntimeScene;
 		Ref<FrameBuffer> m_FrameBuffer;
 
 		HierarchyPannel m_HierarchyPannel;
+		bool m_IsPlaying = false;
 	};
 }

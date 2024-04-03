@@ -114,7 +114,7 @@ namespace Daybreak
 			{
 				Entity entity = { e, this };
 				auto& anim = entity.GetComponent<AnimatorComponent>();
-				if (anim.IsPlaying)
+				if (anim.IsPlaying && (anim.Controller != NULL))
 				{
 					anim.Controller->Update(dt);
 				}
@@ -207,9 +207,9 @@ namespace Daybreak
 	{
 		// Set data for Box2D
 		{
-			auto boxview = m_Registry.view<BoxCollider2DComponent>();
+			auto view = m_Registry.view<BoxCollider2DComponent>();
 
-			for (auto e : boxview)
+			for (auto e : view)
 			{
 				Entity entity = { e, this };
 				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
@@ -220,9 +220,9 @@ namespace Daybreak
 		}
 
 		{
-			auto boxview = m_Registry.view<CircleCollider2DComponent>();
+			auto view = m_Registry.view<CircleCollider2DComponent>();
 
-			for (auto e : boxview)
+			for (auto e : view)
 			{
 				Entity entity = { e, this };
 				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
@@ -233,16 +233,19 @@ namespace Daybreak
 		}
 
 		auto view = m_Registry.view<Rigidbody2DComponent>();
-
 		for (auto e : view)
 		{
 			Entity entity = { e, this };
-			auto& transform = entity.GetComponent<TransformComponent>();
 			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
-
 			b2Body* body = (b2Body*)rb2d.RuntimeBody;
-			body->SetLinearVelocity({ rb2d.Velocity.x, rb2d.Velocity.y });
-			body->SetTransform({ transform.Position.x, transform.Position.y }, transform.Rotation.z);
+			if (body)
+			{
+				auto name = entity.GetName();
+				auto& transform = entity.GetComponent<TransformComponent>();
+
+				body->SetLinearVelocity({ rb2d.Velocity.x, rb2d.Velocity.y });
+				body->SetTransform({ transform.Position.x, transform.Position.y }, transform.Rotation.z);
+			}
 		}
 
 		float startTime = Time::GetTime();
@@ -256,18 +259,21 @@ namespace Daybreak
 		for (auto e : view)
 		{
 			Entity entity = { e, this };
-			auto& transform = entity.GetComponent<TransformComponent>();
 			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
-
 			b2Body* body = (b2Body*)rb2d.RuntimeBody;
-			const auto& position = body->GetPosition();
-			transform.Position.x = position.x;
-			transform.Position.y = position.y;
-			transform.Rotation.z = body->GetAngle();
+			if (body)
+			{
+				auto& transform = entity.GetComponent<TransformComponent>();
 
-			const auto& velocity = body->GetLinearVelocity();
-			rb2d.Velocity.x = velocity.x;
-			rb2d.Velocity.y = velocity.y;
+				const auto& position = body->GetPosition();
+				transform.Position.x = position.x;
+				transform.Position.y = position.y;
+				transform.Rotation.z = body->GetAngle();
+
+				const auto& velocity = body->GetLinearVelocity();
+				rb2d.Velocity.x = velocity.x;
+				rb2d.Velocity.y = velocity.y;
+			}
 		}
 	}
 
@@ -282,14 +288,7 @@ namespace Daybreak
 			for (auto e : view)
 			{
 				Entity entity = { e, this };
-				if (entity.HasComponent<Rigidbody2DComponent>())
-				{
-					m_PhysicsSim2D->AddColliderWithRigidbody(entity);
-				}
-				else
-				{
-					m_PhysicsSim2D->AddCollider(entity);
-				}
+				m_PhysicsSim2D->AddBoxCollider(entity);
 			}
 		}
 
@@ -299,14 +298,7 @@ namespace Daybreak
 			for (auto e : view)
 			{
 				Entity entity = { e, this };
-				if (entity.HasComponent<Rigidbody2DComponent>())
-				{
-					m_PhysicsSim2D->AddColliderWithRigidbody(entity);
-				}
-				else
-				{
-					m_PhysicsSim2D->AddCollider(entity);
-				}
+				m_PhysicsSim2D->AddCircleCollider(entity);
 			}
 		}
 		PhysicsSim2D::SetActiveSim(this->m_PhysicsSim2D);
@@ -317,6 +309,7 @@ namespace Daybreak
 		PhysicsSim2D::SetActiveSim(nullptr);
 		m_PhysicsSim2D->ShutdownSimulation();
 		delete m_PhysicsSim2D;
+		m_PhysicsSim2D = nullptr;
 	}
 
 	Entity Scene::GetEntityByName(std::string_view name)

@@ -30,9 +30,8 @@ namespace Daybreak
 	{
 	public:
 		~Texture() = default;
-		// static Ref<Texture> Create(const TextureSpecifications& textureSpecs, const std::string& filepath);
 
-		virtual const std::string& GetFilepath() const = 0;
+		virtual const std::filesystem::path& GetFilepath() const = 0;
 		virtual const TextureSpecifications& GetTexutreSpecifications() const = 0;
 
 		virtual const uint32_t GetWidth() const = 0;
@@ -51,6 +50,6 @@ namespace Daybreak
 	{
 	public:
 		static Ref<Texture2D> Create(const TextureSpecifications& specification);
-		static Ref<Texture2D> Create(const TextureSpecifications& textureSpecs, const std::string& filepath);
+		static Ref<Texture2D> Create(const TextureSpecifications& textureSpecs, const std::filesystem::path& filepath);
 	};
 }

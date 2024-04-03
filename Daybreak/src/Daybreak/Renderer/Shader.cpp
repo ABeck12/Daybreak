@@ -11,7 +11,7 @@ namespace Daybreak
 		return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
 	}
 
-	Ref<Shader> Shader::Create(const std::string& name, const std::string& filepath)
+	Ref<Shader> Shader::Create(const std::string& name, const std::filesystem::path& filepath)
 	{
 		return CreateRef<OpenGLShader>(name, filepath);
 	}

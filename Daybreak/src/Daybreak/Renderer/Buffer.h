@@ -6,24 +6,34 @@ namespace Daybreak
 {
 	enum class RenderDataTypes
 	{
-		None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool, 
+		Float,
+		Float2,
+		Float3,
+		Float4,
+		Mat3,
+		Mat4,
+		Int,
+		Int2,
+		Int3,
+		Int4,
+		Bool,
 	};
 
 	static uint32_t RenderDataTypeSize(RenderDataTypes type)
 	{
 		switch (type)
 		{
-			case RenderDataTypes::Float:    return 4;
-			case RenderDataTypes::Float2:   return 4 * 2;
-			case RenderDataTypes::Float3:   return 4 * 3;
-			case RenderDataTypes::Float4:   return 4 * 4;
-			case RenderDataTypes::Mat3:     return 4 * 3 * 3;
-			case RenderDataTypes::Mat4:     return 4 * 4 * 4;
-			case RenderDataTypes::Int:      return 4;
-			case RenderDataTypes::Int2:     return 4 * 2;
-			case RenderDataTypes::Int3:     return 4 * 3;
-			case RenderDataTypes::Int4:     return 4 * 4;
-			case RenderDataTypes::Bool:     return 1;
+			case RenderDataTypes::Float: return 4; break;
+			case RenderDataTypes::Float2: return 4 * 2; break;
+			case RenderDataTypes::Float3: return 4 * 3; break;
+			case RenderDataTypes::Float4: return 4 * 4; break;
+			case RenderDataTypes::Mat3: return 4 * 3 * 3; break;
+			case RenderDataTypes::Mat4: return 4 * 4 * 4; break;
+			case RenderDataTypes::Int: return 4; break;
+			case RenderDataTypes::Int2: return 4 * 2; break;
+			case RenderDataTypes::Int3: return 4 * 3; break;
+			case RenderDataTypes::Int4: return 4 * 4; break;
+			case RenderDataTypes::Bool: return 1; break;
 		}
 		return 0;
 	}
@@ -31,8 +41,9 @@ namespace Daybreak
 	struct BufferElement
 	{
 		BufferElement() = default;
-		BufferElement(RenderDataTypes type, std::string name, bool normalized = false) : Type(type), Name(name), Normalized(normalized), Offset(0), Size(RenderDataTypeSize(type)) {}
-		
+		BufferElement(RenderDataTypes type, std::string name, bool normalized = false)
+			: Type(type), Name(name), Normalized(normalized), Offset(0), Size(RenderDataTypeSize(type)) {}
+
 		RenderDataTypes Type;
 		bool Normalized;
 		std::string Name;
@@ -43,28 +54,28 @@ namespace Daybreak
 		{
 			switch (Type)
 			{
-				case RenderDataTypes::Float:    return 1;
-				case RenderDataTypes::Float2:   return 2;
-				case RenderDataTypes::Float3:   return 3;
-				case RenderDataTypes::Float4:   return 4;
-				case RenderDataTypes::Mat3:     return 3;
-				case RenderDataTypes::Mat4:     return 4;
-				case RenderDataTypes::Int:      return 1;
-				case RenderDataTypes::Int2:     return 2;
-				case RenderDataTypes::Int3:     return 3;
-				case RenderDataTypes::Int4:     return 4;
-				case RenderDataTypes::Bool:     return 1;
+				case RenderDataTypes::Float: return 1; break;
+				case RenderDataTypes::Float2: return 2; break;
+				case RenderDataTypes::Float3: return 3; break;
+				case RenderDataTypes::Float4: return 4; break;
+				case RenderDataTypes::Mat3: return 3; break;
+				case RenderDataTypes::Mat4: return 4; break;
+				case RenderDataTypes::Int: return 1; break;
+				case RenderDataTypes::Int2: return 2; break;
+				case RenderDataTypes::Int3: return 3; break;
+				case RenderDataTypes::Int4: return 4; break;
+				case RenderDataTypes::Bool: return 1; break;
 			}
 			return 0;
 		}
-				
 	};
 
 	class BufferLayout
 	{
 	public:
 		BufferLayout() {}
-		BufferLayout(std::initializer_list<BufferElement> elements) : m_Elements(elements)
+		BufferLayout(std::initializer_list<BufferElement> elements)
+			: m_Elements(elements)
 		{
 			CalculateOffsetsAndStride();
 		}
@@ -77,6 +88,7 @@ namespace Daybreak
 		std::vector<BufferElement>::iterator end() { return m_Elements.end(); }
 		std::vector<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
 		std::vector<BufferElement>::const_iterator end() const { return m_Elements.end(); }
+
 	private:
 		void CalculateOffsetsAndStride()
 		{
@@ -89,6 +101,7 @@ namespace Daybreak
 				m_Stride += element.Size;
 			}
 		}
+
 	private:
 		std::vector<BufferElement> m_Elements;
 		uint32_t m_Stride = 0;

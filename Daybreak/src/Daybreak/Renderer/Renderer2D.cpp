@@ -224,6 +224,9 @@ namespace Daybreak
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const AnimatorComponent& anim, int entityID)
 	{
+		// FIXME: TEMPORARY
+		if (!anim.Controller)
+			return;
 		auto currentFrame = anim.Controller->GetActiveAnimation()->GetCurrentKeyFrame();
 		TextureSpecifications spec = currentFrame.Sprite->GetTexture()->GetTexutreSpecifications();
 		Renderer2D::DrawQuad(glm::scale(transform, { (float)currentFrame.Sprite->GetWidth() / (float)spec.PixelsPerUnit, (float)currentFrame.Sprite->GetHeight() / (float)spec.PixelsPerUnit, 1.0f }),

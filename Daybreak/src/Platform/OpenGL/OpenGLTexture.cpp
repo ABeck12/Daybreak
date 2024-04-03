@@ -7,8 +7,8 @@
 
 namespace Daybreak
 {
-	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs) :
-		m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height), m_Filepath(std::string())
+	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs)
+		: m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height), m_Filepath(std::string())
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, GL_RGBA8, m_Width, m_Height);
@@ -16,14 +16,14 @@ namespace Daybreak
 		int glFilterType;
 		switch (textureSpecs.Filter)
 		{
-		case TextureFilterType::Bilinear:
-			glFilterType = GL_LINEAR;
-			break;
-		case TextureFilterType::Point:
-			glFilterType = GL_NEAREST;
-			break;
-		default:
-			DB_CORE_ASSERT(false, "Unknown filter type");
+			case TextureFilterType::Bilinear:
+				glFilterType = GL_LINEAR;
+				break;
+			case TextureFilterType::Point:
+				glFilterType = GL_NEAREST;
+				break;
+			default:
+				DB_CORE_ASSERT(false, "Unknown filter type");
 		}
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, glFilterType);
@@ -32,14 +32,14 @@ namespace Daybreak
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs, const std::string& filepath) :
-		m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height), m_Filepath(filepath)
+	OpenGLTexture2D::OpenGLTexture2D(const TextureSpecifications& textureSpecs, const std::filesystem::path& filepath)
+		: m_Specification(textureSpecs), m_Width(textureSpecs.Width), m_Height(textureSpecs.Height), m_Filepath(filepath)
 	{
 		stbi_set_flip_vertically_on_load(1);
 		int m_BPP; // SUPER TEMPORARY
 		int width;
 		int height;
-		m_LocalBuffer = stbi_load(filepath.c_str(), &width, &height, &m_BPP, 4);
+		m_LocalBuffer = stbi_load((filepath.string()).c_str(), &width, &height, &m_BPP, 4);
 		m_Specification.Height = height;
 		m_Specification.Width = width;
 
@@ -49,14 +49,14 @@ namespace Daybreak
 		int glFilterType;
 		switch (textureSpecs.Filter)
 		{
-		case TextureFilterType::Bilinear:
-			glFilterType = GL_LINEAR;
-			break;
-		case TextureFilterType::Point:
-			glFilterType = GL_NEAREST;
-			break;
-		default:
-			DB_CORE_ASSERT(false, "Unknown filter type");
+			case TextureFilterType::Bilinear:
+				glFilterType = GL_LINEAR;
+				break;
+			case TextureFilterType::Point:
+				glFilterType = GL_NEAREST;
+				break;
+			default:
+				DB_CORE_ASSERT(false, "Unknown filter type");
 		}
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glFilterType);
@@ -91,7 +91,7 @@ namespace Daybreak
 
 	const void OpenGLTexture2D::SetData(void* data, uint32_t size) const
 	{
-		auto m_DataFormat = GL_RGBA; //Temp
+		auto m_DataFormat = GL_RGBA; // Temp
 		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		DB_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");

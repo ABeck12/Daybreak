@@ -6,10 +6,10 @@
 
 namespace Daybreak
 {
-	std::unordered_map<std::string, std::variant<Ref<Texture2D>, Ref<Animation>, Ref<AnimationController>>> AssetManager::s_AssetMap;
-	std::unordered_map<std::string, AssetType> AssetManager::s_AssetTypeMap;
+	std::unordered_map<std::filesystem::path, std::variant<Ref<Texture2D>, Ref<Animation>, Ref<AnimationController>>> AssetManager::s_AssetMap;
+	std::unordered_map<std::filesystem::path, AssetType> AssetManager::s_AssetTypeMap;
 
-	bool AssetManager::HasAssetRef(const std::string& localFilepath)
+	bool AssetManager::HasAssetRef(const std::filesystem::path& localFilepath)
 	{
 		return s_AssetMap.find(localFilepath) != s_AssetMap.end();
 	}
@@ -52,7 +52,7 @@ namespace Daybreak
 
 
 	template<>
-	void AssetManager::AddAssetRef(const Ref<Texture2D> asset, const std::string& localFilepath)
+	void AssetManager::AddAssetRef(const Ref<Texture2D> asset, const std::filesystem::path& localFilepath)
 	{
 		auto it = s_AssetMap.find(localFilepath);
 		if (it != s_AssetMap.end())
@@ -64,7 +64,7 @@ namespace Daybreak
 	}
 
 	template<>
-	void AssetManager::AddAssetRef(const Ref<Animation> asset, const std::string& localFilepath)
+	void AssetManager::AddAssetRef(const Ref<Animation> asset, const std::filesystem::path& localFilepath)
 	{
 		auto it = s_AssetMap.find(localFilepath);
 		if (it != s_AssetMap.end())
@@ -76,7 +76,7 @@ namespace Daybreak
 	}
 
 	template<>
-	void AssetManager::AddAssetRef(const Ref<AnimationController> asset, const std::string& localFilepath)
+	void AssetManager::AddAssetRef(const Ref<AnimationController> asset, const std::filesystem::path& localFilepath)
 	{
 		auto it = s_AssetMap.find(localFilepath);
 		if (it != s_AssetMap.end())
@@ -88,7 +88,7 @@ namespace Daybreak
 	}
 
 	template<>
-	const std::string AssetManager::GetFilepathOfRef(const Ref<Texture2D> asset)
+	const std::filesystem::path AssetManager::GetFilepathOfRef(const Ref<Texture2D> asset)
 	{
 		// for (const auto kv : s_AssetMap)
 		// {
@@ -108,7 +108,7 @@ namespace Daybreak
 	}
 
 	template<>
-	const std::string AssetManager::GetFilepathOfRef(const Ref<Animation> asset)
+	const std::filesystem::path AssetManager::GetFilepathOfRef(const Ref<Animation> asset)
 	{
 		// for (const auto kv : s_AssetMap)
 		// {
@@ -128,7 +128,7 @@ namespace Daybreak
 	}
 
 	template<>
-	const std::string AssetManager::GetFilepathOfRef(const Ref<AnimationController> asset)
+	const std::filesystem::path AssetManager::GetFilepathOfRef(const Ref<AnimationController> asset)
 	{
 		// for (const auto kv : s_AssetMap)
 		// {

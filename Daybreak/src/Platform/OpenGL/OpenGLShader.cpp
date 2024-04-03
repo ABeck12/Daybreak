@@ -23,7 +23,7 @@ namespace Daybreak
 		glDeleteShader(fs);
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& name, const std::string& filepath)
+	OpenGLShader::OpenGLShader(const std::string& name, const std::filesystem::path& filepath)
 		: m_Name(name)
 	{
 		std::ifstream stream(filepath);

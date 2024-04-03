@@ -27,21 +27,25 @@ namespace Daybreak
 	{
 		Daybreak::SceneSerializer serializer(m_Scene);
 		serializer.Deserialize(m_SceneFilepath);
-		m_Scene->OnRuntimeStart();
+		if (m_IsPlaying)
+			m_Scene->OnRuntimeStart();
 	}
 
 	void EditorLayer::OnDetach()
 	{
-		m_Scene->OnRuntimeEnd();
+		if (m_IsPlaying)
+			m_Scene->OnRuntimeEnd();
 	}
 
 	void EditorLayer::OnUpdate(Daybreak::DeltaTime dt)
 	{
 		m_FrameBuffer->Bind();
 		Daybreak::RenderCommand::Clear();
-		Daybreak::RenderCommand::SetClearColor(glm::vec4(0));
-
-		m_Scene->OnRuntimeUpdate(dt);
+		if (m_IsPlaying)
+		{
+			Daybreak::RenderCommand::SetClearColor(glm::vec4(0));
+			m_Scene->OnRuntimeUpdate(dt);
+		}
 		m_FrameBuffer->Unbind();
 	}
 
@@ -73,11 +77,11 @@ namespace Daybreak
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-		static bool opt_fullscreen_persistant = true;
-		bool opt_fullscreen = opt_fullscreen_persistant;
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+		// static bool opt_fullscreen_persistant = true;
+		// bool opt_fullscreen = opt_fullscreen_persistant;
+		// ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		// window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		// window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 		// if (opt_fullscreen)
 		// {
 		// 	ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -95,10 +99,39 @@ namespace Daybreak
 		// 	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 		// 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
 		// }
+
+
 		bool isopen = true;
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
 
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Save"))
+				{
+					SaveScene();
+				}
+				if (ImGui::MenuItem("Open"))
+				{
+					DB_CORE_LOG("Open not implemented yet");
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+
 		ImGui::Begin("Viewport");
+
+		m_HierarchyPannel.Render();
+		std::string text = m_IsPlaying ? "Pause" : "Play";
+		ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
+		if (ImGui::Button(text.c_str()))
+		{
+			m_IsPlaying = !m_IsPlaying;
+			m_IsPlaying ? m_Scene->OnRuntimeStart() : m_Scene->OnRuntimeEnd();
+		}
+
 		uint32_t textureID = m_FrameBuffer->GetAttachmentRendererID(0);
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 		float aspectRatio = 1920.0f / 1080.0f;
@@ -108,10 +141,15 @@ namespace Daybreak
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		m_HierarchyPannel.Render();
+		ImGui::Begin("Stats");
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		ImGui::End();
+	}
 
-		// ImGui::Begin("Debug Stats");
-		// ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		// ImGui::End();
+
+	void EditorLayer::SaveScene()
+	{
+		SceneSerializer serializer(m_Scene);
+		serializer.Serialize(m_SceneFilepath);
 	}
 }

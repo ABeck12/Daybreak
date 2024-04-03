@@ -6,22 +6,27 @@
 #include "Daybreak/Assets/AssetManager.h"
 #include <filesystem>
 
-#define DB_ASSET_DIR std::string("../Sandbox/assets/")
+// TODO: Rework this to be a function/method/getter or something on assetmanager.
+// AssetManager will figure out what the right path on startup
+#define DB_ASSET_DIR std::filesystem::path("../Sandbox/assets/")
 
 namespace Daybreak
 {
-	static std::string GetPathFromParentDirectory(const std::string& filepath, const std::string& directory)
+	/*
+	Takes in filepath such as Sandbox/assets/sprites/testSprite.sprite and a directory such as assets
+	Returns path relative path to filepath from directory such as sprites/testSprite.sprite
+	*/
+	static std::filesystem::path GetPathFromParentDirectory(const std::filesystem::path& filepath, const std::string& directory)
 	{
-		std::filesystem::path path(filepath);
-
-		auto assetsPos = path.string().find(directory);
+		std::string filepathString = filepath.string();
+		auto assetsPos = filepathString.find(directory);
 		if (assetsPos != std::string::npos)
 		{
-			return path.string().substr(assetsPos + directory.length() + 1);
+			return filepathString.substr(assetsPos + directory.length() + 1);
 		}
 
 		DB_CORE_ERROR("Path {} is not in the assets directory", filepath);
-		return path.string();
+		return std::filesystem::path(filepathString);
 	}
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const Ref<Texture2D>& texture)
@@ -62,7 +67,7 @@ namespace Daybreak
 	}
 
 
-	void AssetSerializer::SerializeSprite(const Ref<Texture2D>& texture, const std::string& localFilepath)
+	void AssetSerializer::SerializeSprite(const Ref<Texture2D>& texture, const std::filesystem::path& localFilepath)
 	{
 		YAML::Emitter out;
 
@@ -70,11 +75,11 @@ namespace Daybreak
 		out << YAML::Key << "Texture2D" << YAML::Value << texture;
 		out << YAML::EndMap;
 
-		std::ofstream fout(DB_ASSET_DIR + localFilepath);
+		std::ofstream fout(DB_ASSET_DIR / localFilepath);
 		fout << out.c_str();
 	}
 
-	void AssetSerializer::SerializeAnimation(const Ref<Animation>& anim, const std::string& localFilepath)
+	void AssetSerializer::SerializeAnimation(const Ref<Animation>& anim, const std::filesystem::path& localFilepath)
 	{
 		YAML::Emitter out;
 
@@ -87,7 +92,7 @@ namespace Daybreak
 		{
 			out << YAML::BeginMap;
 
-			std::string outFilepath;
+			std::filesystem::path outFilepath;
 			if (AssetManager::HasAssetRef(frame.Sprite->GetTexture()))
 			{
 				outFilepath = AssetManager::GetFilepathOfRef(frame.Sprite->GetTexture());
@@ -95,7 +100,7 @@ namespace Daybreak
 			else
 			{
 				std::filesystem::path spritePath = frame.Sprite->GetTexture()->GetFilepath();
-				outFilepath = "sprites/" + GetPathFromParentDirectory(spritePath.replace_extension("sprite").string(), "assets");
+				outFilepath = "sprites/" / GetPathFromParentDirectory(spritePath.replace_extension("sprite"), "assets");
 				AssetManager::AddAssetRef(frame.Sprite->GetTexture(), outFilepath);
 			}
 			SerializeSprite(frame.Sprite->GetTexture(), outFilepath);
@@ -112,11 +117,11 @@ namespace Daybreak
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 
-		std::ofstream fout(DB_ASSET_DIR + localFilepath);
+		std::ofstream fout(DB_ASSET_DIR / localFilepath);
 		fout << out.c_str();
 	}
 
-	void AssetSerializer::SerializeAnimationController(const Ref<AnimationController>& controller, const std::string& localFilepath)
+	void AssetSerializer::SerializeAnimationController(const Ref<AnimationController>& controller, const std::filesystem::path& localFilepath)
 	{
 		YAML::Emitter out;
 
@@ -130,7 +135,7 @@ namespace Daybreak
 
 			out << YAML::Key << "Name" << YAML::Value << kv.first;
 
-			std::string filepath;
+			std::filesystem::path filepath;
 			if (AssetManager::HasAssetRef(kv.second))
 			{
 				filepath = AssetManager::GetFilepathOfRef(kv.second);
@@ -148,11 +153,11 @@ namespace Daybreak
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 
-		std::ofstream fout(DB_ASSET_DIR + localFilepath);
+		std::ofstream fout(DB_ASSET_DIR / localFilepath);
 		fout << out.c_str();
 	}
 
-	Ref<Texture2D> AssetSerializer::DeserializeSprite(const std::string& localFilepath)
+	Ref<Texture2D> AssetSerializer::DeserializeSprite(const std::filesystem::path& localFilepath)
 	{
 		if (AssetManager::HasAssetRef(localFilepath))
 		{
@@ -162,16 +167,16 @@ namespace Daybreak
 		YAML::Node data;
 		try
 		{
-			data = YAML::LoadFile(DB_ASSET_DIR + localFilepath);
+			data = YAML::LoadFile((DB_ASSET_DIR / localFilepath).string());
 		}
 		catch (const YAML::ParserException& e)
 		{
-			DB_CORE_ERROR("Failed to load .sprite file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
+			DB_CORE_ERROR("Failed to load .sprite file '{0}'\n     {1}", (DB_ASSET_DIR / localFilepath), e.what());
 		}
 
 		auto texture2D = data["Texture2D"];
 
-		std::string filepath = DB_ASSET_DIR + texture2D["Filepath"].as<std::string>();
+		std::filesystem::path filepath = DB_ASSET_DIR / texture2D["Filepath"].as<std::filesystem::path>();
 
 		TextureSpecifications spec;
 		spec.Height = texture2D["Specifications"]["Height"].as<uint32_t>();
@@ -193,7 +198,7 @@ namespace Daybreak
 		return texture;
 	}
 
-	Ref<Animation> AssetSerializer::DeserializeAnimation(const std::string& localFilepath)
+	Ref<Animation> AssetSerializer::DeserializeAnimation(const std::filesystem::path& localFilepath)
 	{
 		if (AssetManager::HasAssetRef(localFilepath))
 		{
@@ -204,11 +209,11 @@ namespace Daybreak
 		YAML::Node data;
 		try
 		{
-			data = YAML::LoadFile(DB_ASSET_DIR + localFilepath);
+			data = YAML::LoadFile((DB_ASSET_DIR / localFilepath).string());
 		}
 		catch (const YAML::ParserException& e)
 		{
-			DB_CORE_ERROR("Failed to load .anim file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
+			DB_CORE_ERROR("Failed to load .anim file '{0}'\n     {1}", (DB_ASSET_DIR / localFilepath), e.what());
 		}
 
 		auto keyFrames = data["KeyFrames"];
@@ -239,7 +244,7 @@ namespace Daybreak
 		return anim;
 	}
 
-	Ref<AnimationController> AssetSerializer::DeserializeAnimationController(const std::string& localFilepath)
+	Ref<AnimationController> AssetSerializer::DeserializeAnimationController(const std::filesystem::path& localFilepath)
 	{
 		if (AssetManager::HasAssetRef(localFilepath))
 		{
@@ -250,11 +255,11 @@ namespace Daybreak
 		YAML::Node data;
 		try
 		{
-			data = YAML::LoadFile(DB_ASSET_DIR + localFilepath);
+			data = YAML::LoadFile((DB_ASSET_DIR / localFilepath).string());
 		}
 		catch (const YAML::ParserException& e)
 		{
-			DB_CORE_ERROR("Failed to load .controller file '{0}'\n     {1}", (DB_ASSET_DIR + localFilepath), e.what());
+			DB_CORE_ERROR("Failed to load .controller file '{0}'\n     {1}", (DB_ASSET_DIR / localFilepath), e.what());
 		}
 
 		Ref<AnimationController> controller = CreateRef<AnimationController>();

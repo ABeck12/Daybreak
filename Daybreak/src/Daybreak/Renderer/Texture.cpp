@@ -6,13 +6,13 @@
 
 namespace Daybreak
 {
-	Ref<Texture2D> Texture2D::Create(const TextureSpecifications& textureSpecs, const std::string& filepath)
+	Ref<Texture2D> Texture2D::Create(const TextureSpecifications& textureSpecs, const std::filesystem::path& filepath)
 	{
-		return CreateRef <OpenGLTexture2D>(textureSpecs, filepath);
+		return CreateRef<OpenGLTexture2D>(textureSpecs, filepath);
 	}
 
 	Ref<Texture2D> Texture2D::Create(const TextureSpecifications& textureSpecs)
 	{
-		return CreateRef <OpenGLTexture2D>(textureSpecs);
+		return CreateRef<OpenGLTexture2D>(textureSpecs);
 	}
 }
