@@ -117,9 +117,6 @@ public:
 	{
 		m_IsGrounded = true;
 		// DB_LOG("enter {}", m_IsGrounded);
-
-		auto clip = Daybreak::AudioClip::Create("../Sandbox/assets/bonk.mp3");
-		// Daybreak::AudioEngine::Play(clip);
 	}
 
 	void OnCollisionExit(Daybreak::Entity& entity)

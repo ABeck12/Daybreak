@@ -3,7 +3,7 @@
 
 #include "SceneLayer.h"
 
-#include <DaybreakEditor.h>
+// #include <DaybreakEditor.h>
 
 #include "ScriptableEntityTest.h"
 
@@ -20,8 +20,8 @@ public:
 		: Daybreak::Application(spec)
 	{
 		DB_REGISTER_SCRIPTABLE_ENTITY(MoveableComponent);
-		// PushLayer(new SceneLayer());
-		PushLayer(new Daybreak::EditorLayer("../Sandbox/assets/scenes/SceneLayer.scene"));
+		PushLayer(new SceneLayer());
+		// PushLayer(new Daybreak::EditorLayer("../Sandbox/assets/scenes/SceneLayer.scene"));
 	}
 
 	~Sandbox()

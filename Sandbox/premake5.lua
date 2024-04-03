@@ -32,7 +32,7 @@ project "Sandbox"
 	links
 	{
 		"Daybreak",
-		"DaybreakEditor",
+		-- "DaybreakEditor",
 	}
 
 	filter "system:windows"

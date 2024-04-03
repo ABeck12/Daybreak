@@ -36,13 +36,14 @@ Fix pch file in premake
     This should own the physics sim, AssetManager, ScriptableEntity registries
 
 ### Scene
+    Cloning of scenes for runtime
     Component and Entity active or not
         Includes rendering
     If I am not going to use C# rework ScriptableEntitys to just be scripts
     Scene saving and loading
         SpriteRenderer.Sprite needs to be reworked. Need to be able to save/load component even when no sprite is defined ie. white sprite default
     Add OnScenePlay and OnSceneStop
-    Relationship components
+    Fix relationship components
     Multiple components per entity?
         Needed for colliders and maybe NativeScripts
     Render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
