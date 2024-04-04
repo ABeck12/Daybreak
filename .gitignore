@@ -23,5 +23,5 @@ CMakeCache.txt
 
 # For vscode
 /Tasks
-*/.vscode
+**/.vscode
 **.code-workspace
