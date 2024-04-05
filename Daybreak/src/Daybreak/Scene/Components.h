@@ -6,8 +6,8 @@
 #include "Daybreak/Renderer/Camera.h"
 #include "Daybreak/Core/UUID.h"
 #include "Daybreak/Assets/Animation.h"
-#include "Daybreak/Scene/ScriptableEntityRegistry.h"
-#include "Daybreak/Scene/ScriptableEntity.h"
+#include "Daybreak/Scripting/ScriptRegistry.h"
+#include "Daybreak/Scripting/Script.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -173,25 +173,25 @@ namespace Daybreak
 	};
 
 	// Forward decleration
-	class ScriptableEntity;
+	class Script;
 
 	struct NativeScriptComponent
 	{
-		ScriptableEntity* Instance = nullptr;
+		Script* Instance = nullptr;
 		std::string TypeName = "";
 
-		ScriptableEntity* (*InstantiateScript)(const std::string&);
+		Script* (*InstantiateScript)(const std::string&);
 		void (*DestroyScript)(NativeScriptComponent*);
 
 		template<typename T>
 		void Bind()
 		{
 			TypeName = std::string(typeid(T).name()).erase(0, 6);
-			ScriptableEntityRegistry::RegisterType<T>();
+			ScriptRegistry::RegisterType<T>();
 
 			InstantiateScript = [](const std::string&)
 			{
-				return static_cast<ScriptableEntity*>(new T());
+				return static_cast<Script*>(new T());
 			};
 			DestroyScript = [](NativeScriptComponent* nsc)
 			{
@@ -206,7 +206,7 @@ namespace Daybreak
 
 			InstantiateScript = [](const std::string& name)
 			{
-				return ScriptableEntityRegistry::GetRegisteredType(name);
+				return ScriptRegistry::GetRegisteredType(name);
 			};
 			DestroyScript = [](NativeScriptComponent* nsc)
 			{
