@@ -113,12 +113,12 @@ SceneLayer::SceneLayer()
 	// auto testscn = Daybreak::CreateRef<Daybreak::Scene>();
 	// m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
 
-	DB_REGISTER_SCRIPTABLE_ENTITY(MoveableComponent);
+	DB_REGISTER_SCRIPT(MoveableComponent);
 	// auto serializer2 = Daybreak::SceneSerializer(m_Scene);
 	// serializer2.Deserialize("../Sandbox/assets/scenes/SceneLayer.scene");
 	// serializer2.Serialize("../Sandbox/assets/scenes/SceneLayer2.dbscn");
 	// Daybreak::ScriptableEntityRegistry::RegisterType<MoveableComponent>();
-	for (const auto& pair : Daybreak::ScriptableEntityRegistry::GetRegistry())
+	for (const auto& pair : Daybreak::ScriptRegistry::GetRegistry())
 	{
 		DB_LOG(pair.first);
 	}

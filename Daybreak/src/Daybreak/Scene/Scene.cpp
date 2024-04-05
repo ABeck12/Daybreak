@@ -6,7 +6,7 @@
 #include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Renderer/Renderer2D.h"
 #include "Daybreak/Core/Time.h"
-#include "Daybreak/Scene/ScriptableEntity.h"
+#include "Daybreak/Scripting/Script.h"
 #include "Daybreak/Renderer/RenderCommand.h"
 
 #include <box2d/box2d.h>

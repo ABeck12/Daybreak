@@ -1,15 +1,23 @@
 #pragma once
 
+#ifdef DB_SCRIPT_BUILD_DLL
+#ifdef DB_PLATFORM_WINDOWS
+#define DB_SCRIPT(className) extern "C" __declspec(dllexport)
+#endif
+#else
+#define DB_SCRIPT(className) __declspec(dllimport)
+#endif
+
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Physics/PhysicsSim2D.h"
 
 namespace Daybreak
 {
-	class ScriptableEntity
+	class Script
 	{
 	public:
-		virtual ~ScriptableEntity() {}
+		virtual ~Script() {}
 
 		template<typename T>
 		T& GetComponent()
