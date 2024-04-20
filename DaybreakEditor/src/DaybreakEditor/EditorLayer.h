@@ -9,7 +9,7 @@ namespace Daybreak
 	class EditorLayer : public Layer
 	{
 	public:
-		EditorLayer(const std::string& startupSceneFilepath);
+		EditorLayer(const std::filesystem::path& startupSceneFilepath);
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
@@ -19,12 +19,24 @@ namespace Daybreak
 
 	private:
 		void SaveScene();
+		// void OpenScene(const std::filesystem::path&);
+
+
+		void Start();
+		void Stop();
+
+		void InitCameraScene();
+		void UpdateCameraPosition(DeltaTime dt);
 
 	private:
-		std::string m_SceneFilepath;
+		std::filesystem::path m_SceneFilepath;
 		Ref<Scene> m_Scene;
-		Ref<Scene> m_RuntimeScene;
+		Ref<Scene> m_SceneCopy;
 		Ref<FrameBuffer> m_FrameBuffer;
+
+		Ref<Scene> m_EditorCameraScene;
+		Entity m_EditorCamera;
+		glm::vec2 m_LastMouseClickedPos;
 
 		HierarchyPannel m_HierarchyPannel;
 		bool m_IsPlaying = false;

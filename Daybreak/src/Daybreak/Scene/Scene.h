@@ -27,6 +27,8 @@ namespace Daybreak
 		Entity CreateEntity(Entity& parent, const std::string& name = std::string());
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
 
+		static Ref<Scene> Copy(const Ref<Scene>& input);
+
 		void DestroyEntity(Entity entity);
 
 		Entity GetActiveCameraEntity();
@@ -42,9 +44,12 @@ namespace Daybreak
 
 		const std::string& GetName() { return m_SceneName; }
 
-	private:
-		inline void RenderScene();
+		void RenderScene();
+		void EditorRenderScene(Entity& editorCameraEntity);
 
+		void SetStartTime(float time) { m_LastUpdateTime = time; }
+
+	private:
 		inline void OnPhysicsStart();
 		inline void OnPhysicsUpdate(DeltaTime dt);
 		inline void OnPhysicsStop();

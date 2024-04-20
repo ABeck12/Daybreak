@@ -8,11 +8,13 @@ namespace Daybreak
 	{
 	public:
 		HierarchyPannel() = default;
-		HierarchyPannel(const Ref<Scene>& scene);
+		HierarchyPannel(const Ref<Scene> scene);
 
 		void Render();
-		void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
-		void SetScene(const Ref<Scene>& scene) { m_ActiveScene = scene; }
+		// void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
+		bool HasSelectedEntity() { return m_SelectionContext; }
+		glm::vec2 GetSelectedEntityPosition();
+		void SetScene(const Ref<Scene> scene);
 
 	private:
 		void DrawEntityRow(Entity entity);
@@ -23,6 +25,7 @@ namespace Daybreak
 
 	private:
 		Entity m_SelectionContext;
+		std::string m_ActiveEntityName;
 		Ref<Scene> m_ActiveScene;
 	};
 }

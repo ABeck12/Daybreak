@@ -8,6 +8,7 @@
 #include "Daybreak/Core/Time.h"
 #include "Daybreak/Scripting/Script.h"
 #include "Daybreak/Renderer/RenderCommand.h"
+#include "Daybreak/Scene/SceneSerializer.h"
 
 #include <box2d/box2d.h>
 
@@ -153,6 +154,21 @@ namespace Daybreak
 				} });
 	}
 
+	// FIXME: Temporary
+	Ref<Scene> Scene::Copy(const Ref<Scene>& input)
+	{
+		Ref<Scene> output = CreateRef<Scene>();
+
+		SceneSerializer inputSerializer(input);
+		SceneSerializer outputSerializer(output);
+
+		inputSerializer.Serialize("../Sandbox/assets/scenes/TempLoadedScene.scene");
+		outputSerializer.Deserialize("../Sandbox/assets/scenes/TempLoadedScene.scene");
+
+
+		return output;
+	}
+
 	Entity Scene::GetActiveCameraEntity()
 	{
 		auto view = m_Registry.view<CameraComponent>();
@@ -170,11 +186,46 @@ namespace Daybreak
 	{
 		auto cameraEntity = GetActiveCameraEntity();
 
-		glm::mat4 translation = glm::translate(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Position);
+		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * cameraEntity.GetComponent<TransformComponent>().Position);
 		glm::mat4 rotation = glm::toMat4(glm::quat(cameraEntity.GetComponent<TransformComponent>().Rotation));
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Scale);
 
 		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
+
+		{
+			auto view = m_Registry.view<TransformComponent, AnimatorComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& transform = entity.GetComponent<TransformComponent>();
+				auto& anim = entity.GetComponent<AnimatorComponent>();
+
+				Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);
+			}
+		}
+
+		{
+			auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& transform = entity.GetComponent<TransformComponent>();
+				auto& sprite = entity.GetComponent<SpriteRendererComponent>();
+
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)e);
+			}
+		}
+
+		Renderer2D::EndScene();
+	}
+
+	void Scene::EditorRenderScene(Entity& editorCameraEntity)
+	{
+		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * editorCameraEntity.GetComponent<TransformComponent>().Position);
+		glm::mat4 rotation = glm::toMat4(glm::quat(editorCameraEntity.GetComponent<TransformComponent>().Rotation));
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), editorCameraEntity.GetComponent<TransformComponent>().Scale);
+
+		Renderer2D::BeginScene(editorCameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
 
 		{
 			auto view = m_Registry.view<TransformComponent, AnimatorComponent>();

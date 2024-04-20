@@ -45,7 +45,7 @@ static void DragVec2(const std::string& label, glm::vec2& vec)
 
 namespace Daybreak
 {
-	HierarchyPannel::HierarchyPannel(const Ref<Scene>& scene)
+	HierarchyPannel::HierarchyPannel(const Ref<Scene> scene)
 		: m_ActiveScene(scene)
 	{
 	}
@@ -53,7 +53,8 @@ namespace Daybreak
 	void HierarchyPannel::Render()
 	{
 		ImGui::Begin("Hierarchy");
-
+		ImVec2 textWidth = ImGui::CalcTextSize(m_ActiveScene->GetName().c_str());
+		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - textWidth.x) / 2);
 		ImGui::Text(m_ActiveScene->GetName().c_str());
 		ImGui::Separator();
 		ImGui::Text("Entities:");
@@ -97,6 +98,8 @@ namespace Daybreak
 			{
 				m_SelectionContext = {};
 			}
+			m_SelectionContext = entity;
+			m_ActiveEntityName = entity.GetName();
 		}
 
 		bool entityDeleted = false;
@@ -359,6 +362,29 @@ namespace Daybreak
 				m_SelectionContext.AddComponent<T>();
 				ImGui::CloseCurrentPopup();
 			}
+		}
+	}
+
+	glm::vec2 HierarchyPannel::GetSelectedEntityPosition()
+	{
+		DB_CORE_ASSERT(HasSelectedEntity(), "No entity is selected");
+		auto pos = m_SelectionContext.GetComponent<TransformComponent>().Position;
+		return { pos.x, pos.y };
+	}
+
+	void HierarchyPannel::SetScene(const Ref<Scene> scene)
+	{
+		m_ActiveScene = scene;
+
+		Entity activeEntity = m_ActiveScene->GetEntityByName(m_ActiveEntityName);
+
+		if (activeEntity)
+		{
+			m_SelectionContext = activeEntity;
+		}
+		else
+		{
+			m_SelectionContext = {};
 		}
 	}
 }
