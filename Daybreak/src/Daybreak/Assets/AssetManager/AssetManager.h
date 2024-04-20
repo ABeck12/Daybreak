@@ -25,7 +25,11 @@ namespace Daybreak
 
 		// void Clear();
 
-		const std::filesystem::path& GetAssetDir() { return m_AssetDirectoryPath; }
+		const std::filesystem::path& GetAssetDir()
+		{
+			DB_CORE_ASSERT(s_AssetManager, "AssetManager singleton does not exist");
+			return m_AssetDirectoryPath;
+		}
 
 		Ref<Texture2D> LoadTexture2D(const std::filesystem::path& assetPath);
 		Ref<Shader> LoadShader(const std::filesystem::path& assetPath);
