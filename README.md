@@ -36,7 +36,7 @@ Fix pch file in premake
     This should own the physics sim, AssetManager, ScriptableEntity registries
 
 ### Scene
-    Cloning of scenes for runtime
+    Cloning of scenes for runtime -> SUPER SCUFFED RN PLEASE FIX
     Component and Entity active or not
         Includes rendering
     If I am not going to use C# rework ScriptableEntitys to just be scripts
