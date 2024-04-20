@@ -238,7 +238,6 @@ namespace Daybreak
 		for (auto frame : keyFrames)
 		{
 			std::string spriteFile = frame["Sprite"]["Filepath"].as<std::string>();
-			DB_LOG("spriteFile {}", spriteFile);
 			Ref<Texture2D> sprite = LoadTexture2D(spriteFile);
 			glm::vec2 min = frame["Sprite"]["Min"].as<glm::vec2>();
 			glm::vec2 max = frame["Sprite"]["Max"].as<glm::vec2>();
