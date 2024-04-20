@@ -6,6 +6,7 @@
 #include "Daybreak/Renderer/Renderer.h"
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Core/Time.h"
+#include "Daybreak/Assets/AssetManager/AssetManager.h"
 
 namespace Daybreak
 {
@@ -21,6 +22,7 @@ namespace Daybreak
 		m_Window = Scope<Window>(Window::Create(m_AppSpec.WindowSpec));
 		m_Window->SetEventCallback(DB_BIND_EVENT_FN(Application::OnEvent));
 
+		AssetManager::Init();
 		Renderer::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();
@@ -30,6 +32,7 @@ namespace Daybreak
 	Application::~Application()
 	{
 		Renderer::Shutdown();
+		AssetManager::Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer)

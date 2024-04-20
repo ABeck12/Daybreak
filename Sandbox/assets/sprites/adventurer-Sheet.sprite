@@ -1,5 +1,5 @@
 Texture2D:
-  Filepath: adventurer-Sheet.png
+  Filepath: sprites\adventurer-Sheet.png
   Specifications:
     Width: 350
     Height: 407

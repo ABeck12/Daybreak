@@ -29,9 +29,7 @@
 
 #include "Daybreak/Assets/Animation.h"
 
-// Temp
-#include "Daybreak/Assets/AssetSerializer.h"
-#include "Daybreak/Assets/AssetManager.h"
+#include "Daybreak/Assets/AssetManager/AssetManager.h"
 
 #include "Daybreak/Scene/Scene.h"
 #include "Daybreak/Scene/Entity.h"

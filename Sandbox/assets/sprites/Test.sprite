@@ -1,5 +1,5 @@
 Texture2D:
-  Filepath: Test.png
+  Filepath: sprites\Test.png
   Specifications:
     Width: 128
     Height: 128

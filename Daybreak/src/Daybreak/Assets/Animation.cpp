@@ -4,6 +4,11 @@
 
 namespace Daybreak
 {
+	Animation::Animation(const std::string& name)
+		: m_Name(name)
+	{
+	}
+
 	void Animation::AddKeyFrame(const Ref<SubTexture2D>& subTexture, uint32_t numberFrames, const AnimationAction& action)
 	{
 		KeyFrame frame;
@@ -57,15 +62,16 @@ namespace Daybreak
 		m_DisplayTime = 0.0f;
 	}
 
-	void AnimationController::AddAnimation(const std::string& name, const Ref<Animation>& animation)
+	void AnimationController::AddAnimation(const Ref<Animation>& animation)
 	{
-		DB_CORE_ASSERT(m_AnimationMap.find(name) == m_AnimationMap.end(), "Controller already has animation {}", name);
+		std::string name = animation->GetName();
+		DB_CORE_ASSERT(!HasAnimation(name), "Controller already has animation {}", name);
 		m_AnimationMap[name] = animation;
 	}
 
 	void AnimationController::ChangeAnimation(const std::string& name)
 	{
-		DB_CORE_ASSERT(m_AnimationMap.find(name) != m_AnimationMap.end(), "Controller does not have animation {}", name);
+		DB_CORE_ASSERT(HasAnimation(name), "Controller does not have animation {}", name);
 		m_ActiveAnimation = m_AnimationMap[name];
 	}
 
@@ -73,5 +79,17 @@ namespace Daybreak
 	{
 		DB_CORE_ASSERT(m_AnimationMap.find(name) != m_AnimationMap.end(), "Controller does not have animation {} to remove", name);
 		m_AnimationMap.erase(name);
+	}
+
+	bool AnimationController::HasAnimation(const std::string& name) const
+	{
+		return m_AnimationMap.find(name) != m_AnimationMap.end();
+	}
+
+	void AnimationController::SetStartupAnimation(const std::string& name)
+	{
+		DB_CORE_ASSERT(HasAnimation(name), "Controller does not have animation {}", name);
+		m_StartupAnimation = name;
+		m_ActiveAnimation = m_AnimationMap[name];
 	}
 }

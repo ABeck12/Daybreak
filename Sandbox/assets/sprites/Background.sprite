@@ -1,5 +1,5 @@
 Texture2D:
-  Filepath: Background.png
+  Filepath: sprites\Background.png
   Specifications:
     Width: 1280
     Height: 720

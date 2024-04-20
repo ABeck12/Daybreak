@@ -1,36 +1,37 @@
+Name: run
 KeyFrames:
   - Sprite:
-      Filepath: sprites/adventurer-Sheet.sprite
+      Filepath: sprites\adventurer-Sheet.sprite
       Min: [0.142857149, 0.818181813]
       Max: [0.285714298, 0.909090936]
     Duration: 0.166666672
   - Sprite:
-      Filepath: sprites/adventurer-Sheet.sprite
+      Filepath: sprites\adventurer-Sheet.sprite
       Min: [0.285714298, 0.818181813]
       Max: [0.428571433, 0.909090936]
     Duration: 0.166666672
   - Sprite:
-      Filepath: sprites/adventurer-Sheet.sprite
+      Filepath: sprites\adventurer-Sheet.sprite
       Min: [0.428571433, 0.818181813]
       Max: [0.571428597, 0.909090936]
     Duration: 0.166666672
   - Sprite:
-      Filepath: sprites/adventurer-Sheet.sprite
+      Filepath: sprites\adventurer-Sheet.sprite
       Min: [0.571428597, 0.818181813]
       Max: [0.714285731, 0.909090936]
     Duration: 0.166666672
   - Sprite:
-      Filepath: sprites/adventurer-Sheet.sprite
+      Filepath: sprites\adventurer-Sheet.sprite
       Min: [0.714285731, 0.818181813]
       Max: [0.857142866, 0.909090936]
     Duration: 0.166666672
   - Sprite:
-      Filepath: sprites/adventurer-Sheet.sprite
+      Filepath: sprites\adventurer-Sheet.sprite
       Min: [0.857142866, 0.818181813]
       Max: [1, 0.909090936]
     Duration: 0.166666672
   - Sprite:
-      Filepath: sprites/adventurer-Sheet.sprite
+      Filepath: sprites\adventurer-Sheet.sprite
       Min: [0.142857149, 0.818181813]
       Max: [0.285714298, 0.909090936]
     Duration: 0.166666672

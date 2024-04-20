@@ -103,7 +103,7 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     AnimatorComponent:
-      Controller: animations/playerController.controller
+      Controller: animations/unknown.controller
       IsPlaying: true
       TintColor: [1, 1, 1, 1]
     Rigidbody2DComponent:

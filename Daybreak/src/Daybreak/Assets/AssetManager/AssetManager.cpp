@@ -2,10 +2,8 @@
 
 #include "Daybreak/Assets/AssetManager/AssetManager.h"
 
-#include <variant>
-
-#include <yaml-cpp/yaml.h>
 #include "Daybreak/Utils/YamlConversion.h"
+#include <yaml-cpp/yaml.h>
 
 namespace Daybreak
 {
@@ -74,7 +72,7 @@ namespace Daybreak
 		DB_CORE_LOG("Found Assets dirctory at {}", std::filesystem::absolute(m_AssetDirectoryPath));
 	}
 
-	bool AssetManager::HasAsset(const std::filesystem::path& path)
+	bool AssetManager::HasAssetPath(const std::filesystem::path& path)
 	{
 		if (m_Assets.Texture2Ds.find(path) != m_Assets.Texture2Ds.end())
 			return true;
@@ -108,7 +106,7 @@ namespace Daybreak
 				return kv.first;
 			}
 		}
-		return m_AssetDirectoryPath / "animations/unknown.anim";
+		return std::filesystem::path("animations/unknown.anim").replace_filename(anim->m_Name + ".anim");
 	}
 
 	std::filesystem::path AssetManager::GetAnimationControllerFilepath(const Ref<AnimationController>& controller)
@@ -120,7 +118,7 @@ namespace Daybreak
 				return kv.first;
 			}
 		}
-		return m_AssetDirectoryPath / "animations/unknown.controller";
+		return "animations/unknown.controller";
 	}
 
 	Ref<Shader> AssetManager::LoadShader(const std::filesystem::path& assetPath)
@@ -146,7 +144,6 @@ namespace Daybreak
 		}
 		Ref<Texture2D> texture = DeserializeTexture2D(m_AssetDirectoryPath / assetPath);
 		m_Assets.Texture2Ds[assetPath] = texture;
-		// m_Assets.Filepaths.insert(assetPath);
 		return texture;
 	}
 
@@ -159,7 +156,6 @@ namespace Daybreak
 		}
 		Ref<Animation> anim = DeserializeAnimation(m_AssetDirectoryPath / assetPath);
 		m_Assets.Animations[assetPath] = anim;
-		// m_Assets.Filepaths.insert(assetPath);
 		return anim;
 	}
 
@@ -172,7 +168,6 @@ namespace Daybreak
 		}
 		Ref<AnimationController> controller = DeserializeAnimationController(m_AssetDirectoryPath / assetPath);
 		m_Assets.AnimationControllers[assetPath] = controller;
-		// m_Assets.Filepaths.insert(assetPath);
 		return controller;
 	}
 
@@ -223,8 +218,8 @@ namespace Daybreak
 			DB_CORE_ERROR("Failed to load .anim file '{0}'\n     {1}", filepath, e.what());
 		}
 
+		Ref<Animation> anim = CreateRef<Animation>(data["Name"].as<std::string>());
 		auto keyFrames = data["KeyFrames"];
-		Ref<Animation> anim = CreateRef<Animation>();
 
 		for (auto frame : keyFrames)
 		{
@@ -265,7 +260,7 @@ namespace Daybreak
 			std::string animPath = anim["Filepath"].as<std::string>();
 
 			Ref<Animation> animation = LoadAnimation(animPath);
-			controller->AddAnimation(name, animation);
+			controller->AddAnimation(animation);
 		}
 		controller->SetStartupAnimation(startupAnimation);
 
@@ -296,6 +291,8 @@ namespace Daybreak
 
 		out << YAML::BeginMap;
 
+		out << YAML::Key << "Name" << YAML::Value << anim->GetName();
+
 		out << YAML::Key << "KeyFrames";
 		out << YAML::BeginSeq;
 
@@ -322,40 +319,33 @@ namespace Daybreak
 		fout << out.c_str();
 	}
 
-	// void AssetManager::SerializeAnimationController(const Ref<AnimationController>& controller, const std::filesystem::path& assetPath)
-	// {
-	// YAML::Emitter out;
+	void AssetManager::SerializeAnimationController(const Ref<AnimationController>& controller, const std::filesystem::path& assetPath)
+	{
+		YAML::Emitter out;
 
-	// out << YAML::BeginMap;
+		out << YAML::BeginMap;
 
-	// out << YAML::Key << "StartupAnimation" << YAML::Value << controller->m_StartupAnimation;
-	// out << YAML::Key << "Animations" << YAML::Value << YAML::BeginSeq;
-	// for (auto kv : controller->m_AnimationMap)
-	// {
-	// 	out << YAML::BeginMap;
+		out << YAML::Key << "StartupAnimation" << YAML::Value << controller->m_StartupAnimation;
+		out << YAML::Key << "Animations" << YAML::Value << YAML::BeginSeq;
+		for (auto kv : controller->m_AnimationMap)
+		{
+			out << YAML::BeginMap;
 
-	// 	out << YAML::Key << "Name" << YAML::Value << kv.first;
+			out << YAML::Key << "Name" << YAML::Value << kv.first;
 
-	// 	std::filesystem::path filepath = GetAnimationFilepath(kv.second);
-	// 	// std::filesystem::path filepath;
-	// 	// if (AssetManager::HasAssetRef(kv.second))
-	// 	// {
-	// 	// 	filepath = AssetManager::GetFilepathOfRef(kv.second);
-	// 	// }
-	// 	// else
-	// 	// {
-	// 	// 	filepath = "animations/" + kv.first + ".anim";
-	// 	// 	// TODO: Figure out some way to avoid naming conflicts
-	// 	// 	AssetManager::AddAssetRef(kv.second, filepath);
-	// 	// }
-	// 	out << YAML::Key << "Filepath" << YAML::Value << filepath;
-	// 	SerializeAnimation(kv.second, filepath);
-	// 	out << YAML::EndMap;
-	// }
-	// out << YAML::EndSeq;
-	// out << YAML::EndMap;
-
-	// std::ofstream fout(m_AssetDirectoryPath / assetPath);
-	// fout << out.c_str();
-	// }
+			std::filesystem::path animationAssetPath = GetAnimationFilepath(kv.second);
+			if (animationAssetPath.filename() == "unknown")
+			{
+				animationAssetPath.replace_filename(kv.first);
+			}
+			out << YAML::Key << "Filepath" << YAML::Value << animationAssetPath;
+			SerializeAnimation(kv.second, animationAssetPath);
+			out << YAML::EndMap;
+		}
+		out << YAML::EndSeq;
+		out << YAML::EndMap;
+		DB_LOG(m_AssetDirectoryPath / assetPath);
+		std::ofstream fout(m_AssetDirectoryPath / assetPath);
+		fout << out.c_str();
+	}
 }
