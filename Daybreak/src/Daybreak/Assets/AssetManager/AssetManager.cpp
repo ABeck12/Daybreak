@@ -61,15 +61,31 @@ namespace Daybreak
 
 	void AssetManager::FindAssetsDirectory()
 	{
-		if (std::filesystem::exists("../Sandbox/assets"))
+		std::filesystem::path currentSearchPath = std::filesystem::current_path();
+
+		for (int i = 0; i < 50; i++) // Recursive search 10 times
 		{
-			m_AssetDirectoryPath = "../Sandbox/assets";
+			for (auto searchPath : std::filesystem::recursive_directory_iterator(currentSearchPath))
+			{
+				if (!searchPath.is_directory())
+					continue;
+				std::filesystem::path path = searchPath;
+				if (path.stem() == "assets" && path.parent_path().stem() == "Sandbox")
+				{
+					m_AssetDirectoryPath = path;
+					DB_CORE_INFO("Found Assets dirctory at {}", m_AssetDirectoryPath);
+					return;
+				}
+				currentSearchPath = currentSearchPath.parent_path();
+			}
 		}
-		else if (std::filesystem::exists("../../../Sandbox/assets"))
+		if (std::filesystem::exists("../../../Sandbox/assets"))
 		{
-			m_AssetDirectoryPath = "../../../Sandbox/assets";
+			m_AssetDirectoryPath = std::filesystem::absolute("../../../Sandbox/assets");
+			DB_CORE_INFO("Found Assets dirctory at {}", m_AssetDirectoryPath);
+			return;
 		}
-		DB_CORE_LOG("Found Assets dirctory at {}", std::filesystem::absolute(m_AssetDirectoryPath));
+		DB_CORE_ASSERT(false, "Could not find asset directory");
 	}
 
 	bool AssetManager::HasAssetPath(const std::filesystem::path& path)
@@ -106,7 +122,7 @@ namespace Daybreak
 				return kv.first;
 			}
 		}
-		return std::filesystem::path("animations/unknown.anim").replace_filename(anim->m_Name + ".anim");
+		return std::filesystem::path("animations/" + anim->m_Name + ".anim");
 	}
 
 	std::filesystem::path AssetManager::GetAnimationControllerFilepath(const Ref<AnimationController>& controller)
@@ -128,10 +144,8 @@ namespace Daybreak
 		{
 			return m_Assets.Shaders[assetPath];
 		}
-
 		Ref<Shader> newShader = Shader::Create(assetPath.stem().string(), m_AssetDirectoryPath / assetPath);
 		m_Assets.Shaders[assetPath] = newShader;
-		// m_Assets.Filepaths.insert(assetPath);
 		return newShader;
 	}
 
@@ -224,6 +238,7 @@ namespace Daybreak
 		for (auto frame : keyFrames)
 		{
 			std::string spriteFile = frame["Sprite"]["Filepath"].as<std::string>();
+			DB_LOG("spriteFile {}", spriteFile);
 			Ref<Texture2D> sprite = LoadTexture2D(spriteFile);
 			glm::vec2 min = frame["Sprite"]["Min"].as<glm::vec2>();
 			glm::vec2 max = frame["Sprite"]["Max"].as<glm::vec2>();

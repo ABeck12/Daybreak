@@ -4,6 +4,7 @@
 #include "Daybreak/Renderer/RenderCommand.h"
 #include "Daybreak/Renderer/Shader.h"
 #include "Daybreak/Renderer/Texture.h"
+#include "Daybreak/Assets/AssetManager/AssetManager.h"
 
 namespace Daybreak
 {
@@ -68,7 +69,7 @@ namespace Daybreak
 	void Renderer2D::Init()
 	{
 		// Quads
-		s_Data.QuadShader = Shader::Create("Renderer2D_QuadShader", "../Sandbox/assets/shaders/Renderer2D_QuadShader.glsl");
+		s_Data.QuadShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_QuadShader.glsl");
 
 		s_Data.QuadVA = VertexArray::Create();
 		s_Data.QuadVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
@@ -121,7 +122,7 @@ namespace Daybreak
 
 
 		// Lines
-		s_Data.LineShader = Shader::Create("Renderer2D_LineShader", "../Sandbox/assets/shaders/Renderer2D_LineShader.glsl");
+		s_Data.LineShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_LineShader.glsl");
 
 		s_Data.LineVA = VertexArray::Create();
 		s_Data.LineVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(LineVertex));

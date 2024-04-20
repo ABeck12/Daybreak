@@ -3,9 +3,8 @@
 #include "Daybreak/Scene/SceneSerializer.h"
 #include "Daybreak/Scene/Components.h"
 #include "Daybreak/Scene/Entity.h"
-#include "Daybreak/Assets/AssetManager.h"
-#include "Daybreak/Assets/AssetSerializer.h"
 #include "Daybreak/Utils/YamlConversion.h"
+#include "Daybreak/Assets/AssetManager/AssetManager.h"
 
 namespace Daybreak
 {
@@ -58,11 +57,12 @@ namespace Daybreak
 
 			auto& sr = entity.GetComponent<SpriteRendererComponent>();
 
-			if (sr.Sprite && AssetManager::HasAssetRef(sr.Sprite))
+			if (sr.Sprite)
 			{
-				std::filesystem::path filepath = AssetManager::GetFilepathOfRef<Texture2D>(sr.Sprite);
-				AssetSerializer::SerializeSprite(sr.Sprite, filepath);
-				out << YAML::Key << "Sprite" << YAML::Value << filepath;
+				auto am = AssetManager::Get();
+				std::filesystem::path assetPath = am->GetTexture2DFilepath(sr.Sprite);
+				am->SerializeTexture2D(sr.Sprite, assetPath);
+				out << YAML::Key << "Sprite" << YAML::Value << assetPath;
 			}
 			else
 			{
@@ -81,11 +81,12 @@ namespace Daybreak
 			out << YAML::Key << "AnimatorComponent";
 			out << YAML::BeginMap;
 
-			if (anim.Controller && AssetManager::HasAssetRef(anim.Controller))
+			if (anim.Controller)
 			{
-				std::filesystem::path filepath = AssetManager::GetFilepathOfRef<AnimationController>(anim.Controller);
-				AssetSerializer::SerializeAnimationController(anim.Controller, filepath);
-				out << YAML::Key << "Controller" << YAML::Value << filepath;
+				auto am = AssetManager::Get();
+				std::filesystem::path assetPath = am->GetAnimationControllerFilepath(anim.Controller);
+				am->SerializeAnimationController(anim.Controller, assetPath);
+				out << YAML::Key << "Controller" << YAML::Value << assetPath;
 			}
 			else
 			{
@@ -200,7 +201,7 @@ namespace Daybreak
 	{
 	}
 
-	void SceneSerializer::Serialize(const std::string& filepath)
+	void SceneSerializer::Serialize(const std::filesystem::path& filepath) const
 	{
 		YAML::Emitter out;
 
@@ -224,12 +225,12 @@ namespace Daybreak
 		fout << out.c_str();
 	}
 
-	bool SceneSerializer::Deserialize(const std::string& filepath)
+	bool SceneSerializer::Deserialize(const std::filesystem::path& filepath)
 	{
 		YAML::Node data;
 		try
 		{
-			data = YAML::LoadFile(filepath);
+			data = YAML::LoadFile(filepath.string());
 		}
 		catch (YAML::ParserException e)
 		{
@@ -344,7 +345,9 @@ namespace Daybreak
 
 					if (!animComponent["Controller"].IsNull())
 					{
-						anim.Controller = AssetSerializer::DeserializeAnimationController(animComponent["Controller"].as<std::string>());
+						auto am = AssetManager::Get();
+						std::filesystem::path assetPath = animComponent["Controller"].as<std::filesystem::path>();
+						anim.Controller = am->LoadAnimationController(assetPath);
 					}
 					else
 					{
@@ -361,7 +364,9 @@ namespace Daybreak
 
 					if (!srComponent["Sprite"].IsNull())
 					{
-						sr.Sprite = AssetSerializer::DeserializeSprite(srComponent["Sprite"].as<std::string>());
+						auto am = AssetManager::Get();
+						std::filesystem::path assetPath = srComponent["Sprite"].as<std::filesystem::path>();
+						sr.Sprite = am->LoadTexture2D(assetPath);
 					}
 					else
 					{
