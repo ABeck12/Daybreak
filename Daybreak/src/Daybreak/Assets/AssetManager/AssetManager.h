@@ -25,7 +25,7 @@ namespace Daybreak
 
 		// void Clear();
 
-		const std::filesystem::path& GetAssetDir()
+		const std::filesystem::path& GetAssetDir() const
 		{
 			DB_CORE_ASSERT(s_AssetManager, "AssetManager singleton does not exist");
 			return m_AssetDirectoryPath;

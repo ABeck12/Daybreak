@@ -2,6 +2,7 @@
 #include <Daybreak/Core/EntryPoint.h>
 
 #include "SceneLayer.h"
+#include "LightingScene.h"
 
 #include <DaybreakEditor.h>
 
@@ -15,7 +16,8 @@ public:
 	{
 		DB_REGISTER_SCRIPT(MoveableComponent);
 		// PushLayer(new SceneLayer());
-		PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
+		PushLayer(new LightingScene());
+		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
 	}
 
 	~Sandbox()
