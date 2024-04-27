@@ -45,6 +45,4 @@ void main()
 
     o_Color = v_Color;
     o_Color.a *= circle;
-
-    // o_Color = vec4(v_Color.xyz * circle, v_Color.a);
 };
