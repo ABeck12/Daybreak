@@ -57,6 +57,7 @@ newaction
 		os.rmdir("./Sandbox/.vscode")
 		os.rmdir("./DaybreakEditor/.vscode")
 		os.rmdir(".vscode")
+		os.rmdir(".vs")
 		print("Done")
 	end
 }
