@@ -51,6 +51,9 @@ namespace Daybreak
 		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotDeg, const glm::vec4& color);
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotDeg, const glm::vec4& color);
 
+		static void DrawCircle(const glm::mat4& transform, const glm::vec4& color = glm::vec4(1.0f), const float fade = 0.0f, const float thickness = 1.0f);
+		static void DrawCircle(const glm::vec3& position, const float radius, const glm::vec4& color = glm::vec4(1.0f), const float fade = 0.0f, const float thickenss = 1.0f);
+		static void DrawCircle(const glm::vec2& position, const float radius, const glm::vec4& color = glm::vec4(1.0f), const float fade = 0.0f, const float thickenss = 1.0f);
 
 		static void DrawLine(const glm::vec3& pos1, const glm::vec3& pos2, const glm::vec4& color);
 		static void DrawLine(const glm::vec2& pos1, const glm::vec2& pos2, const glm::vec4& color);

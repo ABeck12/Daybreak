@@ -20,6 +20,15 @@ namespace Daybreak
 		int EntityID;
 	};
 
+	struct CircleVertex
+	{
+		glm::vec3 WorldPosition;
+		glm::vec3 LocalPosition;
+		glm::vec4 Color;
+		float Fade;
+		float Thickness;
+	};
+
 	struct LineVertex
 	{
 		glm::vec3 Position;
@@ -44,6 +53,11 @@ namespace Daybreak
 		Ref<Shader> QuadShader;
 		Ref<Texture2D> WhiteTexture;
 
+		// For Circles
+		Ref<VertexBuffer> CircleVB;
+		Ref<VertexArray> CircleVA;
+		Ref<Shader> CircleShader;
+
 		// For Lines
 		Ref<VertexBuffer> LineVB;
 		Ref<VertexArray> LineVA;
@@ -53,6 +67,10 @@ namespace Daybreak
 		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
+
+		uint32_t CircleIndexCount = 0;
+		CircleVertex* CircleVertexBufferBase = nullptr;
+		CircleVertex* CircleVertexBufferPtr = nullptr;
 
 		uint32_t LineVertexCount = 0;
 		LineVertex* LineVertexBufferBase = nullptr;
@@ -119,6 +137,23 @@ namespace Daybreak
 
 		s_Data.QuadShader->Bind();
 		s_Data.QuadShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
+		s_Data.QuadShader->Unbind();
+
+		// Cirlces
+		s_Data.CircleShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_CircleShader.glsl");
+		s_Data.CircleVA = VertexArray::Create();
+		s_Data.CircleVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(CircleVertex));
+		s_Data.CircleVB->SetLayout({
+			{ RenderDataTypes::Float3, std::string("a_WorldPosition") },
+			{ RenderDataTypes::Float3, std::string("a_LocalPosition") },
+			{ RenderDataTypes::Float4, std::string("a_Color") },
+			{ RenderDataTypes::Float, std::string("a_Fade") },
+			{ RenderDataTypes::Float, std::string("a_Thickness") },
+		});
+		s_Data.CircleVA->AddVertexBuffer(s_Data.CircleVB);
+		s_Data.CircleVertexBufferBase = new CircleVertex[s_Data.MaxVertices];
+
+		s_Data.CircleVA->SetIndexBuffer(quadIB);
 
 
 		// Lines
@@ -135,6 +170,7 @@ namespace Daybreak
 	void Renderer2D::Shutdown()
 	{
 		delete[] s_Data.QuadVertexBufferBase;
+		delete[] s_Data.CircleVertexBufferBase;
 		delete[] s_Data.LineVertexBufferBase;
 	}
 
@@ -163,6 +199,15 @@ namespace Daybreak
 				s_Data.TextureSlots[i]->Bind(i);
 			RenderCommand::DrawIndexed(s_Data.QuadVA, s_Data.QuadIndexCount);
 		}
+		if (s_Data.CircleIndexCount)
+		{
+			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.CircleVertexBufferPtr - (uint8_t*)s_Data.CircleVertexBufferBase);
+			s_Data.CircleVB->SetData(s_Data.CircleVertexBufferBase, dataSize);
+
+			s_Data.CircleShader->Bind();
+			s_Data.CircleShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
+			RenderCommand::DrawIndexed(s_Data.CircleVA, s_Data.CircleIndexCount);
+		}
 		if (s_Data.LineVertexCount)
 		{
 			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.LineVertexBufferPtr - (uint8_t*)s_Data.LineVertexBufferBase);
@@ -181,6 +226,9 @@ namespace Daybreak
 
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.CircleIndexCount = 0;
+		s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
 
 		s_Data.LineVertexCount = 0;
 		s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
@@ -364,16 +412,44 @@ namespace Daybreak
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotDeg, color);
 	}
 
+	void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, const float fade, const float thickness)
+	{
+		constexpr size_t quadVertexCount = 4;
+
+
+		for (size_t i = 0; i < quadVertexCount; i++)
+		{
+			// DB_LOG("Vertex position {} Center position {}", transform * s_Data.QuadVertexPositions[i], transform * glm::vec4(1) - glm::vec4(1));
+			s_Data.CircleVertexBufferPtr->WorldPosition = transform * s_Data.QuadVertexPositions[i];
+			s_Data.CircleVertexBufferPtr->LocalPosition = s_Data.QuadVertexPositions[i] * 2.0f;
+			s_Data.CircleVertexBufferPtr->Color = color;
+			s_Data.CircleVertexBufferPtr->Fade = fade;
+			s_Data.CircleVertexBufferPtr->Thickness = thickness;
+
+			s_Data.CircleVertexBufferPtr++;
+		}
+		s_Data.CircleIndexCount += 6;
+	}
+
+	void Renderer2D::DrawCircle(const glm::vec3& position, const float radius, const glm::vec4& color, const float fade, const float thickness)
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { radius * 2, radius * 2, 1.0f });
+		DrawCircle(transform, color, fade, thickness);
+	}
+
+	void Renderer2D::DrawCircle(const glm::vec2& position, float radius, const glm::vec4& color, const float fade, const float thickness)
+	{
+		DrawCircle(glm::vec3(position.x, position.y, 0), radius, color, fade, thickness);
+	}
+
 	void Renderer2D::DrawLine(const glm::vec3& pos1, const glm::vec3& pos2, const glm::vec4& color)
 	{
 		s_Data.LineVertexBufferPtr->Position = pos1;
 		s_Data.LineVertexBufferPtr->Color = color;
-		// s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.LineVertexBufferPtr++;
 
 		s_Data.LineVertexBufferPtr->Position = pos2;
 		s_Data.LineVertexBufferPtr->Color = color;
-		// s_Data.QuadVertexBufferPtr->EntityID = entityID;
 		s_Data.LineVertexBufferPtr++;
 
 		s_Data.LineVertexCount += 2;

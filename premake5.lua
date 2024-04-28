@@ -57,6 +57,7 @@ newaction
 		os.rmdir("./Sandbox/.vscode")
 		os.rmdir("./DaybreakEditor/.vscode")
 		os.rmdir(".vscode")
+		os.rmdir(".vs")
 		print("Done")
 	end
 }
@@ -80,6 +81,6 @@ group "Dependencies"
 group ""
 
 include "Daybreak"
--- include "DaybreakEditor"
+include "DaybreakEditor"
 include "Sandbox"
 
