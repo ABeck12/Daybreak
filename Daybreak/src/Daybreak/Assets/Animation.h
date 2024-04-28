@@ -8,6 +8,7 @@
 
 namespace Daybreak
 {
+	// Rework to use DB_BIND_EVENT_FN
 	using AnimationAction = std::function<void(void)>;
 
 	struct KeyFrame
