@@ -184,75 +184,111 @@ namespace Daybreak
 
 	void Scene::RenderScene()
 	{
-		auto cameraEntity = GetActiveCameraEntity();
+		enum class SceneRenderObjectType
+		{
+			Sprite,
+			Animator
+		};
+		struct SceneRenderObject
+		{
+			entt::entity Entity;
+			glm::vec3 Position;
+			SceneRenderObjectType RenderType;
 
+			bool operator<(const SceneRenderObject& obj) const
+			{
+				return Position.z < obj.Position.z;
+			}
+		};
+
+		auto animatorView = m_Registry.view<TransformComponent, AnimatorComponent>();
+		auto spriteView = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+
+		const uint32_t numberObjects = animatorView.size() + spriteView.size();
+		std::vector<SceneRenderObject> renderObjects(numberObjects);
+		uint32_t renderObjectsIndex = 0;
+
+		for (auto e : animatorView)
+		{
+			Entity entity = { e, this };
+			auto& transform = entity.GetComponent<TransformComponent>();
+			renderObjects[renderObjectsIndex] = { e, transform.Position, SceneRenderObjectType::Animator };
+			renderObjectsIndex++;
+		}
+		for (auto e : spriteView)
+		{
+			Entity entity = { e, this };
+			auto& transform = entity.GetComponent<TransformComponent>();
+			renderObjects[renderObjectsIndex] = { e, transform.Position, SceneRenderObjectType::Sprite };
+			renderObjectsIndex++;
+		}
+
+		std::sort(renderObjects.begin(), renderObjects.end());
+
+		auto cameraEntity = GetActiveCameraEntity();
 		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * cameraEntity.GetComponent<TransformComponent>().Position);
 		glm::mat4 rotation = glm::toMat4(glm::quat(cameraEntity.GetComponent<TransformComponent>().Rotation));
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Scale);
 
 		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
-
+		for (int i = 0; i < numberObjects; i++)
 		{
-			auto view = m_Registry.view<TransformComponent, AnimatorComponent>();
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& transform = entity.GetComponent<TransformComponent>();
-				auto& anim = entity.GetComponent<AnimatorComponent>();
+			Entity entity = { renderObjects[i].Entity, this };
+			auto& transform = entity.GetComponent<TransformComponent>();
 
-				Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);
+			switch (renderObjects[i].RenderType)
+			{
+				case SceneRenderObjectType::Sprite:
+				{
+					auto& sprite = entity.GetComponent<SpriteRendererComponent>();
+					Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)(renderObjects[i].Entity));
+					break;
+				}
+				case SceneRenderObjectType::Animator:
+				{
+					auto& anim = entity.GetComponent<AnimatorComponent>();
+					Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)(renderObjects[i].Entity));
+					break;
+				}
 			}
 		}
-
-		{
-			auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& transform = entity.GetComponent<TransformComponent>();
-				auto& sprite = entity.GetComponent<SpriteRendererComponent>();
-
-				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)e);
-			}
-		}
-
 		Renderer2D::EndScene();
 	}
 
-	void Scene::EditorRenderScene(Entity& editorCameraEntity)
-	{
-		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * editorCameraEntity.GetComponent<TransformComponent>().Position);
-		glm::mat4 rotation = glm::toMat4(glm::quat(editorCameraEntity.GetComponent<TransformComponent>().Rotation));
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), editorCameraEntity.GetComponent<TransformComponent>().Scale);
+	// void Scene::EditorRenderScene(Entity& editorCameraEntity)
+	// {
+	// 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * editorCameraEntity.GetComponent<TransformComponent>().Position);
+	// 	glm::mat4 rotation = glm::toMat4(glm::quat(editorCameraEntity.GetComponent<TransformComponent>().Rotation));
+	// 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), editorCameraEntity.GetComponent<TransformComponent>().Scale);
 
-		Renderer2D::BeginScene(editorCameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
+	// 	Renderer2D::BeginScene(editorCameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
 
-		{
-			auto view = m_Registry.view<TransformComponent, AnimatorComponent>();
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& transform = entity.GetComponent<TransformComponent>();
-				auto& anim = entity.GetComponent<AnimatorComponent>();
+	// 	{
+	// 		auto view = m_Registry.view<TransformComponent, AnimatorComponent>();
+	// 		for (auto e : view)
+	// 		{
+	// 			Entity entity = { e, this };
+	// 			auto& transform = entity.GetComponent<TransformComponent>();
+	// 			auto& anim = entity.GetComponent<AnimatorComponent>();
 
-				Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);
-			}
-		}
+	// 			Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);
+	// 		}
+	// 	}
 
-		{
-			auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& transform = entity.GetComponent<TransformComponent>();
-				auto& sprite = entity.GetComponent<SpriteRendererComponent>();
+	// 	{
+	// 		auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+	// 		for (auto e : view)
+	// 		{
+	// 			Entity entity = { e, this };
+	// 			auto& transform = entity.GetComponent<TransformComponent>();
+	// 			auto& sprite = entity.GetComponent<SpriteRendererComponent>();
 
-				Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)e);
-			}
-		}
+	// 			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)e);
+	// 		}
+	// 	}
 
-		Renderer2D::EndScene();
-	}
+	// 	Renderer2D::EndScene();
+	// }
 
 	void Scene::OnPhysicsUpdate(DeltaTime dt)
 	{
