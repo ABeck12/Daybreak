@@ -38,12 +38,18 @@ def main():
     if len(sys.argv) == 1:
         print('Provide one argument! Arguments are "vs","vscode","clean","compile","run"')
         return
+    
+    try:
+        compileFlag = sys.argv[2]
+    except IndexError:
+        compileFlag = '-r'
+
     match sys.argv[1]:
         case 'clean': CleanProject()
         case 'vscode': GenerateVsCode()
         case 'vs': GenerateVS()
-        case 'compile': Compile(sys.argv[2])
-        case 'run': Run(sys.argv[2])
+        case 'compile': Compile(compileFlag)
+        case 'run': Run(compileFlag)
         case _: print('Unknown argument! Arguments are "vs","vscode","clean","compile","run"')
     return
 
