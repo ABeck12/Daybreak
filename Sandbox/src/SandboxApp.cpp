@@ -4,9 +4,15 @@
 #include "SceneLayer.h"
 #include "LightingScene.h"
 
-#include <DaybreakEditor.h>
+// #include <DaybreakEditor.h>
 
 #include "ScriptableEntityTest.h"
+
+extern "C"
+{
+	__declspec(dllexport) DWORD NvOptimusEnablement = 1;
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
 
 class Sandbox : public Daybreak::Application
 {

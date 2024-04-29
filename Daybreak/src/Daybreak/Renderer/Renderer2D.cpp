@@ -44,6 +44,7 @@ namespace Daybreak
 		static const uint32_t MaxQuads = 10000;
 		static const uint32_t MaxVertices = 4 * MaxQuads;
 		static const uint32_t MaxIndices = 6 * MaxQuads;
+		static const uint32_t MaxLines = 10000;
 
 		glm::mat4 ViewProjectionMatrix;
 
@@ -160,7 +161,7 @@ namespace Daybreak
 		s_Data.LineShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_LineShader.glsl");
 
 		s_Data.LineVA = VertexArray::Create();
-		s_Data.LineVB = VertexBuffer::Create(s_Data.MaxVertices * sizeof(LineVertex));
+		s_Data.LineVB = VertexBuffer::Create(s_Data.MaxLines * sizeof(LineVertex));
 		s_Data.LineVB->SetLayout({ { RenderDataTypes::Float3, std::string("a_Position") },
 								   { RenderDataTypes::Float4, std::string("a_Color") } });
 		s_Data.LineVA->AddVertexBuffer(s_Data.LineVB);
@@ -416,6 +417,8 @@ namespace Daybreak
 	{
 		constexpr size_t quadVertexCount = 4;
 
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+			NextBatch();
 
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
@@ -444,6 +447,9 @@ namespace Daybreak
 
 	void Renderer2D::DrawLine(const glm::vec3& pos1, const glm::vec3& pos2, const glm::vec4& color)
 	{
+		if (s_Data.LineVertexCount >= Renderer2DData::MaxLines)
+			NextBatch();
+
 		s_Data.LineVertexBufferPtr->Position = pos1;
 		s_Data.LineVertexBufferPtr->Color = color;
 		s_Data.LineVertexBufferPtr++;
