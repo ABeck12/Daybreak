@@ -1,7 +1,7 @@
 project "Daybreak"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++23"
 	staticruntime "On"
 
 	targetdir (outputloc .. "/bin/" .. outputdir .. "/%{prj.name}")
