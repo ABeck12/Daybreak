@@ -34,10 +34,10 @@ SceneLayer::SceneLayer()
 	const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point }, "../Sandbox/assets/sprites/adventurer-Sheet.png");
 	float width = 50.;
 	float height = 37.;
-	auto& subtexture1 = Daybreak::SubTexture2D::Create(spriteSheet, { 0, 10 }, { width, height });
-	auto& subtexture2 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 10 }, { width, height });
-	auto& subtexture3 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 10 }, { width, height });
-	auto& subtexture4 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 10 }, { width, height });
+	auto subtexture1 = Daybreak::SubTexture2D::Create(spriteSheet, { 0, 10 }, { width, height });
+	auto subtexture2 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 10 }, { width, height });
+	auto subtexture3 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 10 }, { width, height });
+	auto subtexture4 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 10 }, { width, height });
 	// Daybreak::Ref<Daybreak::AnimationSource> animSource = Daybreak::CreateRef<Daybreak::AnimationSource>();
 	auto& anim = playerEntity.AddComponent<Daybreak::AnimatorComponent>();
 	// animSource->AddKeyFrame(subtexture1, 10);
@@ -71,7 +71,7 @@ SceneLayer::SceneLayer()
 
 	floorEntity = m_Scene->CreateEntity("Floor");
 	// auto texture = Daybreak::AssetSerializer::DeserializeSprite("sprites/Test.sprite");
-	auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point, 128 }, "../Sandbox/assets/sprites/Test.png");
+	auto texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point, 128 }, "../Sandbox/assets/sprites/Test.png");
 	auto& floorsr = floorEntity.AddComponent<Daybreak::SpriteRendererComponent>(texture);
 	auto& floorrb2d = floorEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	auto& floorbc2d = floorEntity.AddComponent<Daybreak::BoxCollider2DComponent>();
@@ -331,7 +331,7 @@ void SceneLayer::DrawColliders()
 {
 	auto view = m_Scene->GetAllEntitiesWith<Daybreak::BoxCollider2DComponent, Daybreak::TransformComponent>();
 
-	auto& camera = m_Scene->GetActiveCameraEntity();
+	auto camera = m_Scene->GetActiveCameraEntity();
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), camera.GetComponent<Daybreak::TransformComponent>().Position);
 	glm::mat4 rotation = glm::toMat4(glm::quat(camera.GetComponent<Daybreak::TransformComponent>().Rotation));
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), camera.GetComponent<Daybreak::TransformComponent>().Scale);

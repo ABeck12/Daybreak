@@ -22,6 +22,8 @@ namespace Daybreak
 
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
+		IDComponent(UUID id)
+			: ID(id) {}
 	};
 
 	struct RelationshipComponent

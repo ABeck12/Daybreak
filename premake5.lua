@@ -45,6 +45,7 @@ newaction
 		os.remove("compile_commands.json")
 		os.rmdir("./compile_commands")
 		os.rmdir("./.cache")
+		os.rmdir("./.mypy_cache")
 
 		os.remove("**.code-workspace")
 		os.rmdir("./Tasks")
