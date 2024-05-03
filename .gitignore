@@ -17,6 +17,7 @@ CMakeLists.txt
 /CMakeFiles
 CMakeCache.txt
 /.cache
+/.mypy_cache
 /compile_commands
 /compile_commands.json
 # .clangd
