@@ -19,7 +19,7 @@ SceneLayer::SceneLayer()
 	}
 
 	playerEntity = m_Scene->CreateEntity("Player");
-	playerEntity.AddComponent<Daybreak::NativeScriptComponent>().Bind<MoveableComponent>();
+	playerEntity.AddComponent<Daybreak::ScriptComponent>().Bind<MoveableComponent>();
 	// auto& texture = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Bilinear }, "../Resources/DaybreakLogo.png");
 	auto& rb2d = playerEntity.AddComponent<Daybreak::Rigidbody2DComponent>();
 	rb2d.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;

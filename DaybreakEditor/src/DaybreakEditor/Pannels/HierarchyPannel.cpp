@@ -330,17 +330,17 @@ namespace Daybreak
 				entity.RemoveComponent<AnimatorComponent>();
 			}
 		}
-		if (entity.HasComponent<NativeScriptComponent>())
+		if (entity.HasComponent<ScriptComponent>())
 		{
 			ImGui::AlignTextToFramePadding();
-			bool open = ImGui::TreeNodeEx((void*)typeid(NativeScriptComponent).hash_code(), flags, "NativeScript");
+			bool open = ImGui::TreeNodeEx((void*)typeid(ScriptComponent).hash_code(), flags, "Script");
 			ImGui::SameLine(ImGui::GetWindowWidth() - 60);
 			bool remove = ImGui::Button("Remove");
 
 			if (open)
 			{
-				auto& nsc = entity.GetComponent<NativeScriptComponent>();
-				ImGui::Text(nsc.TypeName.c_str());
+				auto& sc = entity.GetComponent<ScriptComponent>();
+				ImGui::Text(sc.TypeName.c_str());
 				ImGui::Separator();
 				ImGui::TreePop();
 			}

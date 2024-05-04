@@ -181,14 +181,14 @@ namespace Daybreak
 
 			out << YAML::EndMap;
 		}
-		if (entity.HasComponent<NativeScriptComponent>())
+		if (entity.HasComponent<ScriptComponent>())
 		{
-			out << YAML::Key << "NativeScriptComponent";
+			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap;
 
-			auto& nsc = entity.GetComponent<NativeScriptComponent>();
+			auto& sc = entity.GetComponent<ScriptComponent>();
 
-			out << YAML::Key << "TypeName" << YAML::Value << nsc.TypeName;
+			out << YAML::Key << "TypeName" << YAML::Value << sc.TypeName;
 			out << YAML::EndMap;
 		}
 
@@ -377,12 +377,12 @@ namespace Daybreak
 					sr.TilingFactor = srComponent["TilingFactor"].as<float>();
 				}
 
-				auto nscComponent = entity["NativeScriptComponent"];
-				if (nscComponent)
+				auto scriptComponent = entity["ScriptComponent"];
+				if (scriptComponent)
 				{
-					auto& nsc = deserializedEntity.AddComponent<NativeScriptComponent>();
+					auto& sc = deserializedEntity.AddComponent<ScriptComponent>();
 
-					nsc.RuntimeBind(nscComponent["TypeName"].as<std::string>());
+					sc.RuntimeBind(scriptComponent["TypeName"].as<std::string>());
 				}
 			}
 			return true;

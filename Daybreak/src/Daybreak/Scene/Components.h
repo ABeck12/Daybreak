@@ -177,13 +177,13 @@ namespace Daybreak
 	// Forward decleration
 	class Script;
 
-	struct NativeScriptComponent
+	struct ScriptComponent
 	{
 		Script* Instance = nullptr;
 		std::string TypeName = "";
 
 		Script* (*InstantiateScript)(const std::string&);
-		void (*DestroyScript)(NativeScriptComponent*);
+		void (*DestroyScript)(ScriptComponent*);
 
 		template<typename T>
 		void Bind()
@@ -195,10 +195,10 @@ namespace Daybreak
 			{
 				return static_cast<Script*>(new T());
 			};
-			DestroyScript = [](NativeScriptComponent* nsc)
+			DestroyScript = [](ScriptComponent* sc)
 			{
-				delete nsc->Instance;
-				nsc->Instance = nullptr;
+				delete sc->Instance;
+				sc->Instance = nullptr;
 			};
 		}
 
@@ -210,10 +210,10 @@ namespace Daybreak
 			{
 				return ScriptRegistry::GetRegisteredType(name);
 			};
-			DestroyScript = [](NativeScriptComponent* nsc)
+			DestroyScript = [](ScriptComponent* sc)
 			{
-				delete nsc->Instance;
-				nsc->Instance = nullptr;
+				delete sc->Instance;
+				sc->Instance = nullptr;
 			};
 		}
 	};

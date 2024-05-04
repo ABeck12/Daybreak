@@ -126,5 +126,5 @@ Entities:
       CollisionLayer: 0
       IsTrigger: false
       Enabled: true
-    NativeScriptComponent:
+    ScriptComponent:
       TypeName: MoveableComponent
