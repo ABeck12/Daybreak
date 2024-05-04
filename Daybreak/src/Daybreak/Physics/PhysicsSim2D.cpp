@@ -51,15 +51,15 @@ namespace Daybreak
 			Entity entityA = scene->GetEntityByUUID((UUID)contact->GetFixtureA()->GetUserData().uuid);
 			Entity entityB = scene->GetEntityByUUID((UUID)contact->GetFixtureB()->GetUserData().uuid);
 
-			if (entityA.HasComponent<NativeScriptComponent>())
+			if (entityA.HasComponent<ScriptComponent>())
 			{
-				auto& nsc = entityA.GetComponent<NativeScriptComponent>();
-				nsc.Instance->OnCollisionEnter(entityB);
+				auto& sc = entityA.GetComponent<ScriptComponent>();
+				sc.Instance->OnCollisionEnter(entityB);
 			}
-			if (entityB.HasComponent<NativeScriptComponent>())
+			if (entityB.HasComponent<ScriptComponent>())
 			{
-				auto& nsc = entityB.GetComponent<NativeScriptComponent>();
-				nsc.Instance->OnCollisionEnter(entityA);
+				auto& sc = entityB.GetComponent<ScriptComponent>();
+				sc.Instance->OnCollisionEnter(entityA);
 			}
 		}
 
@@ -69,15 +69,15 @@ namespace Daybreak
 			Entity entityA = scene->GetEntityByUUID((UUID)contact->GetFixtureA()->GetUserData().uuid);
 			Entity entityB = scene->GetEntityByUUID((UUID)contact->GetFixtureB()->GetUserData().uuid);
 
-			if (entityA.HasComponent<NativeScriptComponent>())
+			if (entityA.HasComponent<ScriptComponent>())
 			{
-				auto& nsc = entityA.GetComponent<NativeScriptComponent>();
-				nsc.Instance->OnCollisionExit(entityB);
+				auto& sc = entityA.GetComponent<ScriptComponent>();
+				sc.Instance->OnCollisionExit(entityB);
 			}
-			if (entityB.HasComponent<NativeScriptComponent>())
+			if (entityB.HasComponent<ScriptComponent>())
 			{
-				auto& nsc = entityB.GetComponent<NativeScriptComponent>();
-				nsc.Instance->OnCollisionExit(entityA);
+				auto& sc = entityB.GetComponent<ScriptComponent>();
+				sc.Instance->OnCollisionExit(entityA);
 			}
 		}
 	};

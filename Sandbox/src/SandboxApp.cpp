@@ -4,7 +4,7 @@
 #include "SceneLayer.h"
 #include "LightingScene.h"
 
-// #include <DaybreakEditor.h>
+#include <DaybreakEditor.h>
 
 #include "ScriptableEntityTest.h"
 

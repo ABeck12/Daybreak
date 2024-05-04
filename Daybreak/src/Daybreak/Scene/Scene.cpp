@@ -82,10 +82,10 @@ namespace Daybreak
 			m_PhysicsSim2D->RemoveEntity(entity);
 		}
 
-		if (entity.HasComponent<NativeScriptComponent>())
+		if (entity.HasComponent<ScriptComponent>())
 		{
-			auto nsc = entity.GetComponent<NativeScriptComponent>();
-			nsc.Instance->OnDestroy();
+			auto sc = entity.GetComponent<ScriptComponent>();
+			sc.Instance->OnDestroy();
 		}
 
 		m_EntityMap.erase(entity.GetUUID());
@@ -94,14 +94,14 @@ namespace Daybreak
 
 	void Scene::OnRuntimeStart()
 	{
-		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-													  {
+		m_Registry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+												{
 			// TODO: Move to Scene::OnScenePlay
-			if (!nsc.Instance)
+			if (!sc.Instance)
 			{
-				nsc.Instance = nsc.InstantiateScript(nsc.TypeName);
-				nsc.Instance->m_Entity = Entity{ entity, this };
-				nsc.Instance->OnCreate();
+				sc.Instance = sc.InstantiateScript(sc.TypeName);
+				sc.Instance->m_Entity = Entity{ entity, this };
+				sc.Instance->OnCreate();
 			} });
 
 		OnPhysicsStart();
@@ -122,17 +122,17 @@ namespace Daybreak
 			}
 		}
 
-		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-													  {
-				// This runs here to catch any nsc that are instianted during scene play
-				if (!nsc.Instance)
+		m_Registry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+												{
+				// This runs here to catch any sc that are instianted during scene play
+				if (!sc.Instance)
 				{
-					nsc.Instance = nsc.InstantiateScript(nsc.TypeName);
-					nsc.Instance->m_Entity = Entity{ entity, this };
-					nsc.Instance->OnCreate();
+					sc.Instance = sc.InstantiateScript(sc.TypeName);
+					sc.Instance->m_Entity = Entity{ entity, this };
+					sc.Instance->OnCreate();
 				}
 
-				nsc.Instance->OnUpdate(dt); });
+				sc.Instance->OnUpdate(dt); });
 
 		OnPhysicsUpdate(dt);
 		RenderScene();
@@ -142,15 +142,15 @@ namespace Daybreak
 	{
 		OnPhysicsStop();
 
-		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-													  {
+		m_Registry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+												{
 				// TODO: Move to Scene::OnSceneStop
-				// This NEEDS to be fixed. Not every nsc will have an active instance?						  
-				if (!nsc.Instance)
+				// This NEEDS to be fixed. Not every sc will have an active instance?						  
+				if (!sc.Instance)
 				{
-					nsc.Instance = nsc.InstantiateScript(nsc.TypeName);
-					nsc.Instance->m_Entity = Entity{ entity, this };
-					nsc.Instance->OnDestroy();
+					sc.Instance = sc.InstantiateScript(sc.TypeName);
+					sc.Instance->m_Entity = Entity{ entity, this };
+					sc.Instance->OnDestroy();
 				} });
 	}
 
