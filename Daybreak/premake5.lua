@@ -11,7 +11,6 @@ project "Daybreak"
 	{
 		"src/**.h",
 		"src/**.cpp",
-		-- "%{prj.name}/src/**.hpp",
         "vendor/stb_image/stb_image.cpp",
         "vendor/miniaudio/miniaudio.cpp",
 	}
@@ -38,6 +37,7 @@ project "Daybreak"
 		"glfw",
 		"Imgui",
 		"yaml-cpp",
+		"msdf-atlas-gen",
 		"opengl32.lib"
 	}
 
@@ -69,18 +69,3 @@ project "Daybreak"
 		symbols "On"
 		runtime "Release"
 		optimize "on"
-
-
-	-- filter "configurations:Dist"
-	-- 	defines
-	-- 	{
-	-- 		"DB_DIST",
-	-- 	}
-	-- 	symbols "On"
-	
-
-	-- buildoptions
-	-- {
-    --     "/MT"
-    -- }
-
