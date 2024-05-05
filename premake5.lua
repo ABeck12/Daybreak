@@ -55,9 +55,7 @@ newaction
 		os.rmdir("./Daybreak/vendor/glfw/.vscode")
 		os.rmdir("./Daybreak/vendorimgui/.vscode")
 		os.rmdir("./Daybreak/vendor/yaml-cpp/.vscode/c_cpp_properties.json")
-		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/.vscode")
-		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/msdfgen/.vscode")
-		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/msdfgen/freetype/.vscode")
+		os.rmdir("./Daybreak/vendor/freetype/.vscode")
 		os.rmdir("./Sandbox/.vscode")
 		os.rmdir("./DaybreakEditor/.vscode")
 		os.rmdir(".vscode")
@@ -75,6 +73,7 @@ IncludeDirs["glm"] = "Daybreak/vendor/glm"
 IncludeDirs["stb_image"] = "Daybreak/vendor/stb_image"
 IncludeDirs["entt"] = "Daybreak/vendor/entt/include"
 IncludeDirs["yaml-cpp"] = "Daybreak/vendor/yaml-cpp/include"
+IncludeDirs["freetype"] = "Daybreak/vendor/freetype/include"
 
 group "Dependencies"
 	include "Daybreak/vendor/box2d"
@@ -82,7 +81,7 @@ group "Dependencies"
 	include "Daybreak/vendor/glad"
 	include "Daybreak/vendor/imgui"
 	include "Daybreak/vendor/yaml-cpp"
-	include "Daybreak/vendor/msdf-atlas-gen"
+	-- include "Daybreak/vendor/freetype"
 group ""
 
 include "Daybreak"

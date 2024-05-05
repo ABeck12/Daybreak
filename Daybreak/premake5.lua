@@ -27,6 +27,7 @@ project "Daybreak"
 		"vendor/entt/include",
 		"vendor/miniaudio",
 		"vendor/yaml-cpp/include",
+		-- "vendor/freetype/include",
 		"src"
 	}
 
@@ -37,7 +38,7 @@ project "Daybreak"
 		"glfw",
 		"Imgui",
 		"yaml-cpp",
-		"msdf-atlas-gen",
+		-- "freetype",
 		"opengl32.lib"
 	}
 
