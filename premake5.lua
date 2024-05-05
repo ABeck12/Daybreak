@@ -81,7 +81,7 @@ group "Dependencies"
 	include "Daybreak/vendor/glad"
 	include "Daybreak/vendor/imgui"
 	include "Daybreak/vendor/yaml-cpp"
-	-- include "Daybreak/vendor/freetype"
+	include "Daybreak/vendor/freetype"
 group ""
 
 include "Daybreak"
