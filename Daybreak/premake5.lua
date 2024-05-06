@@ -27,6 +27,9 @@ project "Daybreak"
 		"vendor/entt/include",
 		"vendor/miniaudio",
 		"vendor/yaml-cpp/include",
+		"vendor/msdf-atlas-gen/msdfgen",
+		"vendor/msdf-atlas-gen/msdfgen/include",
+		"vendor/msdf-atlas-gen/msdf-atlas-gen",
 		"src"
 	}
 
