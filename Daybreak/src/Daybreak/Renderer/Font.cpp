@@ -29,6 +29,7 @@ namespace Daybreak
 		spec.Width = bitmap.width;
 		spec.Height = bitmap.height;
 		spec.Format = ImageFormat::RGB;
+		spec.Filter = TextureFilterType::Bilinear;
 		// spec.GenerateMips = false;
 
 		Ref<Texture2D> texture = Texture2D::Create(spec);
@@ -76,7 +77,7 @@ namespace Daybreak
 		DB_CORE_INFO("Loaded {} glyphs from font {} (out of {})", glyphsLoaded, filepath.stem(), charset.size());
 
 
-		double emSize = 256.0;
+		double emSize = 40.0;
 		msdf_atlas::TightAtlasPacker atlasPacker;
 		// atlasPacker.setDimensionsConstraint()
 		atlasPacker.setPixelRange(2.0);
