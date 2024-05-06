@@ -11,6 +11,7 @@ namespace Daybreak
 
 		float GetSeconds() const { return m_Time; }
 		float GetMiliSeconds() const { return m_Time * 1000.0f; }
+
 	private:
 		float m_Time;
 	};

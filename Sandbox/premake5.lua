@@ -27,6 +27,9 @@ project "Sandbox"
 		"../Daybreak/vendor/miniaudio",
 		"../Daybreak/vendor/box2d/include",
 		"../Daybreak/vendor/yaml-cpp/include",
+		"../Daybreak/vendor/msdf-atlas-gen/msdfgen",
+		"../Daybreak/vendor/msdf-atlas-gen/msdfgen/include",
+		"../Daybreak/vendor/msdf-atlas-gen/msdf-atlas-gen",
 	}
 
 	links

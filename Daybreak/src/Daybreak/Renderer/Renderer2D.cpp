@@ -4,6 +4,8 @@
 #include "Daybreak/Renderer/RenderCommand.h"
 #include "Daybreak/Renderer/Shader.h"
 #include "Daybreak/Renderer/Texture.h"
+#include "Daybreak/Renderer/MSDFData.h"
+
 #include "Daybreak/Assets/AssetManager/AssetManager.h"
 
 namespace Daybreak
@@ -38,10 +40,23 @@ namespace Daybreak
 		// int EntityID;
 	};
 
+	struct TextVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoord;
+
+		// TODO: bg color for outline/bg
+
+		// Editor-only
+		int EntityID;
+	};
+
+
 	struct Renderer2DData
 	{
 		static const uint32_t MaxTextureSlots = 32;
-		static const uint32_t MaxQuads = 10000;
+		static const uint32_t MaxQuads = 1000;
 		static const uint32_t MaxVertices = 4 * MaxQuads;
 		static const uint32_t MaxIndices = 6 * MaxQuads;
 		static const uint32_t MaxLines = 10000;
@@ -65,6 +80,10 @@ namespace Daybreak
 		Ref<Shader> LineShader;
 		float DefaultLineWidth = 1.0f;
 
+		Ref<VertexArray> TextVertexArray;
+		Ref<VertexBuffer> TextVertexBuffer;
+		Ref<Shader> TextShader;
+
 		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
@@ -76,6 +95,11 @@ namespace Daybreak
 		uint32_t LineVertexCount = 0;
 		LineVertex* LineVertexBufferBase = nullptr;
 		LineVertex* LineVertexBufferPtr = nullptr;
+
+		uint32_t TextIndexCount = 0;
+		TextVertex* TextVertexBufferBase = nullptr;
+		TextVertex* TextVertexBufferPtr = nullptr;
+		Ref<Texture2D> FontAtlasTexture;
 
 		glm::vec4 QuadVertexPositions[4];
 
@@ -166,6 +190,22 @@ namespace Daybreak
 								   { RenderDataTypes::Float4, std::string("a_Color") } });
 		s_Data.LineVA->AddVertexBuffer(s_Data.LineVB);
 		s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxVertices];
+
+		// Text
+		s_Data.TextVertexArray = VertexArray::Create();
+
+		s_Data.TextVertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(TextVertex));
+		s_Data.TextVertexBuffer->SetLayout({
+			{ RenderDataTypes::Float3, "a_Position" },
+			{ RenderDataTypes::Float4, "a_Color" },
+			{ RenderDataTypes::Float2, "a_TexCoord" },
+			{ RenderDataTypes::Int, "a_EntityID" },
+		});
+		s_Data.TextVertexArray->AddVertexBuffer(s_Data.TextVertexBuffer);
+		s_Data.TextVertexArray->SetIndexBuffer(quadIB);
+		s_Data.TextVertexBufferBase = new TextVertex[s_Data.MaxVertices];
+
+		s_Data.TextShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_TextShader.glsl");
 	}
 
 	void Renderer2D::Shutdown()
@@ -173,6 +213,7 @@ namespace Daybreak
 		delete[] s_Data.QuadVertexBufferBase;
 		delete[] s_Data.CircleVertexBufferBase;
 		delete[] s_Data.LineVertexBufferBase;
+		delete[] s_Data.TextVertexBufferBase;
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
@@ -219,6 +260,19 @@ namespace Daybreak
 			RenderCommand::SetLineWidth(s_Data.DefaultLineWidth);
 			RenderCommand::DrawLines(s_Data.LineVA, s_Data.LineVertexCount);
 		}
+		if (s_Data.TextIndexCount)
+		{
+			uint32_t dataSize = (uint32_t)((uint8_t*)s_Data.TextVertexBufferPtr - (uint8_t*)s_Data.TextVertexBufferBase);
+			s_Data.TextVertexBuffer->SetData(s_Data.TextVertexBufferBase, dataSize);
+
+			auto buf = s_Data.TextVertexBufferBase;
+			s_Data.FontAtlasTexture->Bind(0);
+
+			s_Data.TextShader->Bind();
+			s_Data.TextShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
+			// DB_LOG(s_Data.TextIndexCount);
+			RenderCommand::DrawIndexed(s_Data.TextVertexArray, s_Data.TextIndexCount);
+		}
 	}
 
 	void Renderer2D::StartBatch()
@@ -233,6 +287,9 @@ namespace Daybreak
 
 		s_Data.LineVertexCount = 0;
 		s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
+
+		s_Data.TextIndexCount = 0;
+		s_Data.TextVertexBufferPtr = s_Data.TextVertexBufferBase;
 	}
 
 	void Renderer2D::NextBatch()
@@ -470,5 +527,128 @@ namespace Daybreak
 	{
 		float radians = glm::radians(deg);
 		DrawLine(pos, { pos.x + length * cos(radians), pos.y + length * sin(radians) }, color);
+	}
+
+	void Renderer2D::DrawString(const std::string& string, const Ref<Font>& font, const glm::mat4& transform,
+								const glm::vec4& color, float kerning, float lineSpacing,
+								int entityID)
+	{
+		const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
+		const msdfgen::FontMetrics& metrics = fontGeometry.getMetrics();
+		Ref<Texture2D> fontAtlas = font->GetAtlasTexture();
+
+		s_Data.FontAtlasTexture = fontAtlas;
+
+		double x = 0.0;
+		double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY);
+		double y = 0.0;
+
+		const float spaceGlyphAdvance = fontGeometry.getGlyph(' ')->getAdvance();
+
+		for (size_t i = 0; i < string.size(); i++)
+		{
+			char character = string[i];
+			if (character == '\r')
+				continue;
+
+			if (character == '\n')
+			{
+				x = 0;
+				y -= fsScale * metrics.lineHeight + lineSpacing;
+				continue;
+			}
+
+			if (character == ' ')
+			{
+				float advance = spaceGlyphAdvance;
+				if (i < string.size() - 1)
+				{
+					char nextCharacter = string[i + 1];
+					double dAdvance;
+					fontGeometry.getAdvance(dAdvance, character, nextCharacter);
+					advance = (float)dAdvance;
+				}
+
+				x += fsScale * advance + kerning;
+				continue;
+			}
+
+			if (character == '\t')
+			{
+				// NOTE(Yan): is this right?
+				x += 4.0f * (fsScale * spaceGlyphAdvance + kerning);
+				continue;
+			}
+
+			auto glyph = fontGeometry.getGlyph(character);
+			if (!glyph)
+				glyph = fontGeometry.getGlyph('?');
+			if (!glyph)
+				return;
+
+			double al, ab, ar, at;
+			glyph->getQuadAtlasBounds(al, ab, ar, at);
+			glm::vec2 texCoordMin((float)al, (float)ab);
+			glm::vec2 texCoordMax((float)ar, (float)at);
+
+			double pl, pb, pr, pt;
+			glyph->getQuadPlaneBounds(pl, pb, pr, pt);
+			glm::vec2 quadMin((float)pl, (float)pb);
+			glm::vec2 quadMax((float)pr, (float)pt);
+
+			quadMin *= fsScale, quadMax *= fsScale;
+			quadMin += glm::vec2(x, y);
+			quadMax += glm::vec2(x, y);
+
+			float texelWidth = 1.0f / fontAtlas->GetWidth();
+			float texelHeight = 1.0f / fontAtlas->GetHeight();
+			texCoordMin *= glm::vec2(texelWidth, texelHeight);
+			texCoordMax *= glm::vec2(texelWidth, texelHeight);
+
+			// render here
+			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
+			s_Data.TextVertexBufferPtr->Color = color;
+			s_Data.TextVertexBufferPtr->TexCoord = texCoordMin;
+			s_Data.TextVertexBufferPtr->EntityID = entityID;
+			s_Data.TextVertexBufferPtr++;
+
+			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
+			s_Data.TextVertexBufferPtr->Color = color;
+			s_Data.TextVertexBufferPtr->TexCoord = { texCoordMin.x, texCoordMax.y };
+			s_Data.TextVertexBufferPtr->EntityID = entityID;
+			s_Data.TextVertexBufferPtr++;
+
+			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
+			s_Data.TextVertexBufferPtr->Color = color;
+			s_Data.TextVertexBufferPtr->TexCoord = texCoordMax;
+			s_Data.TextVertexBufferPtr->EntityID = entityID;
+			s_Data.TextVertexBufferPtr++;
+
+			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
+			s_Data.TextVertexBufferPtr->Color = color;
+			s_Data.TextVertexBufferPtr->TexCoord = { texCoordMax.x, texCoordMin.y };
+			s_Data.TextVertexBufferPtr->EntityID = entityID;
+			s_Data.TextVertexBufferPtr++;
+
+			s_Data.TextIndexCount += 6;
+			// s_Data.Stats.QuadCount++;
+
+			if (i < string.size() - 1)
+			{
+				double advance = glyph->getAdvance();
+				char nextCharacter = string[i + 1];
+				fontGeometry.getAdvance(advance, character, nextCharacter);
+
+				x += fsScale * advance + kerning;
+			}
+		}
+	}
+
+	void Renderer2D::DrawString(const std::string& string, const Ref<Font>& font, const glm::vec3& position, const glm::vec2& size,
+								const glm::vec4& color, float kerning, float lineSpacing,
+								int entityID)
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		DrawString(string, font, transform, color, kerning, lineSpacing, entityID);
 	}
 }
