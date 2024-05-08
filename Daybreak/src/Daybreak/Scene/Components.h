@@ -8,6 +8,7 @@
 #include "Daybreak/Assets/Animation.h"
 #include "Daybreak/Scripting/ScriptRegistry.h"
 #include "Daybreak/Scripting/Script.h"
+#include "Daybreak/Renderer/Font.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -79,6 +80,20 @@ namespace Daybreak
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(Ref<Texture2D> sprite)
 			: Sprite(sprite) {}
+	};
+
+	struct TextRendererComponent
+	{
+		std::string Text = "";
+		Ref<Font> Font = Font::GetDefault();
+		glm::vec4 Color = glm::vec4(1.0f);
+		float Kerning = 0;
+		float LineSpacing = 0;
+
+		TextRendererComponent() = default;
+		TextRendererComponent(const TextRendererComponent&) = default;
+		TextRendererComponent(const std::string& text)
+			: Text(text) {}
 	};
 
 	struct CameraComponent

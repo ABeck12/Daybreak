@@ -73,12 +73,12 @@ public:
 		}
 		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
 		{
-			m_RB.Velocity.x = velamount;
+			m_RB.Velocity.x = 2.5f;
 			GetComponent<Daybreak::TransformComponent>().Scale.x = 1;
 		}
 		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
 		{
-			m_RB.Velocity.x = -velamount;
+			m_RB.Velocity.x = -2.5f;
 			GetComponent<Daybreak::TransformComponent>().Scale.x = -1;
 		}
 

@@ -5,6 +5,7 @@
 
 LightingScene::LightingScene()
 {
+	Daybreak::Application::Get().GetWindow().SetVSync(false);
 	m_Scene = Daybreak::CreateRef<Daybreak::Scene>();
 	Daybreak::SceneSerializer serializer(m_Scene);
 	serializer.Deserialize(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene");
@@ -40,11 +41,11 @@ LightingScene::LightingScene()
 	}
 
 
-	// for (int i = 0; i < 5000; i++)
-	// {
-	// 	Daybreak::Entity e = m_Scene->CreateEntity(std::to_string(i));
-	// 	e.AddComponent<Daybreak::SpriteRendererComponent>();
-	// }
+	for (int i = 0; i < 2000; i++)
+	{
+		Daybreak::Entity e = m_Scene->CreateEntity(std::to_string(i));
+		e.AddComponent<Daybreak::SpriteRendererComponent>();
+	}
 }
 
 void LightingScene::OnAttach()
@@ -59,13 +60,14 @@ void LightingScene::OnDetach()
 
 void LightingScene::OnUpdate(Daybreak::DeltaTime dt)
 {
+	DB_TIME_SCOPE("LightingScene::OnUpdate");
 	Daybreak::RenderCommand::Clear();
 	Daybreak::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f)); // Blue-Gray
 
 	m_Scene->OnRuntimeUpdate(dt);
-	auto font = Daybreak::Font::GetDefault();
-	Daybreak::Renderer2D::DrawString("STRING of te\nxt 1234;fds>?'", font, { -3, 3, 0 }, { 1, 1 });
-	Daybreak::Renderer2D::DrawString("text", font, { 0, 0, 0 }, { 10, 10 }, { 0, 1, 0, 1 });
+	// auto font = Daybreak::Font::GetDefault();
+	// Daybreak::Renderer2D::DrawString("STRING of te\nxt 1234;fds>?'", font, { -3, 3, 0 }, { 1, 1 });
+	// Daybreak::Renderer2D::DrawString("text", font, { 0, 0, 0 }, { 10, 10 }, { 0, 1, 0, 1 });
 
 	// Daybreak::Renderer2D::DrawQuad({ -1, -3 }, { 10, 10 }, font->GetAtlasTexture());
 	// Daybreak::Renderer2D::DrawCircle({ 0, 1 }, 1.0f, { 0, 1, 0, 1 }, 0.1f, 0.1f);
