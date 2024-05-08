@@ -187,7 +187,8 @@ namespace Daybreak
 		enum class SceneRenderObjectType
 		{
 			Sprite,
-			Animator
+			Animator,
+			Text
 		};
 		struct SceneRenderObject
 		{
@@ -203,8 +204,9 @@ namespace Daybreak
 
 		auto animatorView = m_Registry.view<TransformComponent, AnimatorComponent>();
 		auto spriteView = m_Registry.view<TransformComponent, SpriteRendererComponent>();
+		auto textView = m_Registry.view<TransformComponent, TextRendererComponent>();
 
-		const uint32_t numberObjects = animatorView.size() + spriteView.size();
+		const uint32_t numberObjects = animatorView.size() + spriteView.size() + textView.size();
 		std::vector<SceneRenderObject> renderObjects(numberObjects);
 		uint32_t renderObjectsIndex = 0;
 
@@ -220,6 +222,13 @@ namespace Daybreak
 			Entity entity = { e, this };
 			auto& transform = entity.GetComponent<TransformComponent>();
 			renderObjects[renderObjectsIndex] = { e, transform.Position, SceneRenderObjectType::Sprite };
+			renderObjectsIndex++;
+		}
+		for (auto e : textView)
+		{
+			Entity entity = { e, this };
+			auto& transform = entity.GetComponent<TransformComponent>();
+			renderObjects[renderObjectsIndex] = { e, transform.Position, SceneRenderObjectType::Text };
 			renderObjectsIndex++;
 		}
 
@@ -248,6 +257,12 @@ namespace Daybreak
 				{
 					auto& anim = entity.GetComponent<AnimatorComponent>();
 					Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)(renderObjects[i].Entity));
+					break;
+				}
+				case SceneRenderObjectType::Text:
+				{
+					auto& text = entity.GetComponent<TextRendererComponent>();
+					Renderer2D::DrawString(text.Text, text.Font, transform.GetTransform(), text.Color, text.Kerning, text.LineSpacing, (int)(renderObjects[i].Entity));
 					break;
 				}
 			}
