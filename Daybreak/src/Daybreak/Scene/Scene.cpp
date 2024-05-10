@@ -269,7 +269,6 @@ namespace Daybreak
 		{
 			Entity entity = { renderObjects[i].Entity, this };
 			auto& transform = entity.GetComponent<TransformComponent>();
-			DB_LOG(renderObjects[i].RenderLayer);
 			switch (renderObjects[i].RenderType)
 			{
 				case SceneRenderObjectType::Sprite:
