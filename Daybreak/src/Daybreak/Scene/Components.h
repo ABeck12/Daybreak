@@ -38,14 +38,6 @@ namespace Daybreak
 		RelationshipComponent(const RelationshipComponent&) = default;
 	};
 
-	// struct ActiveComponent
-	// {
-	// 	bool Active = true;
-
-	// 	ActiveComponent() = default;
-	// 	ActiveComponent(const ActiveComponent&) = default;
-	// };
-
 	struct TransformComponent
 	{
 		glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
@@ -74,12 +66,24 @@ namespace Daybreak
 		Ref<Texture2D> Sprite;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float TilingFactor = 1.0f;
-		// uint8_t RenderLayer = 0;
+		uint8_t RenderLayer = 0;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(Ref<Texture2D> sprite)
 			: Sprite(sprite) {}
+	};
+
+	struct AnimatorComponent
+	{
+		Ref<AnimationController> Controller;
+		bool IsPlaying = true;
+		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		uint8_t RenderLayer = 0;
+
+
+		AnimatorComponent() = default;
+		AnimatorComponent(const AnimatorComponent&) = default;
 	};
 
 	struct TextRendererComponent
@@ -89,6 +93,7 @@ namespace Daybreak
 		glm::vec4 Color = glm::vec4(1.0f);
 		float Kerning = 0;
 		float LineSpacing = 0;
+		uint8_t RenderLayer = 0;
 
 		TextRendererComponent() = default;
 		TextRendererComponent(const TextRendererComponent&) = default;
@@ -176,17 +181,6 @@ namespace Daybreak
 
 		Rigidbody2DComponent() = default;
 		Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
-	};
-
-	struct AnimatorComponent
-	{
-		Ref<AnimationController> Controller;
-		bool IsPlaying = true;
-		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-
-		AnimatorComponent() = default;
-		AnimatorComponent(const AnimatorComponent&) = default;
 	};
 
 	// Forward decleration

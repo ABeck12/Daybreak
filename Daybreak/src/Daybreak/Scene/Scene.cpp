@@ -11,6 +11,7 @@
 #include "Daybreak/Scene/SceneSerializer.h"
 
 #include <box2d/box2d.h>
+#include <variant>
 
 namespace Daybreak
 {
@@ -190,15 +191,18 @@ namespace Daybreak
 			Animator,
 			Text
 		};
+
 		struct SceneRenderObject
 		{
 			entt::entity Entity;
 			glm::vec3 Position;
 			SceneRenderObjectType RenderType;
+			uint8_t RenderLayer;
+			std::variant<AnimatorComponent, SpriteRendererComponent, TextRendererComponent> Component;
 
 			bool operator<(const SceneRenderObject& obj) const
 			{
-				return Position.z < obj.Position.z;
+				return Position.z < obj.Position.z && RenderType > obj.RenderType;
 			}
 		};
 
@@ -213,22 +217,43 @@ namespace Daybreak
 		for (auto e : animatorView)
 		{
 			Entity entity = { e, this };
-			auto& transform = entity.GetComponent<TransformComponent>();
-			renderObjects[renderObjectsIndex] = { e, transform.Position, SceneRenderObjectType::Animator };
+			TransformComponent& transform = entity.GetComponent<TransformComponent>();
+			AnimatorComponent& anim = entity.GetComponent<AnimatorComponent>();
+			renderObjects[renderObjectsIndex] = {
+				e,
+				transform.Position,
+				SceneRenderObjectType::Animator,
+				anim.RenderLayer,
+				anim,
+			};
 			renderObjectsIndex++;
 		}
 		for (auto e : spriteView)
 		{
 			Entity entity = { e, this };
-			auto& transform = entity.GetComponent<TransformComponent>();
-			renderObjects[renderObjectsIndex] = { e, transform.Position, SceneRenderObjectType::Sprite };
+			TransformComponent& transform = entity.GetComponent<TransformComponent>();
+			SpriteRendererComponent& sr = entity.GetComponent<SpriteRendererComponent>();
+			renderObjects[renderObjectsIndex] = {
+				e,
+				transform.Position,
+				SceneRenderObjectType::Sprite,
+				sr.RenderLayer,
+				sr,
+			};
 			renderObjectsIndex++;
 		}
 		for (auto e : textView)
 		{
 			Entity entity = { e, this };
-			auto& transform = entity.GetComponent<TransformComponent>();
-			renderObjects[renderObjectsIndex] = { e, transform.Position, SceneRenderObjectType::Text };
+			TransformComponent& transform = entity.GetComponent<TransformComponent>();
+			TextRendererComponent& text = entity.GetComponent<TextRendererComponent>();
+			renderObjects[renderObjectsIndex] = {
+				e,
+				transform.Position,
+				SceneRenderObjectType::Text,
+				text.RenderLayer,
+				text,
+			};
 			renderObjectsIndex++;
 		}
 
@@ -244,24 +269,22 @@ namespace Daybreak
 		{
 			Entity entity = { renderObjects[i].Entity, this };
 			auto& transform = entity.GetComponent<TransformComponent>();
-
+			DB_LOG(renderObjects[i].RenderLayer);
 			switch (renderObjects[i].RenderType)
 			{
 				case SceneRenderObjectType::Sprite:
 				{
-					auto& sprite = entity.GetComponent<SpriteRendererComponent>();
-					Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)(renderObjects[i].Entity));
+					Renderer2D::DrawSprite(transform.GetTransform(), std::get<SpriteRendererComponent>(renderObjects[i].Component), (int)(renderObjects[i].Entity));
 					break;
 				}
 				case SceneRenderObjectType::Animator:
 				{
-					auto& anim = entity.GetComponent<AnimatorComponent>();
-					Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)(renderObjects[i].Entity));
+					Renderer2D::DrawSprite(transform.GetTransform(), std::get<AnimatorComponent>(renderObjects[i].Component), (int)(renderObjects[i].Entity));
 					break;
 				}
 				case SceneRenderObjectType::Text:
 				{
-					auto& text = entity.GetComponent<TextRendererComponent>();
+					TextRendererComponent text = std::get<TextRendererComponent>(renderObjects[i].Component);
 					Renderer2D::DrawString(text.Text, text.Font, transform.GetTransform(), text.Color, text.Kerning, text.LineSpacing, (int)(renderObjects[i].Entity));
 					break;
 				}
