@@ -12,11 +12,11 @@ SceneLayer::SceneLayer()
 {
 	// Daybreak::Application::Get().GetWindow().SetVSync(false);
 	m_Scene = Daybreak::CreateRef<Daybreak::Scene>("Test Scene");
-	{
-		Daybreak::SceneSerializer serializer(m_Scene);
-		serializer.Deserialize(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene");
-		return;
-	}
+	// {
+	// 	Daybreak::SceneSerializer serializer(m_Scene);
+	// 	serializer.Deserialize(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene");
+	// 	return;
+	// }
 
 	playerEntity = m_Scene->CreateEntity("Player");
 	playerEntity.AddComponent<Daybreak::ScriptComponent>().Bind<MoveableComponent>();
@@ -143,7 +143,7 @@ void SceneLayer::OnAttach()
 	Daybreak::SceneSerializer serializer(m_Scene);
 	// Daybreak::AssetManager::AddAssetRef(playerEntity.GetComponent<Daybreak::AnimatorComponent>().Controller, "animations/playerController.controller");
 	// Daybreak::AssetManager::AddAssetRef(floorEntity.GetComponent<Daybreak::SpriteRendererComponent>().Sprite, "sprites/Test.sprite");
-	// serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.scene");
+	serializer.Serialize("../Sandbox/assets/scenes/SceneLayer.scene");
 	// serializer.Serialize(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene");
 	// Daybreak::AssetSerializer::SerializeAnimationController(playerEntity.GetComponent<Daybreak::AnimatorComponent>().Controller, "animations/playerController.controller");
 }

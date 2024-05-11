@@ -33,6 +33,7 @@ namespace Daybreak
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
 		entity.AddComponent<RelationshipComponent>();
+		entity.AddComponent<ActiveComponent>();
 
 		return entity;
 	}
@@ -59,6 +60,7 @@ namespace Daybreak
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
 		entity.AddComponent<RelationshipComponent>();
+		entity.AddComponent<ActiveComponent>();
 
 		return entity;
 	}
@@ -95,7 +97,7 @@ namespace Daybreak
 
 	void Scene::OnRuntimeStart()
 	{
-		m_Registry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+		m_Registry.view<ScriptComponent>().each([=](auto entity, ScriptComponent& sc)
 												{
 			// TODO: Move to Scene::OnScenePlay
 			if (!sc.Instance)
@@ -115,6 +117,11 @@ namespace Daybreak
 			for (auto e : view)
 			{
 				Entity entity = { e, this };
+				if (!entity.IsActive())
+				{
+					continue;
+				}
+
 				auto& anim = entity.GetComponent<AnimatorComponent>();
 				if (anim.IsPlaying && (anim.Controller != NULL))
 				{
@@ -123,17 +130,23 @@ namespace Daybreak
 			}
 		}
 
-		m_Registry.view<ScriptComponent>().each([=](auto entity, auto& sc)
-												{
+		m_Registry.view<ScriptComponent, ActiveComponent>().each(
+			[=](entt::entity entity, ScriptComponent& sc, ActiveComponent& ac)
+			{
+				if (!ac.Active)
+				{
+					return;
+				}
 				// This runs here to catch any sc that are instianted during scene play
 				if (!sc.Instance)
 				{
 					sc.Instance = sc.InstantiateScript(sc.TypeName);
-					sc.Instance->m_Entity = Entity{ entity, this };
+					sc.Instance->m_Entity = Entity { entity, this };
 					sc.Instance->OnCreate();
 				}
 
-				sc.Instance->OnUpdate(dt); });
+				sc.Instance->OnUpdate(dt);
+			});
 
 		OnPhysicsUpdate(dt);
 		RenderScene();
@@ -143,7 +156,7 @@ namespace Daybreak
 	{
 		OnPhysicsStop();
 
-		m_Registry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+		m_Registry.view<ScriptComponent>().each([=](auto entity, ScriptComponent& sc)
 												{
 				// TODO: Move to Scene::OnSceneStop
 				// This NEEDS to be fixed. Not every sc will have an active instance?						  
@@ -197,7 +210,7 @@ namespace Daybreak
 			entt::entity Entity;
 			glm::vec3 Position;
 			SceneRenderObjectType RenderType;
-			uint8_t RenderLayer;
+			uint32_t RenderLayer;
 			std::variant<AnimatorComponent, SpriteRendererComponent, TextRendererComponent> Component;
 
 			bool operator<(const SceneRenderObject& obj) const
@@ -268,6 +281,12 @@ namespace Daybreak
 		for (int i = 0; i < numberObjects; i++)
 		{
 			Entity entity = { renderObjects[i].Entity, this };
+
+			if (!entity.IsActive())
+			{
+				continue;
+			}
+
 			auto& transform = entity.GetComponent<TransformComponent>();
 			switch (renderObjects[i].RenderType)
 			{
@@ -339,7 +358,7 @@ namespace Daybreak
 				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 
 				b2Body* body = (b2Body*)bc2d.RuntimeBody;
-				body->SetEnabled(bc2d.Enabled);
+				body->SetEnabled(bc2d.Enabled && entity.IsActive());
 			}
 		}
 
@@ -352,7 +371,7 @@ namespace Daybreak
 				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
 
 				b2Body* body = (b2Body*)cc2d.RuntimeBody;
-				body->SetEnabled(cc2d.Enabled);
+				body->SetEnabled(cc2d.Enabled && entity.IsActive());
 			}
 		}
 
@@ -369,6 +388,7 @@ namespace Daybreak
 
 				body->SetLinearVelocity({ rb2d.Velocity.x, rb2d.Velocity.y });
 				body->SetTransform({ transform.Position.x, transform.Position.y }, transform.Rotation.z);
+				body->SetEnabled(entity.IsActive());
 			}
 		}
 
