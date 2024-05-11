@@ -54,6 +54,15 @@ namespace Daybreak
 		inline void OnPhysicsUpdate(DeltaTime dt);
 		inline void OnPhysicsStop();
 
+		inline glm::mat4 GetWorldTransform(Entity& entity);
+
+		template<typename T>
+		Entity& GetParentEntityWith(Entity& entity);
+
+		template<typename T>
+		bool HasParentEntityWith(Entity& entity);
+
+
 	private:
 		std::string m_SceneName;
 		entt::registry m_Registry;

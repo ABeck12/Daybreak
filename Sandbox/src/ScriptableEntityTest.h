@@ -64,6 +64,10 @@ public:
 	{
 		auto& m_Transform = GetComponent<Daybreak::TransformComponent>();
 		auto& m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
+		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
+		{
+			m_IsGrounded = true;
+		}
 
 		float velamount = 150.0f * dt;
 		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space) && m_IsGrounded)

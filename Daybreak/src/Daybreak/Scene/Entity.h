@@ -61,6 +61,8 @@ namespace Daybreak
 		const std::string& GetName() const;
 		const UUID GetUUID() const;
 		const bool IsActive() const;
+		const bool HasParent() const;
+		const UUID GetParentUUID() const;
 
 	private:
 		Scene* m_Scene = nullptr; // TODO: This could be turned into a weak ref system

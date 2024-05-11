@@ -95,6 +95,38 @@ namespace Daybreak
 		m_Registry.destroy(entity);
 	}
 
+	template<typename T>
+	Entity& Scene::GetParentEntityWith(Entity& entity)
+	{
+		if (entity.HasComponent<T>())
+		{
+			return entity;
+		}
+		RelationshipComponent& rc = entity.GetComponent<RelationshipComponent>();
+		if (rc.ParentID)
+		{
+			Entity parent = GetEntityByUUID(rc.ParentID);
+			return GetParentEntityWith<T>(parent);
+		}
+		DB_CORE_ASSERT(false, "Entity line with {} does not have component {}", entity.GetName(), typeid(T).name());
+	}
+
+	template<typename T>
+	bool Scene::HasParentEntityWith(Entity& entity)
+	{
+		if (entity.HasComponent<T>())
+		{
+			return true;
+		}
+		RelationshipComponent& rc = entity.GetComponent<RelationshipComponent>();
+		if (rc.ParentID)
+		{
+			Entity parent = GetEntityByUUID(rc.ParentID);
+			return HasParentEntityWith<T>(parent);
+		}
+		return false;
+	}
+
 	void Scene::OnRuntimeStart()
 	{
 		m_Registry.view<ScriptComponent>().each([=](auto entity, ScriptComponent& sc)
@@ -196,6 +228,21 @@ namespace Daybreak
 		return {};
 	}
 
+	glm::mat4 Scene::GetWorldTransform(Entity& entity)
+	{
+		RelationshipComponent& rc = entity.GetComponent<RelationshipComponent>();
+		TransformComponent& tr = entity.GetComponent<TransformComponent>();
+		if (rc.ParentID)
+		{
+			Entity parent = GetEntityByUUID(rc.ParentID);
+			return GetWorldTransform(parent) * tr.GetTransform();
+		}
+		else
+		{
+			return tr.GetTransform();
+		}
+	}
+
 	void Scene::RenderScene()
 	{
 		enum class SceneRenderObjectType
@@ -208,14 +255,14 @@ namespace Daybreak
 		struct SceneRenderObject
 		{
 			entt::entity Entity;
-			glm::vec3 Position;
 			SceneRenderObjectType RenderType;
 			uint32_t RenderLayer;
 			std::variant<AnimatorComponent, SpriteRendererComponent, TextRendererComponent> Component;
+			glm::mat4 Transform;
 
 			bool operator<(const SceneRenderObject& obj) const
 			{
-				return Position.z < obj.Position.z && RenderType > obj.RenderType;
+				return Transform[3][3] < obj.Transform[3][3] && RenderType > obj.RenderType;
 			}
 		};
 
@@ -223,7 +270,7 @@ namespace Daybreak
 		auto spriteView = m_Registry.view<TransformComponent, SpriteRendererComponent>();
 		auto textView = m_Registry.view<TransformComponent, TextRendererComponent>();
 
-		const uint32_t numberObjects = animatorView.size() + spriteView.size() + textView.size();
+		const size_t numberObjects = animatorView.size() + spriteView.size() + textView.size();
 		std::vector<SceneRenderObject> renderObjects(numberObjects);
 		uint32_t renderObjectsIndex = 0;
 
@@ -234,10 +281,10 @@ namespace Daybreak
 			AnimatorComponent& anim = entity.GetComponent<AnimatorComponent>();
 			renderObjects[renderObjectsIndex] = {
 				e,
-				transform.Position,
 				SceneRenderObjectType::Animator,
 				anim.RenderLayer,
 				anim,
+				GetWorldTransform(entity),
 			};
 			renderObjectsIndex++;
 		}
@@ -248,10 +295,10 @@ namespace Daybreak
 			SpriteRendererComponent& sr = entity.GetComponent<SpriteRendererComponent>();
 			renderObjects[renderObjectsIndex] = {
 				e,
-				transform.Position,
 				SceneRenderObjectType::Sprite,
 				sr.RenderLayer,
 				sr,
+				GetWorldTransform(entity),
 			};
 			renderObjectsIndex++;
 		}
@@ -262,10 +309,10 @@ namespace Daybreak
 			TextRendererComponent& text = entity.GetComponent<TextRendererComponent>();
 			renderObjects[renderObjectsIndex] = {
 				e,
-				transform.Position,
 				SceneRenderObjectType::Text,
 				text.RenderLayer,
 				text,
+				GetWorldTransform(entity),
 			};
 			renderObjectsIndex++;
 		}
@@ -292,18 +339,18 @@ namespace Daybreak
 			{
 				case SceneRenderObjectType::Sprite:
 				{
-					Renderer2D::DrawSprite(transform.GetTransform(), std::get<SpriteRendererComponent>(renderObjects[i].Component), (int)(renderObjects[i].Entity));
+					Renderer2D::DrawSprite(renderObjects[i].Transform, std::get<SpriteRendererComponent>(renderObjects[i].Component), (int)(renderObjects[i].Entity));
 					break;
 				}
 				case SceneRenderObjectType::Animator:
 				{
-					Renderer2D::DrawSprite(transform.GetTransform(), std::get<AnimatorComponent>(renderObjects[i].Component), (int)(renderObjects[i].Entity));
+					Renderer2D::DrawSprite(renderObjects[i].Transform, std::get<AnimatorComponent>(renderObjects[i].Component), (int)(renderObjects[i].Entity));
 					break;
 				}
 				case SceneRenderObjectType::Text:
 				{
 					TextRendererComponent text = std::get<TextRendererComponent>(renderObjects[i].Component);
-					Renderer2D::DrawString(text.Text, text.Font, transform.GetTransform(), text.Color, text.Kerning, text.LineSpacing, (int)(renderObjects[i].Entity));
+					Renderer2D::DrawString(text.Text, text.Font, renderObjects[i].Transform, text.Color, text.Kerning, text.LineSpacing, (int)(renderObjects[i].Entity));
 					break;
 				}
 			}
@@ -349,42 +396,42 @@ namespace Daybreak
 	void Scene::OnPhysicsUpdate(DeltaTime dt)
 	{
 		// Set data for Box2D
-		{
-			auto view = m_Registry.view<BoxCollider2DComponent>();
+		// {
+		// 	auto view = m_Registry.view<BoxCollider2DComponent>();
 
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+		// 	for (auto e : view)
+		// 	{
+		// 		Entity entity = { e, this };
+		// 		auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 
-				b2Body* body = (b2Body*)bc2d.RuntimeBody;
-				body->SetEnabled(bc2d.Enabled && entity.IsActive());
-			}
-		}
+		// 		b2Body* body = (b2Body*)bc2d.RuntimeBody;
+		// 		body->SetEnabled(bc2d.Enabled && entity.IsActive());
+		// 	}
+		// }
 
-		{
-			auto view = m_Registry.view<CircleCollider2DComponent>();
+		// {
+		// 	auto view = m_Registry.view<CircleCollider2DComponent>();
 
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+		// 	for (auto e : view)
+		// 	{
+		// 		Entity entity = { e, this };
+		// 		auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
 
-				b2Body* body = (b2Body*)cc2d.RuntimeBody;
-				body->SetEnabled(cc2d.Enabled && entity.IsActive());
-			}
-		}
+		// 		b2Body* body = (b2Body*)cc2d.RuntimeBody;
+		// 		body->SetEnabled(cc2d.Enabled && entity.IsActive());
+		// 	}
+		// }
 
 		auto view = m_Registry.view<Rigidbody2DComponent>();
 		for (auto e : view)
 		{
 			Entity entity = { e, this };
-			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+			Rigidbody2DComponent& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 			b2Body* body = (b2Body*)rb2d.RuntimeBody;
 			if (body)
 			{
-				auto name = entity.GetName();
-				auto& transform = entity.GetComponent<TransformComponent>();
+				std::string name = entity.GetName();
+				TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
 				body->SetLinearVelocity({ rb2d.Velocity.x, rb2d.Velocity.y });
 				body->SetTransform({ transform.Position.x, transform.Position.y }, transform.Rotation.z);
@@ -392,7 +439,7 @@ namespace Daybreak
 			}
 		}
 
-		float startTime = Time::GetTime();
+		double startTime = Time::GetTime();
 		while (m_LastUpdateTime < startTime)
 		{
 			m_PhysicsSim2D->FixedStepSimulation();
@@ -403,11 +450,11 @@ namespace Daybreak
 		for (auto e : view)
 		{
 			Entity entity = { e, this };
-			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+			Rigidbody2DComponent& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 			b2Body* body = (b2Body*)rb2d.RuntimeBody;
 			if (body)
 			{
-				auto& transform = entity.GetComponent<TransformComponent>();
+				TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
 				const auto& position = body->GetPosition();
 				transform.Position.x = position.x;
@@ -426,31 +473,59 @@ namespace Daybreak
 		m_PhysicsSim2D = new PhysicsSim2D();
 		m_PhysicsSim2D->InitSimulation(this);
 
+		auto rb2dView = m_Registry.view<Rigidbody2DComponent>();
+		for (auto e : rb2dView)
 		{
-			auto view = m_Registry.view<BoxCollider2DComponent>();
-
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				m_PhysicsSim2D->AddBoxCollider(entity);
-			}
+			Entity entity = { e, this };
+			m_PhysicsSim2D->InitBody(entity);
 		}
 
+		auto bc2dView = m_Registry.view<BoxCollider2DComponent>();
+		for (auto e : bc2dView)
 		{
-			auto view = m_Registry.view<CircleCollider2DComponent>();
+			Entity entity = { e, this };
+			BoxCollider2DComponent& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 
-			for (auto e : view)
+			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
 			{
-				Entity entity = { e, this };
-				m_PhysicsSim2D->AddCircleCollider(entity);
+				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
+
+				glm::vec2 offset = glm::vec2(GetWorldTransform(entity)[3] - GetWorldTransform(parent)[3]);
+
+				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
+				TransformComponent& entityTr = entity.GetComponent<TransformComponent>();
+				m_PhysicsSim2D->AddBoxFixture(entity, bc2d, rb2d, offset);
+			}
+			else
+			{
+				m_PhysicsSim2D->AddBoxFixtureNoBody(entity);
 			}
 		}
-		PhysicsSim2D::SetActiveSim(this->m_PhysicsSim2D);
+		auto cc2dView = m_Registry.view<CircleCollider2DComponent>();
+		for (auto e : cc2dView)
+		{
+			Entity entity = { e, this };
+			CircleCollider2DComponent& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+
+			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
+			{
+				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
+
+				glm::vec2 offset = glm::vec2(GetWorldTransform(entity)[3] - GetWorldTransform(parent)[3]);
+
+				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
+				TransformComponent& entityTr = entity.GetComponent<TransformComponent>();
+				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d, offset);
+			}
+			else
+			{
+				m_PhysicsSim2D->AddCircleFixtureNoBody(entity);
+			}
+		}
 	}
 
 	void Scene::OnPhysicsStop()
 	{
-		PhysicsSim2D::SetActiveSim(nullptr);
 		m_PhysicsSim2D->ShutdownSimulation();
 		delete m_PhysicsSim2D;
 		m_PhysicsSim2D = nullptr;
