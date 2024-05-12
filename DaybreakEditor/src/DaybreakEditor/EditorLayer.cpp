@@ -52,7 +52,7 @@ namespace Daybreak
 		{
 			RenderCommand::SetClearColor(glm::vec4(0.15f, 0.15, 0.15f, 1.0f));
 			UpdateCameraPosition(dt);
-			m_Scene->EditorRenderScene(m_EditorCamera);
+			m_Scene->RenderScene(m_EditorCamera);
 		}
 		m_FrameBuffer->Unbind();
 	}

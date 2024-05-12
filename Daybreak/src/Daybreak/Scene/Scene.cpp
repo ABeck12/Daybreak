@@ -181,7 +181,7 @@ namespace Daybreak
 			});
 
 		OnPhysicsUpdate(dt);
-		RenderScene();
+		RenderScene(GetActiveCameraEntity());
 	}
 
 	void Scene::OnRuntimeEnd()
@@ -243,7 +243,7 @@ namespace Daybreak
 		}
 	}
 
-	void Scene::RenderScene()
+	void Scene::RenderScene(const Entity& cameraEntity)
 	{
 		enum class SceneRenderObjectType
 		{
@@ -319,7 +319,6 @@ namespace Daybreak
 
 		std::sort(renderObjects.begin(), renderObjects.end());
 
-		auto cameraEntity = GetActiveCameraEntity();
 		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * cameraEntity.GetComponent<TransformComponent>().Position);
 		glm::mat4 rotation = glm::toMat4(glm::quat(cameraEntity.GetComponent<TransformComponent>().Rotation));
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Scale);
@@ -357,41 +356,6 @@ namespace Daybreak
 		}
 		Renderer2D::EndScene();
 	}
-
-	// void Scene::EditorRenderScene(Entity& editorCameraEntity)
-	// {
-	// 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * editorCameraEntity.GetComponent<TransformComponent>().Position);
-	// 	glm::mat4 rotation = glm::toMat4(glm::quat(editorCameraEntity.GetComponent<TransformComponent>().Rotation));
-	// 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), editorCameraEntity.GetComponent<TransformComponent>().Scale);
-
-	// 	Renderer2D::BeginScene(editorCameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
-
-	// 	{
-	// 		auto view = m_Registry.view<TransformComponent, AnimatorComponent>();
-	// 		for (auto e : view)
-	// 		{
-	// 			Entity entity = { e, this };
-	// 			auto& transform = entity.GetComponent<TransformComponent>();
-	// 			auto& anim = entity.GetComponent<AnimatorComponent>();
-
-	// 			Renderer2D::DrawSprite(transform.GetTransform(), anim, (int)e);
-	// 		}
-	// 	}
-
-	// 	{
-	// 		auto view = m_Registry.view<TransformComponent, SpriteRendererComponent>();
-	// 		for (auto e : view)
-	// 		{
-	// 			Entity entity = { e, this };
-	// 			auto& transform = entity.GetComponent<TransformComponent>();
-	// 			auto& sprite = entity.GetComponent<SpriteRendererComponent>();
-
-	// 			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)e);
-	// 		}
-	// 	}
-
-	// 	Renderer2D::EndScene();
-	// }
 
 	void Scene::OnPhysicsUpdate(DeltaTime dt)
 	{

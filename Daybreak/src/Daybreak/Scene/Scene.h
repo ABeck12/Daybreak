@@ -44,8 +44,8 @@ namespace Daybreak
 
 		const std::string& GetName() { return m_SceneName; }
 
-		void RenderScene();
-		void EditorRenderScene(Entity& editorCameraEntity);
+		// void EditorRenderScene(Entity& editorCameraEntity);
+		void RenderScene(const Entity& cameraEntity);
 
 		void SetStartTime(float time) { m_LastUpdateTime = time; }
 
