@@ -61,6 +61,7 @@ namespace Daybreak
 		const std::string& GetName() const;
 		const UUID GetUUID() const;
 		const bool IsActive() const;
+		void SetActive(bool active);
 		const bool HasParent() const;
 		const UUID GetParentUUID() const;
 

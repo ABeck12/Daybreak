@@ -360,31 +360,29 @@ namespace Daybreak
 	void Scene::OnPhysicsUpdate(DeltaTime dt)
 	{
 		// Set data for Box2D
-		// {
-		// 	auto view = m_Registry.view<BoxCollider2DComponent>();
+		{
+			auto view = m_Registry.view<BoxCollider2DComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 
-		// 	for (auto e : view)
-		// 	{
-		// 		Entity entity = { e, this };
-		// 		auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+				b2Body* body = (b2Body*)bc2d.RuntimeBody;
+				body->SetEnabled(bc2d.Enabled && entity.IsActive());
+			}
+		}
 
-		// 		b2Body* body = (b2Body*)bc2d.RuntimeBody;
-		// 		body->SetEnabled(bc2d.Enabled && entity.IsActive());
-		// 	}
-		// }
+		{
+			auto view = m_Registry.view<CircleCollider2DComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
 
-		// {
-		// 	auto view = m_Registry.view<CircleCollider2DComponent>();
-
-		// 	for (auto e : view)
-		// 	{
-		// 		Entity entity = { e, this };
-		// 		auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
-
-		// 		b2Body* body = (b2Body*)cc2d.RuntimeBody;
-		// 		body->SetEnabled(cc2d.Enabled && entity.IsActive());
-		// 	}
-		// }
+				b2Body* body = (b2Body*)cc2d.RuntimeBody;
+				body->SetEnabled(cc2d.Enabled && entity.IsActive());
+			}
+		}
 
 		auto view = m_Registry.view<Rigidbody2DComponent>();
 		for (auto e : view)

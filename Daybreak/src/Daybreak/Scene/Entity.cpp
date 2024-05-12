@@ -32,4 +32,16 @@ namespace Daybreak
 	{
 		return GetComponent<RelationshipComponent>().ParentID != 0;
 	}
+
+	void Entity::SetActive(bool active)
+	{
+		ActiveComponent& ac = GetComponent<ActiveComponent>();
+		ac.Active = active;
+		RelationshipComponent& rc = GetComponent<RelationshipComponent>();
+		for (UUID id : rc.ChildrenIDs)
+		{
+			Entity child = m_Scene->GetEntityByUUID(id);
+			child.SetActive(active);
+		}
+	}
 }
