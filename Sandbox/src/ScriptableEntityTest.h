@@ -17,17 +17,17 @@ public:
 		const Daybreak::Ref<Daybreak::Texture2D> spriteSheet = Daybreak::Texture2D::Create({ 3, 3, Daybreak::ImageFormat::RGBA, Daybreak::TextureFilterType::Point, 37 }, "../Sandbox/assets/sprites/adventurer-Sheet.png");
 		float width = 50.;
 		float height = 37.;
-		auto& idle1 = Daybreak::SubTexture2D::Create(spriteSheet, { 0, 10 }, { width, height });
-		auto& idle2 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 10 }, { width, height });
-		auto& idle3 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 10 }, { width, height });
-		auto& idle4 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 10 }, { width, height });
+		auto idle1 = Daybreak::SubTexture2D::Create(spriteSheet, { 0, 10 }, { width, height });
+		auto idle2 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 10 }, { width, height });
+		auto idle3 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 10 }, { width, height });
+		auto idle4 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 10 }, { width, height });
 
-		auto& run1 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 9 }, { width, height });
-		auto& run2 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 9 }, { width, height });
-		auto& run3 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 9 }, { width, height });
-		auto& run4 = Daybreak::SubTexture2D::Create(spriteSheet, { 4, 9 }, { width, height });
-		auto& run5 = Daybreak::SubTexture2D::Create(spriteSheet, { 5, 9 }, { width, height });
-		auto& run6 = Daybreak::SubTexture2D::Create(spriteSheet, { 6, 9 }, { width, height });
+		auto run1 = Daybreak::SubTexture2D::Create(spriteSheet, { 1, 9 }, { width, height });
+		auto run2 = Daybreak::SubTexture2D::Create(spriteSheet, { 2, 9 }, { width, height });
+		auto run3 = Daybreak::SubTexture2D::Create(spriteSheet, { 3, 9 }, { width, height });
+		auto run4 = Daybreak::SubTexture2D::Create(spriteSheet, { 4, 9 }, { width, height });
+		auto run5 = Daybreak::SubTexture2D::Create(spriteSheet, { 5, 9 }, { width, height });
+		auto run6 = Daybreak::SubTexture2D::Create(spriteSheet, { 6, 9 }, { width, height });
 
 		uint32_t framesPerAnimationFrame = 10;
 		idleAnimation = Daybreak::CreateRef<Daybreak::Animation>("idle");
@@ -64,6 +64,10 @@ public:
 	{
 		auto& m_Transform = GetComponent<Daybreak::TransformComponent>();
 		auto& m_RB = GetComponent<Daybreak::Rigidbody2DComponent>();
+		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::P))
+		{
+			m_IsGrounded = true;
+		}
 
 		float velamount = 150.0f * dt;
 		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::Space) && m_IsGrounded)
@@ -73,12 +77,12 @@ public:
 		}
 		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::D))
 		{
-			m_RB.Velocity.x = velamount;
+			m_RB.Velocity.x = 2.5f;
 			GetComponent<Daybreak::TransformComponent>().Scale.x = 1;
 		}
 		if (Daybreak::Input::IsKeyPressed(Daybreak::Key::A))
 		{
-			m_RB.Velocity.x = -velamount;
+			m_RB.Velocity.x = -2.5f;
 			GetComponent<Daybreak::TransformComponent>().Scale.x = -1;
 		}
 

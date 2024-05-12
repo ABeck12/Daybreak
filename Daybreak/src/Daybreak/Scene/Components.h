@@ -8,6 +8,7 @@
 #include "Daybreak/Assets/Animation.h"
 #include "Daybreak/Scripting/ScriptRegistry.h"
 #include "Daybreak/Scripting/Script.h"
+#include "Daybreak/Renderer/Font.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -22,6 +23,8 @@ namespace Daybreak
 
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
+		IDComponent(UUID id)
+			: ID(id) {}
 	};
 
 	struct RelationshipComponent
@@ -35,13 +38,10 @@ namespace Daybreak
 		RelationshipComponent(const RelationshipComponent&) = default;
 	};
 
-	// struct ActiveComponent
-	// {
-	// 	bool Active = true;
-
-	// 	ActiveComponent() = default;
-	// 	ActiveComponent(const ActiveComponent&) = default;
-	// };
+	struct ActiveComponent
+	{
+		bool Active = true;
+	};
 
 	struct TransformComponent
 	{
@@ -71,12 +71,39 @@ namespace Daybreak
 		Ref<Texture2D> Sprite;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float TilingFactor = 1.0f;
-		// uint8_t RenderLayer = 0;
+		uint32_t RenderLayer = 0;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(Ref<Texture2D> sprite)
 			: Sprite(sprite) {}
+	};
+
+	struct AnimatorComponent
+	{
+		Ref<AnimationController> Controller;
+		bool IsPlaying = true;
+		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		uint32_t RenderLayer = 0;
+
+
+		AnimatorComponent() = default;
+		AnimatorComponent(const AnimatorComponent&) = default;
+	};
+
+	struct TextRendererComponent
+	{
+		std::string Text = "";
+		Ref<Font> Font = Font::GetDefault();
+		glm::vec4 Color = glm::vec4(1.0f);
+		float Kerning = 0;
+		float LineSpacing = 0;
+		uint32_t RenderLayer = 0;
+
+		TextRendererComponent() = default;
+		TextRendererComponent(const TextRendererComponent&) = default;
+		TextRendererComponent(const std::string& text)
+			: Text(text) {}
 	};
 
 	struct CameraComponent
@@ -161,27 +188,16 @@ namespace Daybreak
 		Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
 	};
 
-	struct AnimatorComponent
-	{
-		Ref<AnimationController> Controller;
-		bool IsPlaying = true;
-		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-
-		AnimatorComponent() = default;
-		AnimatorComponent(const AnimatorComponent&) = default;
-	};
-
 	// Forward decleration
 	class Script;
 
-	struct NativeScriptComponent
+	struct ScriptComponent
 	{
 		Script* Instance = nullptr;
 		std::string TypeName = "";
 
 		Script* (*InstantiateScript)(const std::string&);
-		void (*DestroyScript)(NativeScriptComponent*);
+		void (*DestroyScript)(ScriptComponent*);
 
 		template<typename T>
 		void Bind()
@@ -193,10 +209,10 @@ namespace Daybreak
 			{
 				return static_cast<Script*>(new T());
 			};
-			DestroyScript = [](NativeScriptComponent* nsc)
+			DestroyScript = [](ScriptComponent* sc)
 			{
-				delete nsc->Instance;
-				nsc->Instance = nullptr;
+				delete sc->Instance;
+				sc->Instance = nullptr;
 			};
 		}
 
@@ -208,10 +224,10 @@ namespace Daybreak
 			{
 				return ScriptRegistry::GetRegisteredType(name);
 			};
-			DestroyScript = [](NativeScriptComponent* nsc)
+			DestroyScript = [](ScriptComponent* sc)
 			{
-				delete nsc->Instance;
-				nsc->Instance = nullptr;
+				delete sc->Instance;
+				sc->Instance = nullptr;
 			};
 		}
 	};

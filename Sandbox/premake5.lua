@@ -1,7 +1,7 @@
 project "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "On"
 
 	targetdir (outputloc .. "/bin/" .. outputdir .. "/%{prj.name}")
@@ -27,12 +27,15 @@ project "Sandbox"
 		"../Daybreak/vendor/miniaudio",
 		"../Daybreak/vendor/box2d/include",
 		"../Daybreak/vendor/yaml-cpp/include",
+		"../Daybreak/vendor/msdf-atlas-gen/msdfgen",
+		"../Daybreak/vendor/msdf-atlas-gen/msdfgen/include",
+		"../Daybreak/vendor/msdf-atlas-gen/msdf-atlas-gen",
 	}
 
 	links
 	{
 		"Daybreak",
-		"DaybreakEditor",
+		-- "DaybreakEditor",
 	}
 
 	filter "system:windows"

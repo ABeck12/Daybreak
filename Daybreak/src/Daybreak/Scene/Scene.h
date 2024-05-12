@@ -44,8 +44,8 @@ namespace Daybreak
 
 		const std::string& GetName() { return m_SceneName; }
 
-		void RenderScene();
-		void EditorRenderScene(Entity& editorCameraEntity);
+		// void EditorRenderScene(Entity& editorCameraEntity);
+		void RenderScene(const Entity& cameraEntity);
 
 		void SetStartTime(float time) { m_LastUpdateTime = time; }
 
@@ -53,6 +53,15 @@ namespace Daybreak
 		inline void OnPhysicsStart();
 		inline void OnPhysicsUpdate(DeltaTime dt);
 		inline void OnPhysicsStop();
+
+		inline glm::mat4 GetWorldTransform(Entity& entity);
+
+		template<typename T>
+		Entity& GetParentEntityWith(Entity& entity);
+
+		template<typename T>
+		bool HasParentEntityWith(Entity& entity);
+
 
 	private:
 		std::string m_SceneName;

@@ -45,15 +45,19 @@ newaction
 		os.remove("compile_commands.json")
 		os.rmdir("./compile_commands")
 		os.rmdir("./.cache")
+		os.rmdir("./.mypy_cache")
 
 		os.remove("**.code-workspace")
 		os.rmdir("./Tasks")
 		os.rmdir("./Daybreak/.vscode")
-		os.rmdir("./Daybreak/box2d/.vscode")
-		os.rmdir("./Daybreak/glad/.vscode")
-		os.rmdir("./Daybreak/glfw/.vscode")
-		os.rmdir("./Daybreak/imgui/.vscode")
-		os.rmdir("./Daybreak/yaml-cpp/.vscode/c_cpp_properties.json")
+		os.rmdir("./Daybreak/vendor/box2d/.vscode")
+		os.rmdir("./Daybreak/vendor/glad/.vscode")
+		os.rmdir("./Daybreak/vendor/glfw/.vscode")
+		os.rmdir("./Daybreak/vendorimgui/.vscode")
+		os.rmdir("./Daybreak/vendor/yaml-cpp/.vscode/c_cpp_properties.json")
+		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/.vscode")
+		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/msdfgen/.vscode")
+		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/msdfgen/freetype/.vscode")
 		os.rmdir("./Sandbox/.vscode")
 		os.rmdir("./DaybreakEditor/.vscode")
 		os.rmdir(".vscode")
@@ -78,9 +82,10 @@ group "Dependencies"
 	include "Daybreak/vendor/glad"
 	include "Daybreak/vendor/imgui"
 	include "Daybreak/vendor/yaml-cpp"
+	include "Daybreak/vendor/msdf-atlas-gen"
 group ""
 
 include "Daybreak"
-include "DaybreakEditor"
+-- include "DaybreakEditor"
 include "Sandbox"
 

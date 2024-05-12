@@ -5,6 +5,7 @@
 #include "Daybreak/Scene/Entity.h"
 #include "Daybreak/Utils/YamlConversion.h"
 #include "Daybreak/Assets/AssetManager/AssetManager.h"
+#include "Daybreak/Renderer/Font.h"
 
 namespace Daybreak
 {
@@ -23,6 +24,16 @@ namespace Daybreak
 
 			auto& tag = entity.GetComponent<TagComponent>().Tag;
 			out << YAML::Key << "Tag" << YAML::Value << tag;
+
+			out << YAML::EndMap;
+		}
+		if (entity.HasComponent<ActiveComponent>())
+		{
+			out << YAML::Key << "ActiveComponent";
+			out << YAML::BeginMap;
+
+			auto& ac = entity.GetComponent<ActiveComponent>().Active;
+			out << YAML::Key << "Active" << YAML::Value << ac;
 
 			out << YAML::EndMap;
 		}
@@ -71,6 +82,7 @@ namespace Daybreak
 
 			out << YAML::Key << "TintColor" << YAML::Value << sr.TintColor;
 			out << YAML::Key << "TilingFactor" << YAML::Value << sr.TilingFactor;
+			out << YAML::Key << "RenderLayer" << YAML::Value << sr.RenderLayer;
 
 			out << YAML::EndMap;
 		}
@@ -94,6 +106,22 @@ namespace Daybreak
 			}
 			out << YAML::Key << "IsPlaying" << YAML::Value << anim.IsPlaying;
 			out << YAML::Key << "TintColor" << YAML::Value << anim.TintColor;
+			out << YAML::Key << "RenderLayer" << YAML::Value << anim.RenderLayer;
+
+			out << YAML::EndMap;
+		}
+		if (entity.HasComponent<TextRendererComponent>())
+		{
+			out << YAML::Key << "TextRendererComponent";
+			out << YAML::BeginMap;
+
+			auto& textRenderer = entity.GetComponent<TextRendererComponent>();
+			out << YAML::Key << "Text" << YAML::Value << textRenderer.Text;
+			out << YAML::Key << "Font" << YAML::Value << textRenderer.Font->GetFilepath();
+			out << YAML::Key << "Color" << YAML::Value << textRenderer.Color;
+			out << YAML::Key << "Kerning" << YAML::Value << textRenderer.Kerning;
+			out << YAML::Key << "LineSpacing" << YAML::Value << textRenderer.LineSpacing;
+			out << YAML::Key << "RenderLayer" << YAML::Value << textRenderer.RenderLayer;
 
 			out << YAML::EndMap;
 		}
@@ -181,14 +209,14 @@ namespace Daybreak
 
 			out << YAML::EndMap;
 		}
-		if (entity.HasComponent<NativeScriptComponent>())
+		if (entity.HasComponent<ScriptComponent>())
 		{
-			out << YAML::Key << "NativeScriptComponent";
+			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap;
 
-			auto& nsc = entity.GetComponent<NativeScriptComponent>();
+			auto& sc = entity.GetComponent<ScriptComponent>();
 
-			out << YAML::Key << "TypeName" << YAML::Value << nsc.TypeName;
+			out << YAML::Key << "TypeName" << YAML::Value << sc.TypeName;
 			out << YAML::EndMap;
 		}
 
@@ -300,7 +328,7 @@ namespace Daybreak
 					auto& bc2d = deserializedEntity.AddComponent<BoxCollider2DComponent>();
 					bc2d.Size = bc2dComponent["Size"].as<glm::vec2>();
 					bc2d.Offset = bc2dComponent["Offset"].as<glm::vec2>();
-					bc2d.CollisionLayer = bc2dComponent["CollisionLayer"].as<uint16_t>();
+					bc2d.CollisionLayer = bc2dComponent["CollisionLayer"].as<uint32_t>();
 					bc2d.IsTrigger = bc2dComponent["IsTrigger"].as<bool>();
 					bc2d.Enabled = bc2dComponent["Enabled"].as<bool>();
 				}
@@ -310,7 +338,7 @@ namespace Daybreak
 					auto& cc2d = deserializedEntity.AddComponent<CircleCollider2DComponent>();
 					cc2d.Radius = cc2dComponent["Radius"].as<float>();
 					cc2d.Offset = cc2dComponent["Offset"].as<glm::vec2>();
-					cc2d.CollisionLayer = cc2dComponent["CollisionLayer"].as<uint16_t>();
+					cc2d.CollisionLayer = cc2dComponent["CollisionLayer"].as<uint32_t>();
 					cc2d.IsTrigger = cc2dComponent["IsTrigger"].as<bool>();
 					cc2d.Enabled = cc2dComponent["Enabled"].as<bool>();
 				}
@@ -356,6 +384,7 @@ namespace Daybreak
 
 					anim.IsPlaying = animComponent["IsPlaying"].as<bool>();
 					anim.TintColor = animComponent["TintColor"].as<glm::vec4>();
+					anim.RenderLayer = animComponent["RenderLayer"].as<uint32_t>();
 				}
 				auto srComponent = entity["SpriteRendererComponent"];
 				if (srComponent)
@@ -375,14 +404,28 @@ namespace Daybreak
 
 					sr.TintColor = srComponent["TintColor"].as<glm::vec4>();
 					sr.TilingFactor = srComponent["TilingFactor"].as<float>();
+					sr.RenderLayer = srComponent["RenderLayer"].as<uint32_t>();
+				}
+				auto textComponent = entity["TextRendererComponent"];
+				if (textComponent)
+				{
+					auto& textRenderer = deserializedEntity.AddComponent<TextRendererComponent>();
+
+					textRenderer.Text = textComponent["Text"].as<std::string>();
+					std::string fontPath = textComponent["Font"].as<std::string>();
+					textRenderer.Font = CreateRef<Font>(fontPath);
+					textRenderer.Color = textComponent["Color"].as<glm::vec4>();
+					textRenderer.Kerning = textComponent["Kerning"].as<float>();
+					textRenderer.LineSpacing = textComponent["LineSpacing"].as<float>();
+					textRenderer.RenderLayer = textComponent["RenderLayer"].as<uint32_t>();
 				}
 
-				auto nscComponent = entity["NativeScriptComponent"];
-				if (nscComponent)
+				auto scriptComponent = entity["ScriptComponent"];
+				if (scriptComponent)
 				{
-					auto& nsc = deserializedEntity.AddComponent<NativeScriptComponent>();
+					auto& sc = deserializedEntity.AddComponent<ScriptComponent>();
 
-					nsc.RuntimeBind(nscComponent["TypeName"].as<std::string>());
+					sc.RuntimeBind(scriptComponent["TypeName"].as<std::string>());
 				}
 			}
 			return true;

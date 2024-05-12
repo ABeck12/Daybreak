@@ -91,10 +91,10 @@ namespace Daybreak
 
 	const void OpenGLTexture2D::SetData(void* data, uint32_t size) const
 	{
-		auto m_DataFormat = GL_RGBA; // Temp
-		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
+		int dataFormat = m_Specification.Format == ImageFormat::RGBA ? GL_RGBA : GL_RGB;
+		uint32_t bpp = dataFormat == GL_RGBA ? 4 : 3;
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		DB_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 	}
 }

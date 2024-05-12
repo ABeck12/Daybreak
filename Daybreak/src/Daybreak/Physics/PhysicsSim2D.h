@@ -13,6 +13,8 @@ namespace Daybreak
 	class ContactListener;
 	class ContactFilter;
 	struct Rigidbody2DComponent;
+	struct BoxCollider2DComponent;
+	struct CircleCollider2DComponent;
 
 	class PhysicsSim2D
 	{
@@ -21,8 +23,15 @@ namespace Daybreak
 		void FixedStepSimulation();
 		void ShutdownSimulation();
 
-		void AddBoxCollider(Entity& entity);
-		void AddCircleCollider(Entity& entity);
+		void InitBody(Entity& entity);
+		void AddBoxFixture(Entity& entity, BoxCollider2DComponent& bc2d, Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
+		void AddBoxFixtureNoBody(Entity& entity);
+		void AddCircleFixture(Entity& entity, CircleCollider2DComponent& cc2d, Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
+		void AddCircleFixtureNoBody(Entity& entity);
+		// void AddBoxFixture(Entity& entity);
+
+		// void AddBoxCollider(Entity& entity);
+		// void AddCircleCollider(Entity& entity);
 
 		void RemoveEntity(Entity& entity);
 
@@ -49,11 +58,7 @@ namespace Daybreak
 		float m_LastUpdateTime = 0.0f;
 
 	private:
-		// Rework into a project class
-		static void SetActiveSim(PhysicsSim2D* sim) { s_ActiveSim = sim; }
 		static PhysicsSim2D* s_ActiveSim;
-
-		friend Scene;
 	};
 
 }
