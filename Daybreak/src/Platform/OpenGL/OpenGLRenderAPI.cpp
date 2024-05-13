@@ -10,7 +10,7 @@ namespace Daybreak
 {
 	void OpenGLRenderAPI::Init()
 	{
-		//TODO: Temporary, move to GraphicsContext->Init() inside platform window init()
+		// TODO: Temporary, move to GraphicsContext->Init() inside platform window init()
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		DB_CORE_INFO("OpenGL Info:");
 		DB_CORE_INFO("  Vendor: {0}", (char*)glGetString(GL_VENDOR));
@@ -20,6 +20,9 @@ namespace Daybreak
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// For Anti Aliasing
+		glEnable(GL_MULTISAMPLE);
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
