@@ -23,19 +23,22 @@ namespace Daybreak
 		glGenFramebuffers(1, &m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
+		int colorAttachments = 0;
 		for (FrameBufferAttachmentTypes type : m_Specification.AttachmentTypes)
 		{
 			switch (type)
 			{
-				case FrameBufferAttachmentTypes::RGBA8:
+				case FrameBufferAttachmentTypes::RGBA:
 					uint32_t rgbaID;
 					glCreateTextures(GL_TEXTURE_2D, 1, &rgbaID);
 					glBindTexture(GL_TEXTURE_2D, rgbaID);
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rgbaID, 0);
+					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachments, GL_TEXTURE_2D, rgbaID, 0);
 					m_AttachmentIDs.emplace_back(rgbaID);
+					m_AttachmentEnumsValues.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
+					colorAttachments++;
 					break;
 
 				case FrameBufferAttachmentTypes::Depth:
@@ -44,6 +47,8 @@ namespace Daybreak
 					glBindTexture(GL_TEXTURE_2D, depthID);
 					glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, m_Specification.Width, m_Specification.Height);
 					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthID, 0);
+					m_AttachmentIDs.emplace_back(depthID);
+					m_AttachmentEnumsValues.emplace_back(GL_DEPTH_STENCIL_ATTACHMENT);
 					break;
 
 				case FrameBufferAttachmentTypes::RedInteger:
@@ -67,11 +72,18 @@ namespace Daybreak
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+
+		glDrawBuffers(m_AttachmentEnumsValues.size(), &m_AttachmentEnumsValues[0]);
+		for (size_t i = 0; i < m_AttachmentEnumsValues.size(); i++)
+		{
+			glFramebufferTexture2D(GL_FRAMEBUFFER, m_AttachmentEnumsValues[i], GL_TEXTURE_2D, GetAttachmentRendererID(i), 0);
+		}
 	}
 
 	void OpenGLFrameBuffer::Unbind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
@@ -80,5 +92,11 @@ namespace Daybreak
 		m_Specification.Height = height;
 		m_Specification.Width = width;
 		Remake();
+	}
+
+	const void OpenGLFrameBuffer::BindAttachmentAsTexture(uint32_t attachmentIndex, uint32_t textureSlot) const
+	{
+		glActiveTexture(GL_TEXTURE0 + textureSlot);
+		glBindTexture(GL_TEXTURE_2D, GetAttachmentRendererID(attachmentIndex));
 	}
 }

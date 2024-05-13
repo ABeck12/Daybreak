@@ -4,20 +4,63 @@
 
 #include "Daybreak/Renderer/RenderCommand.h"
 #include "Daybreak/Renderer/Renderer2D.h"
+#include <glad/glad.h>
 
 namespace Daybreak
 {
-	// Scope<Renderer::RendererData> Renderer::s_SceneData = CreateScope<Renderer::RendererData>();
+	struct RendererData
+	{
+		static constexpr float vertices[] = {
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+			-1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		static constexpr uint32_t indices[] = {
+			0, 1, 3,
+			1, 2, 3
+		};
+
+		Ref<VertexArray> frameBufferVA;
+		Ref<VertexBuffer> frameBufferVB;
+		Ref<IndexBuffer> frameBufferIB;
+	};
+
+	static RendererData s_Data;
 
 	void Renderer::Init()
 	{
 		RenderCommand::Init();
 		Renderer2D::Init();
+
+		s_Data.frameBufferVA = VertexArray::Create();
+		s_Data.frameBufferVB = VertexBuffer::Create(s_Data.vertices, 20 * sizeof(float));
+		s_Data.frameBufferIB = IndexBuffer::Create(s_Data.indices, 6);
+
+		s_Data.frameBufferVB->SetLayout({
+			{ RenderDataTypes::Float3, "a_ScreenCoord" },
+			{ RenderDataTypes::Float2, "a_TexCoord" },
+		});
+		s_Data.frameBufferVA->AddVertexBuffer(s_Data.frameBufferVB);
+		s_Data.frameBufferVA->SetIndexBuffer(s_Data.frameBufferIB);
 	}
 
 	void Renderer::Shutdown()
 	{
 		Renderer2D::Shutdown();
+	}
+
+	void Renderer::DrawFrameBuffer(const Ref<FrameBuffer>& frameBuffer, const Ref<Shader>& shader, std::vector<int> boundAttachmentIndices)
+	{
+		shader->Bind();
+
+		for (const int i : boundAttachmentIndices)
+			frameBuffer->BindAttachmentAsTexture(i, i);
+		shader->SetIntArray("u_Textures", &boundAttachmentIndices[0], boundAttachmentIndices.size());
+
+		RenderCommand::DrawIndexed(s_Data.frameBufferVA);
+		shader->Unbind();
 	}
 
 	// void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
