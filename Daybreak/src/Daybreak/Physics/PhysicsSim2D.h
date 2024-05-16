@@ -15,6 +15,7 @@ namespace Daybreak
 	struct Rigidbody2DComponent;
 	struct BoxCollider2DComponent;
 	struct CircleCollider2DComponent;
+	struct PolygonCollider2DComponent;
 
 	class PhysicsSim2D
 	{
@@ -23,11 +24,13 @@ namespace Daybreak
 		void FixedStepSimulation();
 		void ShutdownSimulation();
 
-		void InitBody(Entity& entity);
-		void AddBoxFixture(Entity& entity, BoxCollider2DComponent& bc2d, Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
-		void AddBoxFixtureNoBody(Entity& entity);
-		void AddCircleFixture(Entity& entity, CircleCollider2DComponent& cc2d, Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
-		void AddCircleFixtureNoBody(Entity& entity);
+		void InitBody(const Entity& entity);
+		void AddBoxFixture(const Entity& entity, BoxCollider2DComponent& bc2d, const Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
+		void AddBoxFixtureNoBody(const Entity& entity);
+		void AddCircleFixture(const Entity& entity, CircleCollider2DComponent& cc2d, const Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
+		void AddCircleFixtureNoBody(const Entity& entity);
+		void AddPolygonFixture(const Entity& entity, PolygonCollider2DComponent& pc2d, const Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
+		void AddPolygonFixtureNoBody(const Entity& entity);
 		// void AddBoxFixture(Entity& entity);
 
 		// void AddBoxCollider(Entity& entity);

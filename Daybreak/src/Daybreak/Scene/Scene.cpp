@@ -366,21 +366,28 @@ namespace Daybreak
 			{
 				Entity entity = { e, this };
 				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-
 				b2Body* body = (b2Body*)bc2d.RuntimeBody;
 				body->SetEnabled(bc2d.Enabled && entity.IsActive());
 			}
 		}
-
 		{
 			auto view = m_Registry.view<CircleCollider2DComponent>();
 			for (auto e : view)
 			{
 				Entity entity = { e, this };
 				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
-
 				b2Body* body = (b2Body*)cc2d.RuntimeBody;
 				body->SetEnabled(cc2d.Enabled && entity.IsActive());
+			}
+		}
+		{
+			auto view = m_Registry.view<PolygonCollider2DComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& pc2d = entity.GetComponent<PolygonCollider2DComponent>();
+				b2Body* body = (b2Body*)pc2d.RuntimeBody;
+				body->SetEnabled(pc2d.Enabled && entity.IsActive());
 			}
 		}
 
@@ -455,7 +462,6 @@ namespace Daybreak
 				glm::vec2 offset = glm::vec2(GetWorldTransform(entity)[3] - GetWorldTransform(parent)[3]);
 
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
-				TransformComponent& entityTr = entity.GetComponent<TransformComponent>();
 				m_PhysicsSim2D->AddBoxFixture(entity, bc2d, rb2d, offset);
 			}
 			else
@@ -476,12 +482,31 @@ namespace Daybreak
 				glm::vec2 offset = glm::vec2(GetWorldTransform(entity)[3] - GetWorldTransform(parent)[3]);
 
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
-				TransformComponent& entityTr = entity.GetComponent<TransformComponent>();
 				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d, offset);
 			}
 			else
 			{
 				m_PhysicsSim2D->AddCircleFixtureNoBody(entity);
+			}
+		}
+		auto pc2dView = m_Registry.view<PolygonCollider2DComponent>();
+		for (auto e : pc2dView)
+		{
+			Entity entity = { e, this };
+			PolygonCollider2DComponent& pc2d = entity.GetComponent<PolygonCollider2DComponent>();
+
+			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
+			{
+				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
+
+				glm::vec2 offset = glm::vec2(GetWorldTransform(entity)[3] - GetWorldTransform(parent)[3]);
+
+				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
+				m_PhysicsSim2D->AddPolygonFixture(entity, pc2d, rb2d, offset);
+			}
+			else
+			{
+				m_PhysicsSim2D->AddPolygonFixtureNoBody(entity);
 			}
 		}
 	}

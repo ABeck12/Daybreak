@@ -154,6 +154,27 @@ namespace Daybreak
 		CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
 	};
 
+	struct PolygonCollider2DComponent
+	{
+		glm::vec2 Vertices[8] {
+			{ -0.5, -0.5 },
+			{ -0.5, 0.5 },
+			{ 0.5, -0.5 },
+			{ 0.5, 0.5 },
+		};
+		uint32_t Count = 4;
+
+		uint32_t CollisionLayer = 0;
+		bool IsTrigger = false;
+		bool Enabled = true;
+
+		void* RuntimeFixture = nullptr;
+		void* RuntimeBody = nullptr;
+
+		PolygonCollider2DComponent() = default;
+		PolygonCollider2DComponent(const PolygonCollider2DComponent&) = default;
+	};
+
 	struct Rigidbody2DComponent
 	{
 		enum class BodyType
