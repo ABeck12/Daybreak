@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Daybreak/Core/DeltaTime.h"
+#include "Daybreak/Physics/DebugDraw.h"
 
 #include <glm/glm.hpp>
 
@@ -25,16 +26,17 @@ namespace Daybreak
 		void ShutdownSimulation();
 
 		void InitBody(const Entity& entity);
-		void AddBoxFixture(const Entity& entity, BoxCollider2DComponent& bc2d, const Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
-		void AddBoxFixtureNoBody(const Entity& entity);
-		void AddCircleFixture(const Entity& entity, CircleCollider2DComponent& cc2d, const Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
-		void AddCircleFixtureNoBody(const Entity& entity);
-		void AddPolygonFixture(const Entity& entity, PolygonCollider2DComponent& pc2d, const Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset = { 0, 0 });
-		void AddPolygonFixtureNoBody(const Entity& entity);
-		// void AddBoxFixture(Entity& entity);
 
-		// void AddBoxCollider(Entity& entity);
-		// void AddCircleCollider(Entity& entity);
+		void AddBoxFixture(const Entity& entity, BoxCollider2DComponent& bc2d, const Rigidbody2DComponent& rb2d,
+						   const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform);
+		void AddCircleFixture(const Entity& entity, CircleCollider2DComponent& cc2d, const Rigidbody2DComponent& rb2d,
+							  const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform);
+		void AddPolygonFixture(const Entity& entity, PolygonCollider2DComponent& pc2d, const Rigidbody2DComponent& rb2d,
+							   const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform);
+
+		void AddBoxFixtureNoBody(const Entity& entity);
+		void AddCircleFixtureNoBody(const Entity& entity);
+		void AddPolygonFixtureNoBody(const Entity& entity);
 
 		void RemoveEntity(Entity& entity);
 
@@ -49,11 +51,14 @@ namespace Daybreak
 		void AddLinearImpulse(const Rigidbody2DComponent& rb2d, const glm::vec2& impulse);
 		void AddAngularImpulse(const Rigidbody2DComponent& rb2d, float impulse);
 
+		void DebugDraw();
+
 		// TODO: Rework into a project class
 		static PhysicsSim2D* GetActiveSim() { return s_ActiveSim; }
 
 	private:
 		Scene* m_Scene;
+		DebugRenderer* m_DebugRenderer;
 		b2World* m_PhysicsWorld;
 		ContactListener* m_ContactLitener;
 		ContactFilter* m_ContactFilter;

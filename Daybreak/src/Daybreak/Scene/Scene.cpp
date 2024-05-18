@@ -9,6 +9,7 @@
 #include "Daybreak/Scripting/Script.h"
 #include "Daybreak/Renderer/RenderCommand.h"
 #include "Daybreak/Scene/SceneSerializer.h"
+#include "Daybreak/Physics/DebugDraw.h"
 
 #include <box2d/box2d.h>
 #include <variant>
@@ -20,7 +21,13 @@ namespace Daybreak
 	{
 	}
 
-	Scene::~Scene() {}
+	Scene::~Scene()
+	{
+		if (m_SceneRunning)
+		{
+			OnRuntimeEnd();
+		}
+	}
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
@@ -129,6 +136,7 @@ namespace Daybreak
 
 	void Scene::OnRuntimeStart()
 	{
+		m_SceneRunning = true;
 		m_Registry.view<ScriptComponent>().each([=](auto entity, ScriptComponent& sc)
 												{
 			// TODO: Move to Scene::OnScenePlay
@@ -198,6 +206,7 @@ namespace Daybreak
 					sc.Instance->m_Entity = Entity{ entity, this };
 					sc.Instance->OnDestroy();
 				} });
+		m_SceneRunning = false;
 	}
 
 	// FIXME: Temporary
@@ -355,53 +364,81 @@ namespace Daybreak
 			}
 		}
 		Renderer2D::EndScene();
+		if (m_DebugDraw)
+		{
+			DebugDraw();
+		}
 	}
 
 	void Scene::OnPhysicsUpdate(DeltaTime dt)
 	{
 		// Set data for Box2D
+		auto bc2dView = m_Registry.view<BoxCollider2DComponent>();
+		for (auto e : bc2dView)
 		{
-			auto view = m_Registry.view<BoxCollider2DComponent>();
-			for (auto e : view)
+			Entity entity = { e, this };
+			auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+			b2Body* body = (b2Body*)bc2d.RuntimeBody;
+			body->SetEnabled(bc2d.Enabled && entity.IsActive());
+
+			// Fixtures have to be deleted and reformed since there is no way to modify the scale if its been changed
+			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
 			{
-				Entity entity = { e, this };
-				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-				b2Body* body = (b2Body*)bc2d.RuntimeBody;
-				body->SetEnabled(bc2d.Enabled && entity.IsActive());
-			}
-		}
-		{
-			auto view = m_Registry.view<CircleCollider2DComponent>();
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
-				b2Body* body = (b2Body*)cc2d.RuntimeBody;
-				body->SetEnabled(cc2d.Enabled && entity.IsActive());
-			}
-		}
-		{
-			auto view = m_Registry.view<PolygonCollider2DComponent>();
-			for (auto e : view)
-			{
-				Entity entity = { e, this };
-				auto& pc2d = entity.GetComponent<PolygonCollider2DComponent>();
-				b2Body* body = (b2Body*)pc2d.RuntimeBody;
-				body->SetEnabled(pc2d.Enabled && entity.IsActive());
+				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
+				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
+				b2Fixture* fixture = (b2Fixture*)bc2d.RuntimeFixture;
+				body->DestroyFixture(fixture);
+				m_PhysicsSim2D->AddBoxFixture(entity, bc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
 			}
 		}
 
-		auto view = m_Registry.view<Rigidbody2DComponent>();
-		for (auto e : view)
+		auto cc2dView = m_Registry.view<CircleCollider2DComponent>();
+		for (auto e : cc2dView)
+		{
+			Entity entity = { e, this };
+			auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+			b2Body* body = (b2Body*)cc2d.RuntimeBody;
+			body->SetEnabled(cc2d.Enabled && entity.IsActive());
+
+			// Fixtures have to be deleted and reformed since there is no way to modify the scale if its been changed
+			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
+			{
+				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
+				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
+				b2Fixture* fixture = (b2Fixture*)cc2d.RuntimeFixture;
+				body->DestroyFixture(fixture);
+				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
+			}
+		}
+
+		auto pc2dView = m_Registry.view<PolygonCollider2DComponent>();
+		for (auto e : pc2dView)
+		{
+			Entity entity = { e, this };
+			auto& pc2d = entity.GetComponent<PolygonCollider2DComponent>();
+			b2Body* body = (b2Body*)pc2d.RuntimeBody;
+			body->SetEnabled(pc2d.Enabled && entity.IsActive());
+
+			// Fixtures have to be deleted and reformed since there is no way to modify the scale if its been changed
+			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
+			{
+				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
+				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
+				b2Fixture* fixture = (b2Fixture*)pc2d.RuntimeFixture;
+				body->DestroyFixture(fixture);
+				m_PhysicsSim2D->AddPolygonFixture(entity, pc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
+			}
+		}
+
+		auto rb2dView = m_Registry.view<Rigidbody2DComponent>();
+		for (auto e : rb2dView)
 		{
 			Entity entity = { e, this };
 			Rigidbody2DComponent& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 			b2Body* body = (b2Body*)rb2d.RuntimeBody;
 			if (body)
 			{
-				std::string name = entity.GetName();
 				TransformComponent& transform = entity.GetComponent<TransformComponent>();
-
 				body->SetLinearVelocity({ rb2d.Velocity.x, rb2d.Velocity.y });
 				body->SetTransform({ transform.Position.x, transform.Position.y }, transform.Rotation.z);
 				body->SetEnabled(entity.IsActive());
@@ -416,7 +453,7 @@ namespace Daybreak
 		}
 
 		// Retrieve data from Box2D
-		for (auto e : view)
+		for (auto e : rb2dView)
 		{
 			Entity entity = { e, this };
 			Rigidbody2DComponent& rb2d = entity.GetComponent<Rigidbody2DComponent>();
@@ -458,17 +495,15 @@ namespace Daybreak
 			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
 			{
 				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
-
-				glm::vec2 offset = glm::vec2(GetWorldTransform(entity)[3] - GetWorldTransform(parent)[3]);
-
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
-				m_PhysicsSim2D->AddBoxFixture(entity, bc2d, rb2d, offset);
+				m_PhysicsSim2D->AddBoxFixture(entity, bc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
 			}
 			else
 			{
 				m_PhysicsSim2D->AddBoxFixtureNoBody(entity);
 			}
 		}
+
 		auto cc2dView = m_Registry.view<CircleCollider2DComponent>();
 		for (auto e : cc2dView)
 		{
@@ -478,17 +513,15 @@ namespace Daybreak
 			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
 			{
 				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
-
-				glm::vec2 offset = glm::vec2(GetWorldTransform(entity)[3] - GetWorldTransform(parent)[3]);
-
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
-				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d, offset);
+				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
 			}
 			else
 			{
 				m_PhysicsSim2D->AddCircleFixtureNoBody(entity);
 			}
 		}
+
 		auto pc2dView = m_Registry.view<PolygonCollider2DComponent>();
 		for (auto e : pc2dView)
 		{
@@ -498,11 +531,8 @@ namespace Daybreak
 			if (HasParentEntityWith<Rigidbody2DComponent>(entity))
 			{
 				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
-
-				glm::vec2 offset = glm::vec2(GetWorldTransform(entity)[3] - GetWorldTransform(parent)[3]);
-
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
-				m_PhysicsSim2D->AddPolygonFixture(entity, pc2d, rb2d, offset);
+				m_PhysicsSim2D->AddPolygonFixture(entity, pc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
 			}
 			else
 			{
@@ -536,6 +566,20 @@ namespace Daybreak
 			return { m_EntityMap.at(uuid), this };
 
 		return {};
+	}
+
+	void Scene::DebugDraw()
+	{
+		Entity cameraEntity = GetActiveCameraEntity();
+		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * cameraEntity.GetComponent<TransformComponent>().Position);
+		glm::mat4 rotation = glm::toMat4(glm::quat(cameraEntity.GetComponent<TransformComponent>().Rotation));
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Scale);
+
+		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
+
+		RenderCommand::SetLineWidth(1);
+		m_PhysicsSim2D->DebugDraw();
+		Renderer2D::EndScene();
 	}
 
 	// void Scene::LogEntities()
