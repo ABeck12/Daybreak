@@ -238,7 +238,7 @@ namespace Daybreak
 		glm::vec2 vertices[8];
 		for (uint32_t i = 0; i < pc2d.Count; i++)
 		{
-			vertices[i] = pc2d.Vertices[i] + parentOffset;
+			vertices[i] = (pc2d.Vertices[i] * glm::vec2(worldTransform[0][0], worldTransform[1][1])) + parentOffset;
 		}
 		polyShape.Set((b2Vec2*)vertices, pc2d.Count);
 
