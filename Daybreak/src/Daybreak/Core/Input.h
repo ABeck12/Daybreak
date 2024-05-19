@@ -4,6 +4,7 @@
 
 #include "Daybreak/Core/MouseCodes.h"
 #include "Daybreak/Core/KeyCodes.h"
+#include "Daybreak/Core/GamepadCodes.h"
 
 #include <glm/glm.hpp>
 
@@ -18,6 +19,11 @@ namespace Daybreak
 		static glm::vec2 GetMousePosition();
 		static float GetMouseX();
 		static float GetMouseY();
+
+		static std::string GetGamepadName(Gamepad gamepad);
+		static bool IsGamepadConnected(Gamepad gamepad);
+		static float GetGamepadAxis(Gamepad gamepad, GamepadAxis axis);
+		static bool IsGamepadButtonPressed(Gamepad gamepad, GamepadButton button);
 	};
 
 }
