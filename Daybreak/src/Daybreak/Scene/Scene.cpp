@@ -8,7 +8,6 @@
 #include "Daybreak/Core/Time.h"
 #include "Daybreak/Scripting/Script.h"
 #include "Daybreak/Renderer/RenderCommand.h"
-#include "Daybreak/Scene/SceneSerializer.h"
 #include "Daybreak/Physics/DebugDraw.h"
 
 #include <box2d/box2d.h>
@@ -86,8 +85,15 @@ namespace Daybreak
 				parentRc.AmountOfChildren--;
 			}
 		}
+		for (UUID childID : entityRc.ChildrenIDs)
+		{
+			DestroyEntity(GetEntityByUUID(childID));
+		}
 
-		if (entity.HasComponent<Rigidbody2DComponent>() || entity.HasComponent<CircleCollider2DComponent>() || entity.HasComponent<BoxCollider2DComponent>())
+		if (m_PhysicsSim2D && (entity.HasComponent<Rigidbody2DComponent>() ||
+							   entity.HasComponent<CircleCollider2DComponent>() ||
+							   entity.HasComponent<BoxCollider2DComponent>() ||
+							   entity.HasComponent<PolygonCollider2DComponent>()))
 		{
 			m_PhysicsSim2D->RemoveEntity(entity);
 		}
@@ -100,6 +106,58 @@ namespace Daybreak
 
 		m_EntityMap.erase(entity.GetUUID());
 		m_Registry.destroy(entity);
+	}
+
+	template<typename... Component>
+	static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap)
+	{
+		([&]()
+		 {
+			 auto view = src.view<Component>();
+			 for (auto srcEntity : view)
+			 {
+				 entt::entity dstEntity = enttMap.at(src.get<IDComponent>(srcEntity).ID);
+
+				 auto& srcComponent = src.get<Component>(srcEntity);
+				 dst.emplace_or_replace<Component>(dstEntity, srcComponent);
+			 }
+		 }(),
+		 ...);
+	}
+
+	template<typename... Component>
+	static void CopyComponent(ComponentGroup<Component...>, entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap)
+	{
+		CopyComponent<Component...>(dst, src, enttMap);
+	}
+
+	Ref<Scene> Scene::Copy(const Ref<Scene>& input)
+	{
+		Ref<Scene> newScene = CreateRef<Scene>();
+
+		newScene->m_DebugDraw = input->m_DebugDraw;
+		newScene->m_LastUpdateTime = input->m_LastUpdateTime;
+		newScene->m_SceneName = input->m_SceneName;
+		newScene->m_SceneRunning = input->m_SceneRunning;
+
+		entt::registry& srcSceneRegistry = input->m_Registry;
+		entt::registry& dstSceneRegistry = newScene->m_Registry;
+		std::unordered_map<UUID, entt::entity> enttMap;
+
+		// Create entities in new scene
+		auto idView = srcSceneRegistry.view<IDComponent>();
+		for (auto e : idView)
+		{
+			UUID uuid = srcSceneRegistry.get<IDComponent>(e).ID;
+			const std::string& name = srcSceneRegistry.get<TagComponent>(e).Tag;
+			Entity newEntity = newScene->CreateEntityWithUUID(uuid, name);
+			enttMap[uuid] = (entt::entity)newEntity;
+		}
+
+		// Copy components (except IDComponent and TagComponent)
+		CopyComponent(AllComponents {}, dstSceneRegistry, srcSceneRegistry, enttMap);
+
+		return newScene;
 	}
 
 	template<typename T>
@@ -209,20 +267,6 @@ namespace Daybreak
 		m_SceneRunning = false;
 	}
 
-	// FIXME: Temporary
-	Ref<Scene> Scene::Copy(const Ref<Scene>& input)
-	{
-		Ref<Scene> output = CreateRef<Scene>();
-
-		SceneSerializer inputSerializer(input);
-		SceneSerializer outputSerializer(output);
-
-		inputSerializer.Serialize("../Sandbox/assets/scenes/TempLoadedScene.scene");
-		outputSerializer.Deserialize("../Sandbox/assets/scenes/TempLoadedScene.scene");
-
-
-		return output;
-	}
 
 	Entity Scene::GetActiveCameraEntity()
 	{
@@ -578,6 +622,16 @@ namespace Daybreak
 		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
 
 		RenderCommand::SetLineWidth(1);
+
+		// FIXME: this is for the editor to render when the scene isnt playing
+		// if (!m_SceneRunning)
+		// {
+		// 	OnPhysicsStart();
+		// 	m_PhysicsSim2D->DebugDraw();
+		// 	Renderer2D::EndScene();
+		// 	OnPhysicsStop();
+		// 	return;
+		// }
 		m_PhysicsSim2D->DebugDraw();
 		Renderer2D::EndScene();
 	}

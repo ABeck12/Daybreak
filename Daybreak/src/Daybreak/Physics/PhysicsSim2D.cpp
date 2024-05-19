@@ -349,18 +349,37 @@ namespace Daybreak
 		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
 			auto bc2d = entity.GetComponent<BoxCollider2DComponent>();
-			m_PhysicsWorld->DestroyBody((b2Body*)bc2d.RuntimeBody);
-			bc2d.RuntimeBody = nullptr;
-			bc2d.RuntimeFixture = nullptr;
+			b2Body* body = (b2Body*)bc2d.RuntimeBody;
+			if (body)
+			{
+				body->DestroyFixture((b2Fixture*)bc2d.RuntimeFixture);
+				bc2d.RuntimeBody = nullptr;
+				bc2d.RuntimeFixture = nullptr;
+			}
 		}
-		else if (entity.HasComponent<BoxCollider2DComponent>())
+		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
 			auto cc2d = entity.GetComponent<CircleCollider2DComponent>();
-			m_PhysicsWorld->DestroyBody((b2Body*)cc2d.RuntimeBody);
-			cc2d.RuntimeBody = nullptr;
-			cc2d.RuntimeFixture = nullptr;
+			b2Body* body = (b2Body*)cc2d.RuntimeBody;
+			if (body)
+			{
+				body->DestroyFixture((b2Fixture*)cc2d.RuntimeFixture);
+				cc2d.RuntimeBody = nullptr;
+				cc2d.RuntimeFixture = nullptr;
+			}
 		}
-		else if (entity.HasComponent<Rigidbody2DComponent>())
+		if (entity.HasComponent<PolygonCollider2DComponent>())
+		{
+			auto pc2d = entity.GetComponent<PolygonCollider2DComponent>();
+			b2Body* body = (b2Body*)pc2d.RuntimeBody;
+			if (body)
+			{
+				body->DestroyFixture((b2Fixture*)pc2d.RuntimeFixture);
+				pc2d.RuntimeBody = nullptr;
+				pc2d.RuntimeFixture = nullptr;
+			}
+		}
+		if (entity.HasComponent<Rigidbody2DComponent>())
 		{
 			auto rb2d = entity.GetComponent<Rigidbody2DComponent>();
 			if (rb2d.RuntimeBody)

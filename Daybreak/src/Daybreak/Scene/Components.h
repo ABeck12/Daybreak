@@ -257,5 +257,17 @@ namespace Daybreak
 		}
 	};
 
+	template<typename... Component>
+	struct ComponentGroup
+	{
+	};
 
+	using AllComponents =
+		ComponentGroup<TransformComponent,
+					   RelationshipComponent, ActiveComponent,
+					   SpriteRendererComponent,
+					   CameraComponent, AnimatorComponent,
+					   ScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
+					   CircleCollider2DComponent, PolygonCollider2DComponent,
+					   TextRendererComponent>;
 }
