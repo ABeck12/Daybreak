@@ -41,6 +41,9 @@ namespace Daybreak
 	struct ActiveComponent
 	{
 		bool Active = true;
+
+		ActiveComponent() = default;
+		ActiveComponent(const ActiveComponent&) = default;
 	};
 
 	struct TransformComponent
