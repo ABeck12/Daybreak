@@ -1,12 +1,14 @@
 #include <Daybreak.h>
 #include <Daybreak/Core/EntryPoint.h>
 
-#include "SceneLayer.h"
+// #include "SceneLayer.h"
 #include "LightingScene.h"
 
-#include <DaybreakEditor.h>
+// #include <DaybreakEditor.h>
+// #include "../scripts/MoveableComponent.h"
+#include "scripts/MoveableComponent.h"
 
-#include "ScriptableEntityTest.h"
+// #include "ScriptableEntityTest.h"
 
 extern "C"
 {
@@ -20,7 +22,8 @@ public:
 	Sandbox(Daybreak::ApplicationSpecifications spec)
 		: Daybreak::Application(spec)
 	{
-		DB_REGISTER_SCRIPT(MoveableComponent);
+		AutoRegister();
+		// DB_REGISTER_SCRIPT(MoveableComponent);
 		// PushLayer(new SceneLayer());
 		PushLayer(new LightingScene());
 		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
