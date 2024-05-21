@@ -22,8 +22,7 @@ public:
 	Sandbox(Daybreak::ApplicationSpecifications spec)
 		: Daybreak::Application(spec)
 	{
-		AutoRegister();
-		// DB_REGISTER_SCRIPT(MoveableComponent);
+		DB_REGISTER_SCRIPT(MoveableComponent);
 		// PushLayer(new SceneLayer());
 		PushLayer(new LightingScene());
 		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
