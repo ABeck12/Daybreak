@@ -188,6 +188,25 @@ namespace Daybreak
 
 			out << YAML::EndMap;
 		}
+		if (entity.HasComponent<PolygonCollider2DComponent>())
+		{
+			out << YAML::Key << "PolygonCollider2DComponent";
+			out << YAML::BeginMap;
+
+			auto& pc2d = entity.GetComponent<PolygonCollider2DComponent>();
+			out << YAML::Key << "Vertices" << YAML::Value << YAML::BeginSeq;
+			for (int i = 0; i < pc2d.Count; i++)
+			{
+				out << pc2d.Vertices[i];
+			}
+			out << YAML::EndSeq;
+			out << YAML::Key << "Count" << YAML::Value << pc2d.Count;
+			out << YAML::Key << "CollisionLayer" << YAML::Value << pc2d.CollisionLayer;
+			out << YAML::Key << "IsTrigger" << YAML::Value << pc2d.IsTrigger;
+			out << YAML::Key << "Enabled" << YAML::Value << pc2d.Enabled;
+
+			out << YAML::EndMap;
+		}
 		if (entity.HasComponent<CameraComponent>())
 		{
 			out << YAML::Key << "CameraComponent";
@@ -341,6 +360,21 @@ namespace Daybreak
 					cc2d.CollisionLayer = cc2dComponent["CollisionLayer"].as<uint32_t>();
 					cc2d.IsTrigger = cc2dComponent["IsTrigger"].as<bool>();
 					cc2d.Enabled = cc2dComponent["Enabled"].as<bool>();
+				}
+				auto pc2dComponent = entity["PolygonCollider2DComponent"];
+				if (pc2dComponent)
+				{
+					auto& pc2d = deserializedEntity.AddComponent<PolygonCollider2DComponent>();
+
+					pc2d.Count = pc2dComponent["Count"].as<uint32_t>();
+					for (int i = 0; i < pc2d.Count; i++)
+					{
+						pc2d.Vertices[i] = pc2dComponent["Vertices"][i].as<glm::vec2>();
+					}
+
+					pc2d.CollisionLayer = pc2dComponent["CollisionLayer"].as<uint32_t>();
+					pc2d.IsTrigger = pc2dComponent["IsTrigger"].as<bool>();
+					pc2d.Enabled = pc2dComponent["Enabled"].as<bool>();
 				}
 				auto rb2dComponent = entity["Rigidbody2DComponent"];
 				if (rb2dComponent)

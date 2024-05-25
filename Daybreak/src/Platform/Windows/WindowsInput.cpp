@@ -1,6 +1,5 @@
 #include "dbpch.h"
 
-//#include "Platform/Windows/WindowsInput.h"
 #include "Daybreak/Core/Input.h"
 #include "Daybreak/Core/Application.h"
 #include <GLFW/glfw3.h>
@@ -38,5 +37,54 @@ namespace Daybreak
 	float Input::GetMouseY()
 	{
 		return GetMousePosition().y;
+	}
+
+	std::string Input::GetGamepadName(Gamepad gamepad)
+	{
+		return glfwGetGamepadName((int)gamepad);
+	}
+
+	bool Input::IsGamepadConnected(Gamepad gamepad)
+	{
+		return (bool)glfwJoystickPresent((int)gamepad);
+	}
+
+	float Input::GetGamepadAxis(Gamepad gamepad, GamepadAxis axis)
+	{
+		if (!IsGamepadConnected(gamepad))
+		{
+			return 0.0f;
+		}
+
+		int count;
+		const float* axes = glfwGetJoystickAxes((int)gamepad, &count);
+		switch (axis)
+		{
+			case GamepadAxis::LeftY:
+				return -axes[(int)axis];
+			case GamepadAxis::RightY:
+				return -axes[(int)axis];
+			case GamepadAxis::LeftX:
+				return axes[(int)axis];
+			case GamepadAxis::RightX:
+				return axes[(int)axis];
+			case GamepadAxis::RightTrigger:
+				return (1 + axes[(int)axis]) / 2;
+			case GamepadAxis::LeftTrigger:
+				return (1 + axes[(int)axis]) / 2;
+		}
+		DB_CORE_ERROR("Unknown gamepad axis {}", (int)axis);
+		return 0.0f;
+	}
+
+	bool Input::IsGamepadButtonPressed(Gamepad gamepad, GamepadButton button)
+	{
+		if (IsGamepadConnected(gamepad))
+		{
+			int buttonCount;
+			const unsigned char* buttons = glfwGetJoystickButtons((int)gamepad, &buttonCount);
+			return buttons[(int)button] == GLFW_PRESS;
+		}
+		return false;
 	}
 }

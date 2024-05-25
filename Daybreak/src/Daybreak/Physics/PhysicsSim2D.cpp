@@ -82,6 +82,12 @@ namespace Daybreak
 		}
 	};
 
+#define CHECK_COLLISION_LAYER(entA, entB, typeA, typeB)                                                \
+	if (entA.HasComponent<typeA>() && entB.HasComponent<typeB>())                                      \
+	{                                                                                                  \
+		return entA.GetComponent<typeA>().CollisionLayer == entB.GetComponent<typeB>().CollisionLayer; \
+	}
+
 	class ContactFilter : public b2ContactFilter
 	{
 		bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) override
@@ -90,22 +96,15 @@ namespace Daybreak
 			Entity entityA = scene->GetEntityByUUID((UUID)fixtureA->GetUserData().uuid);
 			Entity entityB = scene->GetEntityByUUID((UUID)fixtureB->GetUserData().uuid);
 
-			if (entityA.HasComponent<BoxCollider2DComponent>() && entityB.HasComponent<BoxCollider2DComponent>())
-			{
-				return entityA.GetComponent<BoxCollider2DComponent>().CollisionLayer == entityB.GetComponent<BoxCollider2DComponent>().CollisionLayer;
-			}
-			else if (entityA.HasComponent<BoxCollider2DComponent>() && entityB.HasComponent<CircleCollider2DComponent>())
-			{
-				return entityA.GetComponent<BoxCollider2DComponent>().CollisionLayer == entityB.GetComponent<CircleCollider2DComponent>().CollisionLayer;
-			}
-			else if (entityA.HasComponent<CircleCollider2DComponent>() && entityB.HasComponent<BoxCollider2DComponent>())
-			{
-				return entityA.GetComponent<CircleCollider2DComponent>().CollisionLayer == entityB.GetComponent<BoxCollider2DComponent>().CollisionLayer;
-			}
-			else if (entityA.HasComponent<CircleCollider2DComponent>() && entityB.HasComponent<CircleCollider2DComponent>())
-			{
-				return entityA.GetComponent<CircleCollider2DComponent>().CollisionLayer == entityB.GetComponent<CircleCollider2DComponent>().CollisionLayer;
-			}
+			CHECK_COLLISION_LAYER(entityA, entityB, BoxCollider2DComponent, BoxCollider2DComponent);
+			CHECK_COLLISION_LAYER(entityA, entityB, BoxCollider2DComponent, CircleCollider2DComponent);
+			CHECK_COLLISION_LAYER(entityA, entityB, BoxCollider2DComponent, PolygonCollider2DComponent);
+
+			CHECK_COLLISION_LAYER(entityA, entityB, CircleCollider2DComponent, CircleCollider2DComponent);
+			CHECK_COLLISION_LAYER(entityA, entityB, CircleCollider2DComponent, PolygonCollider2DComponent);
+
+			CHECK_COLLISION_LAYER(entityA, entityB, PolygonCollider2DComponent, PolygonCollider2DComponent);
+
 			return false;
 		}
 	};
@@ -131,6 +130,9 @@ namespace Daybreak
 		m_PhysicsWorld = new b2World({ 0.0f, -9.8f });
 		m_ContactLitener = new ContactListener();
 		m_ContactFilter = new ContactFilter();
+		m_DebugRenderer = new DebugRenderer();
+
+		m_PhysicsWorld->SetDebugDraw(m_DebugRenderer);
 		m_PhysicsWorld->SetContactListener(m_ContactLitener);
 		m_PhysicsWorld->SetContactFilter(m_ContactFilter);
 	}
@@ -140,6 +142,9 @@ namespace Daybreak
 		delete m_PhysicsWorld;
 		delete m_ContactLitener;
 		delete m_ContactFilter;
+		delete m_DebugRenderer;
+
+		m_DebugRenderer = nullptr;
 		m_ContactFilter = nullptr;
 		m_ContactLitener = nullptr;
 		m_PhysicsWorld = nullptr;
@@ -153,7 +158,7 @@ namespace Daybreak
 		m_PhysicsWorld->Step(0.016f, velocityIterations, positionIterations); // For now this is the fixed delta time
 	}
 
-	void PhysicsSim2D::InitBody(Entity& entity)
+	void PhysicsSim2D::InitBody(const Entity& entity)
 	{
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 		Rigidbody2DComponent& rb2d = entity.GetComponent<Rigidbody2DComponent>();
@@ -172,15 +177,16 @@ namespace Daybreak
 		rb2d.RuntimeBody = body;
 	}
 
-	void PhysicsSim2D::AddBoxFixture(Entity& entity, BoxCollider2DComponent& bc2d, Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset)
+	void PhysicsSim2D::AddBoxFixture(const Entity& entity, BoxCollider2DComponent& bc2d, const Rigidbody2DComponent& rb2d,
+									 const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform)
 	{
-		TransformComponent& transform = entity.GetComponent<TransformComponent>();
-
 		b2Body* body = (b2Body*)rb2d.RuntimeBody;
 		b2FixtureDef fixtureDef;
 
+		const glm::vec2 parentOffset = glm::vec2(worldTransform[3] - rbWorldTransform[3]);
+
 		b2PolygonShape boxShape;
-		boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x + entityOffset.x, bc2d.Offset.y + entityOffset.y), 0.0f);
+		boxShape.SetAsBox(bc2d.Size.x * abs(worldTransform[0][0]), bc2d.Size.y * abs(worldTransform[1][1]), b2Vec2(bc2d.Offset.x + parentOffset.x, bc2d.Offset.y + parentOffset.y), 0.0f);
 
 		fixtureDef.shape = &boxShape;
 		fixtureDef.isSensor = bc2d.IsTrigger;
@@ -196,15 +202,15 @@ namespace Daybreak
 		bc2d.RuntimeBody = body;
 	}
 
-	void PhysicsSim2D::AddCircleFixture(Entity& entity, CircleCollider2DComponent& cc2d, Rigidbody2DComponent& rb2d, const glm::vec2& entityOffset)
+	void PhysicsSim2D::AddCircleFixture(const Entity& entity, CircleCollider2DComponent& cc2d, const Rigidbody2DComponent& rb2d, const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform)
 	{
-		TransformComponent& transform = entity.GetComponent<TransformComponent>();
-
 		b2Body* body = (b2Body*)rb2d.RuntimeBody;
 		b2FixtureDef fixtureDef;
 
+		const glm::vec2 parentOffset = glm::vec2(worldTransform[3] - rbWorldTransform[3]);
+
 		b2CircleShape circleShape;
-		circleShape.m_p.Set(cc2d.Offset.x * transform.Scale.x + entityOffset.x, cc2d.Offset.y * transform.Scale.y + entityOffset.y);
+		circleShape.m_p.Set(cc2d.Offset.x * abs(worldTransform[0][0]) + parentOffset.x, cc2d.Offset.y * abs(worldTransform[1][1]) + parentOffset.y);
 		circleShape.m_radius = cc2d.Radius;
 
 		fixtureDef.shape = &circleShape;
@@ -220,56 +226,37 @@ namespace Daybreak
 		cc2d.RuntimeFixture = fixture;
 		cc2d.RuntimeBody = body;
 	}
-	/*
-	void PhysicsSim2D::AddBoxFixture(Entity& entity)
+
+	void PhysicsSim2D::AddPolygonFixture(const Entity& entity, PolygonCollider2DComponent& pc2d, const Rigidbody2DComponent& rb2d, const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform)
 	{
-		if (!entity.HasComponent<Rigidbody2DComponent>() ||
-			(entity.HasParent() && !m_Scene->GetEntityByUUID(entity.GetParentUUID()).HasComponent<Rigidbody2DComponent>()))
-		{
-			AddBoxFixtureNoBody(entity);
-			return;
-		}
-
-		Rigidbody2DComponent rb2d;
-		if (entity.HasComponent<Rigidbody2DComponent>())
-		{
-			rb2d = entity.GetComponent<Rigidbody2DComponent>();
-		}
-		else
-		{
-			rb2d = m_Scene->GetEntityByUUID(entity.GetParentUUID()).GetComponent<Rigidbody2DComponent>();
-		}
-
 		b2Body* body = (b2Body*)rb2d.RuntimeBody;
 		b2FixtureDef fixtureDef;
-		BoxCollider2DComponent& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
-		b2PolygonShape boxShape;
-		boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
-		fixtureDef.shape = &boxShape;
-		fixtureDef.isSensor = bc2d.IsTrigger;
+		const glm::vec2 parentOffset = glm::vec2(worldTransform[3] - rbWorldTransform[3]);
+
+		b2PolygonShape polyShape;
+		glm::vec2 vertices[8];
+		for (uint32_t i = 0; i < pc2d.Count; i++)
+		{
+			vertices[i] = (pc2d.Vertices[i] * glm::vec2(worldTransform[0][0], worldTransform[1][1])) + parentOffset;
+		}
+		polyShape.Set((b2Vec2*)vertices, pc2d.Count);
+
+		fixtureDef.shape = &polyShape;
+		fixtureDef.isSensor = pc2d.IsTrigger;
 		fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_Scene);
 		fixtureDef.userData.uuid = entity.GetUUID();
+		fixtureDef.density = rb2d.Density;
+		fixtureDef.friction = rb2d.Friction;
+		fixtureDef.restitution = rb2d.Restitution;
+		fixtureDef.restitutionThreshold = rb2d.RestitutionThreshold;
 
 		b2Fixture* fixture = body->CreateFixture(&fixtureDef);
-		bc2d.RuntimeFixture = fixture;
-		bc2d.RuntimeBody = body;
-
-		fixture->SetDensity(rb2d.Density);
-		fixture->SetFriction(rb2d.Friction);
-		fixture->SetRestitution(rb2d.Restitution);
-		fixture->SetRestitutionThreshold(rb2d.RestitutionThreshold);
-
-		b2MassData massData;
-		massData.mass = rb2d.Mass;
-		massData.center = b2Vec2(bc2d.Offset.x * transform.Scale.x, bc2d.Offset.y * transform.Scale.y);
-		massData.I = rb2d.Mass * ((bc2d.Size.x * bc2d.Size.x) / 12 + (bc2d.Size.y * bc2d.Size.y) / 12);
-		body->SetMassData(&massData);
+		pc2d.RuntimeFixture = fixture;
+		pc2d.RuntimeBody = body;
 	}
-*/
 
-	void PhysicsSim2D::AddBoxFixtureNoBody(Entity& entity)
+	void PhysicsSim2D::AddBoxFixtureNoBody(const Entity& entity)
 	{
 		BoxCollider2DComponent& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
@@ -298,7 +285,7 @@ namespace Daybreak
 		bc2d.RuntimeBody = body;
 	}
 
-	void PhysicsSim2D::AddCircleFixtureNoBody(Entity& entity)
+	void PhysicsSim2D::AddCircleFixtureNoBody(const Entity& entity)
 	{
 		CircleCollider2DComponent& cc2d = entity.GetComponent<CircleCollider2DComponent>();
 		TransformComponent& transform = entity.GetComponent<TransformComponent>();
@@ -327,135 +314,72 @@ namespace Daybreak
 		cc2d.RuntimeFixture = fixture;
 		cc2d.RuntimeBody = body;
 	}
-	/*
-		void PhysicsSim2D::AddBoxCollider(Entity& entity)
-		{
-			auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-			auto& transform = entity.GetComponent<TransformComponent>();
-			auto uuid = entity.GetUUID();
 
-			b2BodyDef bodyDef;
-			b2FixtureDef fixtureDef;
+	void PhysicsSim2D::AddPolygonFixtureNoBody(const Entity& entity)
+	{
+		PolygonCollider2DComponent& pc2d = entity.GetComponent<PolygonCollider2DComponent>();
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
 
-			bodyDef.type = b2_staticBody;
-			bodyDef.position.Set(transform.Position.x, transform.Position.y);
-			bodyDef.angle = transform.Rotation.z;
-			bodyDef.bullet = true;
-			bodyDef.allowSleep = false;
+		b2BodyDef bodyDef;
+		b2FixtureDef fixtureDef;
 
-			b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+		bodyDef.type = b2_staticBody;
+		bodyDef.position.Set(transform.Position.x, transform.Position.y);
+		bodyDef.angle = transform.Rotation.z;
+		bodyDef.bullet = true;
+		bodyDef.allowSleep = false;
 
-			b2PolygonShape boxShape;
-			boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
+		b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
 
-			fixtureDef.shape = &boxShape;
-			fixtureDef.isSensor = bc2d.IsTrigger;
-			fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_Scene);
-			fixtureDef.userData.uuid = entity.GetUUID();
+		b2PolygonShape polyShape;
+		polyShape.Set((b2Vec2*)pc2d.Vertices, pc2d.Count);
 
-			b2Fixture* fixture = body->CreateFixture(&fixtureDef);
-			bc2d.RuntimeFixture = fixture;
-			bc2d.RuntimeBody = body;
+		fixtureDef.shape = &polyShape;
+		fixtureDef.isSensor = pc2d.IsTrigger;
+		fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_Scene);
+		fixtureDef.userData.uuid = entity.GetUUID();
 
-			if (entity.HasComponent<Rigidbody2DComponent>())
-			{
-				auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+		b2Fixture* fixture = body->CreateFixture(&fixtureDef);
+		pc2d.RuntimeFixture = fixture;
+		pc2d.RuntimeBody = body;
+	}
 
-				body->SetType(Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type));
-				body->SetBullet(rb2d.ContinuousDetection);
-				body->SetSleepingAllowed(rb2d.AllowSleep);
-				body->SetFixedRotation(rb2d.FixedRotation);
-				body->SetGravityScale(rb2d.GravityScale);
-				body->SetAngularDamping(rb2d.AngularDrag);
-				body->SetLinearDamping(rb2d.LinearDrag);
-				rb2d.RuntimeBody = body;
-
-				fixture->SetDensity(rb2d.Density);
-				fixture->SetFriction(rb2d.Friction);
-				fixture->SetRestitution(rb2d.Restitution);
-				fixture->SetRestitutionThreshold(rb2d.RestitutionThreshold);
-
-				b2MassData massData;
-				massData.mass = rb2d.Mass;
-				massData.center = b2Vec2(bc2d.Offset.x * transform.Scale.x, bc2d.Offset.y * transform.Scale.y);
-				massData.I = rb2d.Mass * ((bc2d.Size.x * bc2d.Size.x) / 12 + (bc2d.Size.y * bc2d.Size.y) / 12);
-				body->SetMassData(&massData);
-			}
-		}
-
-		void PhysicsSim2D::AddCircleCollider(Entity& entity)
-		{
-			auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
-			auto& transform = entity.GetComponent<TransformComponent>();
-			auto uuid = entity.GetUUID();
-
-			b2BodyDef bodyDef;
-			b2FixtureDef fixtureDef;
-
-			bodyDef.type = b2_staticBody;
-			bodyDef.position.Set(transform.Position.x, transform.Position.y);
-			bodyDef.angle = transform.Rotation.z;
-			bodyDef.bullet = true;
-			bodyDef.allowSleep = false;
-
-			b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
-
-			b2CircleShape circleShape;
-			circleShape.m_p.Set(cc2d.Offset.x * transform.Scale.x, cc2d.Offset.y * transform.Scale.y);
-			circleShape.m_radius = cc2d.Radius;
-
-			fixtureDef.shape = &circleShape;
-			fixtureDef.isSensor = cc2d.IsTrigger;
-			fixtureDef.userData.pointer = reinterpret_cast<uintptr_t>(m_Scene);
-			fixtureDef.userData.uuid = entity.GetUUID();
-
-			b2Fixture* fixture = body->CreateFixture(&fixtureDef);
-			cc2d.RuntimeFixture = fixture;
-			cc2d.RuntimeBody = body;
-
-			if (entity.HasComponent<Rigidbody2DComponent>())
-			{
-				auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
-
-				body->SetType(Utils::Rigidbody2DTypeToBox2DBody(rb2d.Type));
-				body->SetBullet(rb2d.ContinuousDetection);
-				body->SetSleepingAllowed(rb2d.AllowSleep);
-				body->SetFixedRotation(rb2d.FixedRotation);
-				body->SetGravityScale(rb2d.GravityScale);
-				body->SetAngularDamping(rb2d.AngularDrag);
-				body->SetLinearDamping(rb2d.LinearDrag);
-				rb2d.RuntimeBody = body;
-
-				fixture->SetDensity(rb2d.Density);
-				fixture->SetFriction(rb2d.Friction);
-				fixture->SetRestitution(rb2d.Restitution);
-				fixture->SetRestitutionThreshold(rb2d.RestitutionThreshold);
-
-				b2MassData massData;
-				massData.mass = rb2d.Mass;
-				massData.center = b2Vec2(cc2d.Offset.x * transform.Scale.x, cc2d.Offset.y * transform.Scale.y);
-				massData.I = 0.5f * rb2d.Mass * cc2d.Radius * cc2d.Radius;
-				body->SetMassData(&massData);
-			}
-		}
-	*/
 	void PhysicsSim2D::RemoveEntity(Entity& entity)
 	{
 		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
 			auto bc2d = entity.GetComponent<BoxCollider2DComponent>();
-			m_PhysicsWorld->DestroyBody((b2Body*)bc2d.RuntimeBody);
-			bc2d.RuntimeBody = nullptr;
-			bc2d.RuntimeFixture = nullptr;
+			b2Body* body = (b2Body*)bc2d.RuntimeBody;
+			if (body)
+			{
+				body->DestroyFixture((b2Fixture*)bc2d.RuntimeFixture);
+				bc2d.RuntimeBody = nullptr;
+				bc2d.RuntimeFixture = nullptr;
+			}
 		}
-		else if (entity.HasComponent<BoxCollider2DComponent>())
+		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
 			auto cc2d = entity.GetComponent<CircleCollider2DComponent>();
-			m_PhysicsWorld->DestroyBody((b2Body*)cc2d.RuntimeBody);
-			cc2d.RuntimeBody = nullptr;
-			cc2d.RuntimeFixture = nullptr;
+			b2Body* body = (b2Body*)cc2d.RuntimeBody;
+			if (body)
+			{
+				body->DestroyFixture((b2Fixture*)cc2d.RuntimeFixture);
+				cc2d.RuntimeBody = nullptr;
+				cc2d.RuntimeFixture = nullptr;
+			}
 		}
-		else if (entity.HasComponent<Rigidbody2DComponent>())
+		if (entity.HasComponent<PolygonCollider2DComponent>())
+		{
+			auto pc2d = entity.GetComponent<PolygonCollider2DComponent>();
+			b2Body* body = (b2Body*)pc2d.RuntimeBody;
+			if (body)
+			{
+				body->DestroyFixture((b2Fixture*)pc2d.RuntimeFixture);
+				pc2d.RuntimeBody = nullptr;
+				pc2d.RuntimeFixture = nullptr;
+			}
+		}
+		if (entity.HasComponent<Rigidbody2DComponent>())
 		{
 			auto rb2d = entity.GetComponent<Rigidbody2DComponent>();
 			if (rb2d.RuntimeBody)
@@ -512,5 +436,11 @@ namespace Daybreak
 	void PhysicsSim2D::AddAngularImpulse(const Rigidbody2DComponent& rb2d, float impulse)
 	{
 		((b2Body*)rb2d.RuntimeBody)->ApplyAngularImpulse(impulse, true);
+	}
+
+	void PhysicsSim2D::DebugDraw()
+	{
+		m_DebugRenderer->SetFlags(b2Draw::e_shapeBit);
+		m_PhysicsWorld->DebugDraw();
 	}
 }

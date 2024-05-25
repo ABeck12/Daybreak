@@ -41,6 +41,9 @@ namespace Daybreak
 	struct ActiveComponent
 	{
 		bool Active = true;
+
+		ActiveComponent() = default;
+		ActiveComponent(const ActiveComponent&) = default;
 	};
 
 	struct TransformComponent
@@ -154,6 +157,31 @@ namespace Daybreak
 		CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
 	};
 
+	struct PolygonCollider2DComponent
+	{
+		glm::vec2 Vertices[8] {
+			{ -0.5, -0.5 },
+			{ -0.5, 0.5 },
+			{ 0.5, -0.5 },
+			{ 0.5, 0.5 },
+			{ 0.0, 0.0 },
+			{ 0.0, 0.0 },
+			{ 0.0, 0.0 },
+			{ 0.0, 0.0 },
+		};
+		uint32_t Count = 4;
+
+		uint32_t CollisionLayer = 0;
+		bool IsTrigger = false;
+		bool Enabled = true;
+
+		void* RuntimeFixture = nullptr;
+		void* RuntimeBody = nullptr;
+
+		PolygonCollider2DComponent() = default;
+		PolygonCollider2DComponent(const PolygonCollider2DComponent&) = default;
+	};
+
 	struct Rigidbody2DComponent
 	{
 		enum class BodyType
@@ -232,5 +260,17 @@ namespace Daybreak
 		}
 	};
 
+	template<typename... Component>
+	struct ComponentGroup
+	{
+	};
 
+	using AllComponents =
+		ComponentGroup<TransformComponent,
+					   RelationshipComponent, ActiveComponent,
+					   SpriteRendererComponent,
+					   CameraComponent, AnimatorComponent,
+					   ScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
+					   CircleCollider2DComponent, PolygonCollider2DComponent,
+					   TextRendererComponent>;
 }

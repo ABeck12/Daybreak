@@ -20,6 +20,7 @@ private:
 	void DrawGrid();
 	void DrawColliders();
 	glm::vec3 RotatePoint(glm::vec3 vec, float theta);
+
 private:
 	glm::vec2 lastMousePos = glm::vec2(1.0f);
 	Daybreak::Ref<Daybreak::Scene> m_Scene;

@@ -62,12 +62,15 @@ namespace Daybreak
 		template<typename T>
 		bool HasParentEntityWith(Entity& entity);
 
+		void DebugDraw();
 
 	private:
 		std::string m_SceneName;
 		entt::registry m_Registry;
 		PhysicsSim2D* m_PhysicsSim2D;
 		float m_LastUpdateTime = 0.0f;
+		bool m_DebugDraw = true;
+		bool m_SceneRunning = false;
 
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
 

@@ -4,7 +4,8 @@
 #include <imgui.h>
 
 #include "Daybreak/Renderer/Texture.h"
-#include "ScriptableEntityTest.h"
+// #include "ScriptableEntityTest.h"
+#include "scripts/MoveableComponent.h"
 #include "Daybreak/Scene/SceneSerializer.h"
 
 SceneLayer::SceneLayer()

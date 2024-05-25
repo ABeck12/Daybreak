@@ -30,6 +30,7 @@ project "Sandbox"
 		"../Daybreak/vendor/msdf-atlas-gen/msdfgen",
 		"../Daybreak/vendor/msdf-atlas-gen/msdfgen/include",
 		"../Daybreak/vendor/msdf-atlas-gen/msdf-atlas-gen",
+		"../scripts/src",
 	}
 
 	links

@@ -1,12 +1,14 @@
 #include <Daybreak.h>
 #include <Daybreak/Core/EntryPoint.h>
 
-#include "SceneLayer.h"
+// #include "SceneLayer.h"
 #include "LightingScene.h"
 
-#include <DaybreakEditor.h>
+// #include <DaybreakEditor.h>
+// #include "../scripts/MoveableComponent.h"
+#include "scripts/MoveableComponent.h"
 
-#include "ScriptableEntityTest.h"
+// #include "ScriptableEntityTest.h"
 
 extern "C"
 {
