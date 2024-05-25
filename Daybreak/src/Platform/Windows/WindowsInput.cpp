@@ -53,7 +53,6 @@ namespace Daybreak
 	{
 		if (!IsGamepadConnected(gamepad))
 		{
-			DB_CORE_WARN("Gamepad {} is not connected!", (int)gamepad);
 			return 0.0f;
 		}
 
@@ -86,7 +85,6 @@ namespace Daybreak
 			const unsigned char* buttons = glfwGetJoystickButtons((int)gamepad, &buttonCount);
 			return buttons[(int)button] == GLFW_PRESS;
 		}
-		DB_CORE_WARN("Gamepad {} is not connected!", (int)gamepad);
 		return false;
 	}
 }
