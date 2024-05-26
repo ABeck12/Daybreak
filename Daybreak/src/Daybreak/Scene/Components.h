@@ -287,5 +287,6 @@ namespace Daybreak
 					   CameraComponent, AnimatorComponent,
 					   ScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
 					   CircleCollider2DComponent, PolygonCollider2DComponent,
-					   TextRendererComponent>;
+					   TextRendererComponent,
+					   PolygonCollider2DComponent, GlobalLight2DComponent>;
 }

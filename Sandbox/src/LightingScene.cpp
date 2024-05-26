@@ -127,6 +127,8 @@ void LightingScene::OnUpdate(Daybreak::DeltaTime dt)
 
 	auto sc = m_Scene->GetEntityByName("Player").GetComponent<Daybreak::ScriptComponent>().Instance;
 	// auto font = Daybreak::Font::GetDefault();
+	glm::vec3 coords[4] = { { 0.0f, -3.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } };
+	Daybreak::Renderer2D::DrawQuad(coords[0], coords[1], coords[2], coords[3]);
 	// Daybreak::Renderer2D::DrawString("STRING of te\nxt 1234;fds>?'", font, { -3, 3, 0 }, { 1, 1 });
 	// Daybreak::Renderer2D::DrawString("text", font, { 0, 0, 0 }, { 10, 10 }, { 0, 1, 0, 1 });
 
