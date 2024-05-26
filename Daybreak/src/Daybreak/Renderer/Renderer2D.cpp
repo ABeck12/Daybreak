@@ -380,6 +380,35 @@ namespace Daybreak
 		s_Data.QuadIndexCount += 6;
 	}
 
+	void Renderer2D::DrawQuad(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& p4,
+							  const glm::vec4& tintColor)
+	{
+		constexpr size_t quadVertexCount = 4;
+		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		glm::vec3 coords[4] = { p1, p2, p3, p4 };
+
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+			NextBatch();
+
+		for (size_t i = 0; i < quadVertexCount; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = coords[i];
+			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+			s_Data.QuadVertexBufferPtr->Color = tintColor;
+			s_Data.QuadVertexBufferPtr->TexIndex = 0.0f;
+			s_Data.QuadVertexBufferPtr->TilingFactor = 1.0f;
+			s_Data.QuadVertexBufferPtr->EntityID = -1;
+			s_Data.QuadVertexBufferPtr++;
+		}
+		s_Data.QuadIndexCount += 6;
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& p4,
+							  const glm::vec4& tintColor)
+	{
+		Renderer2D::DrawQuad(p1, p2, p3, p4, tintColor);
+	}
+
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor)
 	{
 		DrawQuad({ position.x, position.y, 0.0f }, size, subtexture, tintColor);

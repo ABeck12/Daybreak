@@ -41,6 +41,18 @@ namespace Daybreak
 					colorAttachments++;
 					break;
 
+				case FrameBufferAttachmentTypes::RGBA32F:
+					uint32_t rgba32FID;
+					glCreateTextures(GL_TEXTURE_2D, 1, &rgba32FID);
+					glBindTexture(GL_TEXTURE_2D, rgba32FID);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_FLOAT, nullptr);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachments, GL_TEXTURE_2D, rgba32FID, 0);
+					m_AttachmentIDs.emplace_back(rgba32FID);
+					m_AttachmentEnumsValues.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
+					colorAttachments++;
+
 				case FrameBufferAttachmentTypes::Depth:
 					uint32_t depthID;
 					glCreateTextures(GL_TEXTURE_2D, 1, &depthID);
@@ -74,10 +86,12 @@ namespace Daybreak
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
 		glDrawBuffers(m_AttachmentEnumsValues.size(), &m_AttachmentEnumsValues[0]);
-		for (size_t i = 0; i < m_AttachmentEnumsValues.size(); i++)
-		{
-			glFramebufferTexture2D(GL_FRAMEBUFFER, m_AttachmentEnumsValues[i], GL_TEXTURE_2D, GetAttachmentRendererID(i), 0);
-		}
+
+		// This is probably not needed?
+		// for (size_t i = 0; i < m_AttachmentEnumsValues.size(); i++)
+		// {
+		// 	glFramebufferTexture2D(GL_FRAMEBUFFER, m_AttachmentEnumsValues[i], GL_TEXTURE_2D, GetAttachmentRendererID(i), 0);
+		// }
 	}
 
 	void OpenGLFrameBuffer::Unbind() const
@@ -89,6 +103,7 @@ namespace Daybreak
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
 	{
 		m_AttachmentIDs.clear();
+		m_AttachmentEnumsValues.clear();
 		m_Specification.Height = height;
 		m_Specification.Width = width;
 		Remake();
