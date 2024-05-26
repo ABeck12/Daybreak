@@ -38,6 +38,34 @@ namespace Daybreak
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
+	void OpenGLRenderAPI::SetDepthTesting(bool enabled)
+	{
+		if (enabled)
+		{
+			glEnable(GL_BLEND);
+			glDepthFunc(GL_LEQUAL);
+		}
+		else
+		{
+			glEnable(GL_BLEND);
+			glDepthFunc(GL_ALWAYS);
+			// glDisable(GL_BLEND);
+		}
+	}
+
+	void OpenGLRenderAPI::SetBlendMode(BlendModes mode)
+	{
+		switch (mode)
+		{
+			case BlendModes::One:
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+				break;
+			case BlendModes::OneMinusSrcAlpha:
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				break;
+		}
+	}
+
 	void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 	{
 		vertexArray->Bind();
