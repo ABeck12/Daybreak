@@ -86,10 +86,12 @@ namespace Daybreak
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
 		glDrawBuffers(m_AttachmentEnumsValues.size(), &m_AttachmentEnumsValues[0]);
-		for (size_t i = 0; i < m_AttachmentEnumsValues.size(); i++)
-		{
-			glFramebufferTexture2D(GL_FRAMEBUFFER, m_AttachmentEnumsValues[i], GL_TEXTURE_2D, GetAttachmentRendererID(i), 0);
-		}
+
+		// This is probably not needed?
+		// for (size_t i = 0; i < m_AttachmentEnumsValues.size(); i++)
+		// {
+		// 	glFramebufferTexture2D(GL_FRAMEBUFFER, m_AttachmentEnumsValues[i], GL_TEXTURE_2D, GetAttachmentRendererID(i), 0);
+		// }
 	}
 
 	void OpenGLFrameBuffer::Unbind() const
@@ -101,6 +103,7 @@ namespace Daybreak
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
 	{
 		m_AttachmentIDs.clear();
+		m_AttachmentEnumsValues.clear();
 		m_Specification.Height = height;
 		m_Specification.Width = width;
 		Remake();
