@@ -260,6 +260,21 @@ namespace Daybreak
 		}
 	};
 
+	struct PointLight2DComponent
+	{
+		float InnerRadius = 0.0f;
+		float OuterRadius = 0.5f;
+		float Intensity = 1.0f;
+		// float Falloff = 0.5f;
+		glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+	};
+
+	struct GlobalLight2DComponent
+	{
+		float Intensity = 1.0f;
+		glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+	};
+
 	template<typename... Component>
 	struct ComponentGroup
 	{

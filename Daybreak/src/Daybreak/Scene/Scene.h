@@ -5,6 +5,8 @@
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Physics/PhysicsSim2D.h"
 #include "Daybreak/Core/UUID.h"
+#include "Daybreak/Renderer/FrameBuffer.h"
+#include "Daybreak/Renderer/Shader.h"
 
 #include <entt.hpp>
 
@@ -63,6 +65,7 @@ namespace Daybreak
 		bool HasParentEntityWith(Entity& entity);
 
 		void DebugDraw();
+		void CheckResizeBuffers();
 
 	private:
 		std::string m_SceneName;
@@ -73,6 +76,12 @@ namespace Daybreak
 		bool m_SceneRunning = false;
 
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
+
+		// Renderering
+		uint32_t m_BufferWidth, m_BufferHeight;
+		Ref<FrameBuffer> m_DrawBuffer2D;
+		Ref<Shader> m_LightingShader;
+		Ref<FrameBuffer> m_LightingBuffer;
 
 		friend class Entity;
 		friend class SceneSerializer;

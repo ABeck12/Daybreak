@@ -55,8 +55,11 @@ namespace Daybreak
 	{
 		shader->Bind();
 
-		for (const int i : boundAttachmentIndices)
-			frameBuffer->BindAttachmentAsTexture(i, i);
+		// FIXME: Temporary remove? need to be reworked for renderpasses?
+		// for (const int i : boundAttachmentIndices)
+		// {
+		// 	frameBuffer->BindAttachmentAsTexture(i, i);
+		// }
 		shader->SetIntArray("u_Textures", &boundAttachmentIndices[0], boundAttachmentIndices.size());
 
 		RenderCommand::DrawIndexed(s_Data.frameBufferVA);
