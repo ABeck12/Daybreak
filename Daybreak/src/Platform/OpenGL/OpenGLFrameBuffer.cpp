@@ -41,6 +41,18 @@ namespace Daybreak
 					colorAttachments++;
 					break;
 
+				case FrameBufferAttachmentTypes::RGBA32F:
+					uint32_t rgba32FID;
+					glCreateTextures(GL_TEXTURE_2D, 1, &rgba32FID);
+					glBindTexture(GL_TEXTURE_2D, rgba32FID);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_FLOAT, nullptr);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachments, GL_TEXTURE_2D, rgba32FID, 0);
+					m_AttachmentIDs.emplace_back(rgba32FID);
+					m_AttachmentEnumsValues.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
+					colorAttachments++;
+
 				case FrameBufferAttachmentTypes::Depth:
 					uint32_t depthID;
 					glCreateTextures(GL_TEXTURE_2D, 1, &depthID);

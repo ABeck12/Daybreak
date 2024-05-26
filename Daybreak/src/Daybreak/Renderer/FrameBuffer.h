@@ -7,6 +7,7 @@ namespace Daybreak
 	enum class FrameBufferAttachmentTypes
 	{
 		RGBA,
+		RGBA32F,
 		RedInteger,
 		Depth,
 		Stencil
