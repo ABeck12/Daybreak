@@ -26,3 +26,6 @@ CMakeCache.txt
 /Tasks
 **/.vscode
 **.code-workspace
+
+Sandbox/src/ScriptInclude.auto.cpp
+Sandbox/src/ScriptInclude.auto.h

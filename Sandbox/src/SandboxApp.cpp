@@ -5,8 +5,7 @@
 #include "LightingScene.h"
 
 // #include <DaybreakEditor.h>
-// #include "../scripts/MoveableComponent.h"
-#include "scripts/MoveableComponent.h"
+#include "ScriptInclude.auto.h"
 
 // #include "ScriptableEntityTest.h"
 
@@ -22,7 +21,7 @@ public:
 	Sandbox(Daybreak::ApplicationSpecifications spec)
 		: Daybreak::Application(spec)
 	{
-		DB_REGISTER_SCRIPT(MoveableComponent);
+		Daybreak::Auto::AutoScriptInclude();
 		// PushLayer(new SceneLayer());
 		PushLayer(new LightingScene());
 		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));

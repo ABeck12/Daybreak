@@ -2,6 +2,7 @@
 
 #include "dbpch.h"
 
+#define DB_SCRIPT
 
 namespace Daybreak
 {
