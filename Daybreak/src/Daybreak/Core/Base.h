@@ -28,6 +28,9 @@
 
 #define BIT(x) (1 << x)
 
+#define DB_STRUCT_NAME(T) std::string(typeid(T).name()).erase(0, 6)
+#define DB_CLASS_NAME(T) std::string(typeid(T).name()).erase(0, 5)
+
 namespace Daybreak
 {
 

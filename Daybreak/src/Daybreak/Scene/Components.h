@@ -230,7 +230,7 @@ namespace Daybreak
 		template<typename T>
 		void Bind()
 		{
-			TypeName = std::string(typeid(T).name()).erase(0, 6);
+			TypeName = DB_STRUCT_NAME(T);
 			ScriptRegistry::RegisterType<T>();
 
 			InstantiateScript = [](const std::string&)

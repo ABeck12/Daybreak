@@ -2,6 +2,7 @@
 
 #include "dbpch.h"
 
+#define DB_SCRIPT
 
 namespace Daybreak
 {
@@ -15,7 +16,7 @@ namespace Daybreak
 		template<typename T>
 		static void RegisterType()
 		{
-			s_Registry[std::string(typeid(T).name()).erase(0, 6)] = []()
+			s_Registry[DB_STRUCT_NAME(T)] = []()
 			{
 				return static_cast<Script*>(new T());
 			};

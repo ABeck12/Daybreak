@@ -62,6 +62,10 @@ newaction
 		os.rmdir("./DaybreakEditor/.vscode")
 		os.rmdir(".vscode")
 		os.rmdir(".vs")
+
+		os.remove("Sandbox/src/ScriptInclude.auto.cpp")
+		os.remove("Sandbox/src/ScriptInclude.auto.h")
+
 		print("Done")
 	end
 }

@@ -190,7 +190,7 @@ namespace Daybreak
 			Entity parent = GetEntityByUUID(rc.ParentID);
 			return GetParentEntityWith<T>(parent);
 		}
-		DB_CORE_ASSERT(false, "Entity line with {} does not have component {}", entity.GetName(), typeid(T).name());
+		DB_CORE_ASSERT(false, "Entity line with {} does not have component {}", entity.GetName(), DB_STRUCT_NAME(T));
 	}
 
 	template<typename T>

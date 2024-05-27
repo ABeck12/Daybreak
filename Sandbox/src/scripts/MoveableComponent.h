@@ -2,7 +2,7 @@
 
 #include <Daybreak.h>
 
-class MoveableComponent : public Daybreak::Script
+DB_SCRIPT class MoveableComponent : public Daybreak::Script
 {
 public:
 	void OnCreate();
