@@ -4,7 +4,7 @@
 // #include "SceneLayer.h"
 #include "LightingScene.h"
 
-// #include <DaybreakEditor.h>
+#include <DaybreakEditor.h>
 // #include "../scripts/MoveableComponent.h"
 #include "scripts/MoveableComponent.h"
 
@@ -24,8 +24,8 @@ public:
 	{
 		DB_REGISTER_SCRIPT(MoveableComponent);
 		// PushLayer(new SceneLayer());
-		PushLayer(new LightingScene());
-		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
+		// PushLayer(new LightingScene());
+		PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
 	}
 
 	~Sandbox()
