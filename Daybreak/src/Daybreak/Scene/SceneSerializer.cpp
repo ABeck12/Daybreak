@@ -82,7 +82,7 @@ namespace Daybreak
 
 			out << YAML::Key << "TintColor" << YAML::Value << sr.TintColor;
 			out << YAML::Key << "TilingFactor" << YAML::Value << sr.TilingFactor;
-			out << YAML::Key << "RenderLayer" << YAML::Value << sr.RenderLayer;
+			out << YAML::Key << "RenderLayer" << YAML::Value << (uint32_t)sr.RenderLayer;
 
 			out << YAML::EndMap;
 		}
@@ -106,7 +106,7 @@ namespace Daybreak
 			}
 			out << YAML::Key << "IsPlaying" << YAML::Value << anim.IsPlaying;
 			out << YAML::Key << "TintColor" << YAML::Value << anim.TintColor;
-			out << YAML::Key << "RenderLayer" << YAML::Value << anim.RenderLayer;
+			out << YAML::Key << "RenderLayer" << YAML::Value << (uint32_t)anim.RenderLayer;
 
 			out << YAML::EndMap;
 		}
@@ -121,7 +121,7 @@ namespace Daybreak
 			out << YAML::Key << "Color" << YAML::Value << textRenderer.Color;
 			out << YAML::Key << "Kerning" << YAML::Value << textRenderer.Kerning;
 			out << YAML::Key << "LineSpacing" << YAML::Value << textRenderer.LineSpacing;
-			out << YAML::Key << "RenderLayer" << YAML::Value << textRenderer.RenderLayer;
+			out << YAML::Key << "RenderLayer" << YAML::Value << (uint32_t)textRenderer.RenderLayer;
 
 			out << YAML::EndMap;
 		}
@@ -167,7 +167,7 @@ namespace Daybreak
 			auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 			out << YAML::Key << "Size" << YAML::Value << bc2d.Size;
 			out << YAML::Key << "Offset" << YAML::Value << bc2d.Offset;
-			out << YAML::Key << "CollisionLayer" << YAML::Value << bc2d.CollisionLayer;
+			out << YAML::Key << "CollisionLayer" << YAML::Value << (uint32_t)bc2d.CollisionLayer;
 			out << YAML::Key << "IsTrigger" << YAML::Value << bc2d.IsTrigger;
 			out << YAML::Key << "Enabled" << YAML::Value << bc2d.Enabled;
 
@@ -181,7 +181,7 @@ namespace Daybreak
 			auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
 			out << YAML::Key << "Radius" << YAML::Value << cc2d.Radius;
 			out << YAML::Key << "Offset" << YAML::Value << cc2d.Offset;
-			out << YAML::Key << "CollisionLayer" << YAML::Value << cc2d.CollisionLayer;
+			out << YAML::Key << "CollisionLayer" << YAML::Value << (uint32_t)cc2d.CollisionLayer;
 			out << YAML::Key << "IsTrigger" << YAML::Value << cc2d.IsTrigger;
 			out << YAML::Key << "Enabled" << YAML::Value << cc2d.Enabled;
 
@@ -201,7 +201,7 @@ namespace Daybreak
 			}
 			out << YAML::EndSeq;
 			out << YAML::Key << "Count" << YAML::Value << pc2d.Count;
-			out << YAML::Key << "CollisionLayer" << YAML::Value << pc2d.CollisionLayer;
+			out << YAML::Key << "CollisionLayer" << YAML::Value << (uint32_t)pc2d.CollisionLayer;
 			out << YAML::Key << "IsTrigger" << YAML::Value << pc2d.IsTrigger;
 			out << YAML::Key << "Enabled" << YAML::Value << pc2d.Enabled;
 
@@ -460,6 +460,24 @@ namespace Daybreak
 					auto& sc = deserializedEntity.AddComponent<ScriptComponent>();
 
 					sc.RuntimeBind(scriptComponent["TypeName"].as<std::string>());
+				}
+
+				auto pointLight2DComponent = entity["PointLight2DComponent"];
+				if (pointLight2DComponent)
+				{
+					auto& pl = deserializedEntity.AddComponent<PointLight2DComponent>();
+					pl.InnerRadius = pointLight2DComponent["InnerRadius"].as<float>();
+					pl.OuterRadius = pointLight2DComponent["OuterRadius"].as<float>();
+					pl.Intensity = pointLight2DComponent["Intensity"].as<float>();
+					pl.Color = pointLight2DComponent["Color"].as<glm::vec3>();
+				}
+
+				auto globalLight2DComponent = entity["GlobalLight2DComponent"];
+				if (globalLight2DComponent)
+				{
+					auto& gl = deserializedEntity.AddComponent<GlobalLight2DComponent>();
+					gl.Intensity = globalLight2DComponent["Intensity"].as<float>();
+					gl.Color = globalLight2DComponent["Color"].as<glm::vec3>();
 				}
 			}
 			return true;

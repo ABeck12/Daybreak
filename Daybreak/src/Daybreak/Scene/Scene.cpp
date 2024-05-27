@@ -356,7 +356,7 @@ namespace Daybreak
 		{
 			entt::entity Entity;
 			SceneRenderObjectType RenderType;
-			uint32_t RenderLayer;
+			uint8_t RenderLayer;
 			std::variant<AnimatorComponent, SpriteRendererComponent, TextRendererComponent> Component;
 			glm::mat4 Transform;
 

@@ -74,7 +74,7 @@ namespace Daybreak
 		Ref<Texture2D> Sprite;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float TilingFactor = 1.0f;
-		uint32_t RenderLayer = 0;
+		uint8_t RenderLayer = 0;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
@@ -87,7 +87,7 @@ namespace Daybreak
 		Ref<AnimationController> Controller;
 		bool IsPlaying = true;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-		uint32_t RenderLayer = 0;
+		uint8_t RenderLayer = 0;
 
 
 		AnimatorComponent() = default;
@@ -101,7 +101,7 @@ namespace Daybreak
 		glm::vec4 Color = glm::vec4(1.0f);
 		float Kerning = 0;
 		float LineSpacing = 0;
-		uint32_t RenderLayer = 0;
+		uint8_t RenderLayer = 0;
 
 		TextRendererComponent() = default;
 		TextRendererComponent(const TextRendererComponent&) = default;
@@ -130,7 +130,7 @@ namespace Daybreak
 		glm::vec2 Size = { 0.5f, 0.5f };
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		uint32_t CollisionLayer = 0;
+		uint8_t CollisionLayer = 0;
 		bool IsTrigger = false;
 		bool Enabled = true;
 
@@ -146,7 +146,7 @@ namespace Daybreak
 		float Radius = 0.5f;
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		uint32_t CollisionLayer = 0;
+		uint8_t CollisionLayer = 0;
 		bool IsTrigger = false;
 		bool Enabled = true;
 
@@ -171,7 +171,7 @@ namespace Daybreak
 		};
 		uint32_t Count = 4;
 
-		uint32_t CollisionLayer = 0;
+		uint8_t CollisionLayer = 0;
 		bool IsTrigger = false;
 		bool Enabled = true;
 
