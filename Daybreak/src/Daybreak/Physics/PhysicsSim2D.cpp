@@ -178,15 +178,19 @@ namespace Daybreak
 	}
 
 	void PhysicsSim2D::AddBoxFixture(const Entity& entity, BoxCollider2DComponent& bc2d, const Rigidbody2DComponent& rb2d,
-									 const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform)
+									 const glm::vec3& worldScale,
+									 const glm::vec3& worldPosition, const glm::vec3& rbWorldEntityPosition)
 	{
 		b2Body* body = (b2Body*)rb2d.RuntimeBody;
 		b2FixtureDef fixtureDef;
 
-		const glm::vec2 parentOffset = glm::vec2(worldTransform[3] - rbWorldTransform[3]);
+		glm::vec2 parentOffset = worldPosition - rbWorldEntityPosition;
 
 		b2PolygonShape boxShape;
-		boxShape.SetAsBox(bc2d.Size.x * abs(worldTransform[0][0]), bc2d.Size.y * abs(worldTransform[1][1]), b2Vec2(bc2d.Offset.x + parentOffset.x, bc2d.Offset.y + parentOffset.y), 0.0f);
+		boxShape.SetAsBox(bc2d.Size.x * abs(worldScale.x),
+						  bc2d.Size.y * abs(worldScale.y),
+						  b2Vec2(bc2d.Offset.x + parentOffset.x * worldScale.x, bc2d.Offset.y + parentOffset.y * worldScale.y),
+						  0.0f);
 
 		fixtureDef.shape = &boxShape;
 		fixtureDef.isSensor = bc2d.IsTrigger;
@@ -202,16 +206,19 @@ namespace Daybreak
 		bc2d.RuntimeBody = body;
 	}
 
-	void PhysicsSim2D::AddCircleFixture(const Entity& entity, CircleCollider2DComponent& cc2d, const Rigidbody2DComponent& rb2d, const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform)
+	void PhysicsSim2D::AddCircleFixture(const Entity& entity, CircleCollider2DComponent& cc2d, const Rigidbody2DComponent& rb2d,
+										const glm::vec3& worldScale,
+										const glm::vec3& worldPosition, const glm::vec3& rbWorldEntityPosition)
 	{
 		b2Body* body = (b2Body*)rb2d.RuntimeBody;
 		b2FixtureDef fixtureDef;
 
-		const glm::vec2 parentOffset = glm::vec2(worldTransform[3] - rbWorldTransform[3]);
+		const glm::vec2 parentOffset = glm::vec2(worldPosition - rbWorldEntityPosition);
 
 		b2CircleShape circleShape;
-		circleShape.m_p.Set(cc2d.Offset.x * abs(worldTransform[0][0]) + parentOffset.x, cc2d.Offset.y * abs(worldTransform[1][1]) + parentOffset.y);
-		circleShape.m_radius = cc2d.Radius;
+		circleShape.m_p.Set((cc2d.Offset.x + parentOffset.x) * worldScale.x, (cc2d.Offset.y + parentOffset.y) * worldScale.y);
+
+		circleShape.m_radius = cc2d.Radius * abs(glm::max(worldScale.x, worldScale.y));
 
 		fixtureDef.shape = &circleShape;
 		fixtureDef.isSensor = cc2d.IsTrigger;
@@ -227,18 +234,20 @@ namespace Daybreak
 		cc2d.RuntimeBody = body;
 	}
 
-	void PhysicsSim2D::AddPolygonFixture(const Entity& entity, PolygonCollider2DComponent& pc2d, const Rigidbody2DComponent& rb2d, const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform)
+	void PhysicsSim2D::AddPolygonFixture(const Entity& entity, PolygonCollider2DComponent& pc2d, const Rigidbody2DComponent& rb2d,
+										 const glm::vec3& worldScale,
+										 const glm::vec3& worldPosition, const glm::vec3& rbWorldEntityPosition)
 	{
 		b2Body* body = (b2Body*)rb2d.RuntimeBody;
 		b2FixtureDef fixtureDef;
 
-		const glm::vec2 parentOffset = glm::vec2(worldTransform[3] - rbWorldTransform[3]);
+		const glm::vec2 parentOffset = glm::vec2(worldPosition - rbWorldEntityPosition);
 
 		b2PolygonShape polyShape;
 		glm::vec2 vertices[8];
 		for (uint32_t i = 0; i < pc2d.Count; i++)
 		{
-			vertices[i] = (pc2d.Vertices[i] * glm::vec2(worldTransform[0][0], worldTransform[1][1])) + parentOffset;
+			vertices[i] = (pc2d.Vertices[i] + parentOffset) * (glm::vec2)worldScale;
 		}
 		polyShape.Set((b2Vec2*)vertices, pc2d.Count);
 

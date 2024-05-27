@@ -313,6 +313,36 @@ namespace Daybreak
 		}
 	}
 
+	glm::vec3 Scene::GetWorldPosition(Entity& entity)
+	{
+		RelationshipComponent& rc = entity.GetComponent<RelationshipComponent>();
+		TransformComponent& tr = entity.GetComponent<TransformComponent>();
+		if (rc.ParentID)
+		{
+			Entity parent = GetEntityByUUID(rc.ParentID);
+			return GetWorldPosition(parent) + tr.Position;
+		}
+		else
+		{
+			return tr.Position;
+		}
+	}
+
+	glm::vec3 Scene::GetWorldScale(Entity& entity)
+	{
+		RelationshipComponent& rc = entity.GetComponent<RelationshipComponent>();
+		TransformComponent& tr = entity.GetComponent<TransformComponent>();
+		if (rc.ParentID)
+		{
+			Entity parent = GetEntityByUUID(rc.ParentID);
+			return GetWorldScale(parent) * tr.Scale;
+		}
+		else
+		{
+			return tr.Scale;
+		}
+	}
+
 	void Scene::RenderScene(const Entity& cameraEntity)
 	{
 		enum class SceneRenderObjectType
@@ -506,7 +536,11 @@ namespace Daybreak
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
 				b2Fixture* fixture = (b2Fixture*)bc2d.RuntimeFixture;
 				body->DestroyFixture(fixture);
-				m_PhysicsSim2D->AddBoxFixture(entity, bc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
+				m_PhysicsSim2D->AddBoxFixture(entity,
+											  bc2d, rb2d,
+											  GetWorldScale(entity),
+											  GetWorldPosition(entity),
+											  GetWorldPosition(parent));
 			}
 		}
 
@@ -525,7 +559,10 @@ namespace Daybreak
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
 				b2Fixture* fixture = (b2Fixture*)cc2d.RuntimeFixture;
 				body->DestroyFixture(fixture);
-				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
+				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d,
+												 GetWorldScale(entity),
+												 GetWorldPosition(entity),
+												 GetWorldPosition(parent));
 			}
 		}
 
@@ -544,7 +581,10 @@ namespace Daybreak
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
 				b2Fixture* fixture = (b2Fixture*)pc2d.RuntimeFixture;
 				body->DestroyFixture(fixture);
-				m_PhysicsSim2D->AddPolygonFixture(entity, pc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
+				m_PhysicsSim2D->AddPolygonFixture(entity, pc2d, rb2d,
+												  GetWorldScale(entity),
+												  GetWorldPosition(entity),
+												  GetWorldPosition(parent));
 			}
 		}
 
@@ -614,7 +654,10 @@ namespace Daybreak
 			{
 				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
-				m_PhysicsSim2D->AddBoxFixture(entity, bc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
+				m_PhysicsSim2D->AddBoxFixture(entity, bc2d, rb2d,
+											  GetWorldScale(entity),
+											  GetWorldPosition(entity),
+											  GetWorldPosition(parent));
 			}
 			else
 			{
@@ -632,7 +675,10 @@ namespace Daybreak
 			{
 				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
-				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
+				m_PhysicsSim2D->AddCircleFixture(entity, cc2d, rb2d,
+												 GetWorldScale(entity),
+												 GetWorldPosition(entity),
+												 GetWorldPosition(parent));
 			}
 			else
 			{
@@ -650,7 +696,10 @@ namespace Daybreak
 			{
 				Entity parent = GetParentEntityWith<Rigidbody2DComponent>(entity);
 				Rigidbody2DComponent& rb2d = parent.GetComponent<Rigidbody2DComponent>();
-				m_PhysicsSim2D->AddPolygonFixture(entity, pc2d, rb2d, GetWorldTransform(entity), GetWorldTransform(parent));
+				m_PhysicsSim2D->AddPolygonFixture(entity, pc2d, rb2d,
+												  GetWorldScale(entity),
+												  GetWorldPosition(entity),
+												  GetWorldPosition(parent));
 			}
 			else
 			{

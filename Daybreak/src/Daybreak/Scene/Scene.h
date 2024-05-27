@@ -57,6 +57,8 @@ namespace Daybreak
 		inline void OnPhysicsStop();
 
 		inline glm::mat4 GetWorldTransform(Entity& entity);
+		inline glm::vec3 GetWorldPosition(Entity& entity);
+		inline glm::vec3 GetWorldScale(Entity& entity);
 
 		template<typename T>
 		Entity& GetParentEntityWith(Entity& entity);

@@ -27,12 +27,26 @@ namespace Daybreak
 
 		void InitBody(const Entity& entity);
 
-		void AddBoxFixture(const Entity& entity, BoxCollider2DComponent& bc2d, const Rigidbody2DComponent& rb2d,
-						   const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform);
-		void AddCircleFixture(const Entity& entity, CircleCollider2DComponent& cc2d, const Rigidbody2DComponent& rb2d,
-							  const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform);
-		void AddPolygonFixture(const Entity& entity, PolygonCollider2DComponent& pc2d, const Rigidbody2DComponent& rb2d,
-							   const glm::mat4& worldTransform, const glm::mat4& rbWorldTransform);
+		void AddBoxFixture(const Entity& entity,
+						   BoxCollider2DComponent& bc2d,
+						   const Rigidbody2DComponent& rb2d,
+						   const glm::vec3& worldScale,
+						   const glm::vec3& worldPosition,
+						   const glm::vec3& rbWorldEntityPosition);
+
+		void AddCircleFixture(const Entity& entity,
+							  CircleCollider2DComponent& cc2d,
+							  const Rigidbody2DComponent& rb2d,
+							  const glm::vec3& worldScale,
+							  const glm::vec3& worldPosition,
+							  const glm::vec3& rbWorldEntityPosition);
+
+		void AddPolygonFixture(const Entity& entity,
+							   PolygonCollider2DComponent& pc2d,
+							   const Rigidbody2DComponent& rb2d,
+							   const glm::vec3& worldScale,
+							   const glm::vec3& worldPosition,
+							   const glm::vec3& rbWorldEntityPosition);
 
 		void AddBoxFixtureNoBody(const Entity& entity);
 		void AddCircleFixtureNoBody(const Entity& entity);
@@ -54,7 +68,10 @@ namespace Daybreak
 		void DebugDraw();
 
 		// TODO: Rework into a project class
-		static PhysicsSim2D* GetActiveSim() { return s_ActiveSim; }
+		static PhysicsSim2D* GetActiveSim()
+		{
+			return s_ActiveSim;
+		}
 
 	private:
 		Scene* m_Scene;
