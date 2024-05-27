@@ -409,7 +409,7 @@ namespace Daybreak
 	void Renderer2D::DrawQuad(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& p4,
 							  const glm::vec4& tintColor)
 	{
-		Renderer2D::DrawQuad(p1, p2, p3, p4, tintColor);
+		Renderer2D::DrawQuad(glm::vec3(p1, 0), glm::vec3(p2, 0), glm::vec3(p3, 0), glm::vec3(p4, 0), tintColor);
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor)
