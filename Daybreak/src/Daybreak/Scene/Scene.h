@@ -44,9 +44,8 @@ namespace Daybreak
 			return m_Registry.view<Components...>();
 		}
 
-		const std::string& GetName() { return m_SceneName; }
+		const std::string& GetName() const { return m_SceneName; }
 
-		// void EditorRenderScene(Entity& editorCameraEntity);
 		void RenderScene(const Entity& cameraEntity);
 
 		void SetStartTime(float time) { m_LastUpdateTime = time; }
@@ -56,6 +55,7 @@ namespace Daybreak
 		inline void OnPhysicsUpdate(DeltaTime dt);
 		inline void OnPhysicsStop();
 
+		// TODO: move to entity class?==============
 		inline glm::mat4 GetWorldTransform(Entity& entity);
 		inline glm::vec3 GetWorldPosition(Entity& entity);
 		inline glm::vec3 GetWorldScale(Entity& entity);
@@ -65,6 +65,7 @@ namespace Daybreak
 
 		template<typename T>
 		bool HasParentEntityWith(Entity& entity);
+		// ========================================
 
 		void DebugDraw();
 		void CheckResizeBuffers();

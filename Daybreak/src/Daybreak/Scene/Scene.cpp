@@ -472,7 +472,7 @@ namespace Daybreak
 			auto globalLightView = m_Registry.view<GlobalLight2DComponent>();
 			if (globalLightView.size() == 0)
 			{
-				RenderCommand::SetClearColor({ 0, 0, 0, 1 });
+				RenderCommand::SetClearColor({ 1, 1, 1, 1 });
 				RenderCommand::Clear();
 			}
 			else
@@ -747,14 +747,14 @@ namespace Daybreak
 		RenderCommand::SetLineWidth(1);
 
 		// FIXME: this is for the editor to render when the scene isnt playing
-		// if (!m_SceneRunning)
-		// {
-		// 	OnPhysicsStart();
-		// 	m_PhysicsSim2D->DebugDraw();
-		// 	Renderer2D::EndScene();
-		// 	OnPhysicsStop();
-		// 	return;
-		// }
+		if (!m_SceneRunning)
+		{
+			OnPhysicsStart();
+			m_PhysicsSim2D->DebugDraw();
+			Renderer2D::EndScene();
+			OnPhysicsStop();
+			return;
+		}
 		m_PhysicsSim2D->DebugDraw();
 		Renderer2D::EndScene();
 	}
