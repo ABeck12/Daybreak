@@ -5,6 +5,7 @@
 #include "Daybreak/Renderer/Shader.h"
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Renderer/MSDFData.h"
+#include "Daybreak/Renderer/UniformBuffer.h"
 
 #include "Daybreak/Assets/AssetManager/AssetManager.h"
 
@@ -61,8 +62,6 @@ namespace Daybreak
 		static const uint32_t MaxIndices = 6 * MaxQuads;
 		static const uint32_t MaxLines = 10000;
 
-		glm::mat4 ViewProjectionMatrix;
-
 		// For Quads
 		Ref<VertexBuffer> QuadVB;
 		Ref<VertexArray> QuadVA;
@@ -105,6 +104,13 @@ namespace Daybreak
 
 		uint32_t TextureSlotIndex = 1;
 		std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
+
+		struct CameraData
+		{
+			glm::mat4 ViewProjection;
+		};
+		CameraData CameraBuffer;
+		Ref<UniformBuffer> CameraUniformBuffer;
 	};
 
 	static Renderer2DData s_Data;
@@ -206,6 +212,8 @@ namespace Daybreak
 		s_Data.TextVertexBufferBase = new TextVertex[s_Data.MaxVertices];
 
 		s_Data.TextShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_TextShader.glsl");
+
+		s_Data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0);
 	}
 
 	void Renderer2D::Shutdown()
@@ -218,8 +226,8 @@ namespace Daybreak
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
-		s_Data.ViewProjectionMatrix = camera.GetProjection() * transform;
-
+		s_Data.CameraBuffer.ViewProjection = camera.GetProjection() * transform;
+		s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 		StartBatch();
 	}
 
@@ -236,7 +244,6 @@ namespace Daybreak
 			s_Data.QuadVB->SetData(s_Data.QuadVertexBufferBase, dataSize);
 
 			s_Data.QuadShader->Bind();
-			s_Data.QuadShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
 			for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
 				s_Data.TextureSlots[i]->Bind(i);
 			RenderCommand::DrawIndexed(s_Data.QuadVA, s_Data.QuadIndexCount);
@@ -247,7 +254,6 @@ namespace Daybreak
 			s_Data.CircleVB->SetData(s_Data.CircleVertexBufferBase, dataSize);
 
 			s_Data.CircleShader->Bind();
-			s_Data.CircleShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
 			RenderCommand::DrawIndexed(s_Data.CircleVA, s_Data.CircleIndexCount);
 		}
 		if (s_Data.LineVertexCount)
@@ -256,7 +262,6 @@ namespace Daybreak
 			s_Data.LineVB->SetData(s_Data.LineVertexBufferBase, dataSize);
 
 			s_Data.LineShader->Bind();
-			s_Data.LineShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
 			RenderCommand::SetLineWidth(s_Data.DefaultLineWidth);
 			RenderCommand::DrawLines(s_Data.LineVA, s_Data.LineVertexCount);
 		}
@@ -269,8 +274,6 @@ namespace Daybreak
 			s_Data.FontAtlasTexture->Bind(0);
 
 			s_Data.TextShader->Bind();
-			s_Data.TextShader->SetMat4("u_ViewProjection", s_Data.ViewProjectionMatrix);
-			// DB_LOG(s_Data.TextIndexCount);
 			RenderCommand::DrawIndexed(s_Data.TextVertexArray, s_Data.TextIndexCount);
 		}
 	}
