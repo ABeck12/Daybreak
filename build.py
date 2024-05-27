@@ -31,10 +31,17 @@ def GenerateMake() -> None:
  
 
 def Compile(flag: str) -> None:
-    match flag:
-        case '-r': os.system(r'"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" Daybreak.sln -p:Configuration=Release -maxcpucount')
-        case '-d': os.system(r'"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" Daybreak.sln -p:Configuration=Debug -maxcpucount')
-
+    if os.path.exists("MakeFile"):
+        match flag:
+            case '-r': os.system("make -j8 config=release")
+            case '-d': os.system("make -j8 config=debug")
+    elif os.path.exists("Daybreak.sln"):
+        match flag:
+            case '-r': os.system(r'"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" Daybreak.sln -p:Configuration=Release -maxcpucount')
+            case '-d': os.system(r'"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" Daybreak.sln -p:Configuration=Debug -maxcpucount')
+    else:
+        print("No Makefile or .sln file found!")
+        
 
 def Run(flag: str) -> None:
     os.chdir("Sandbox")
