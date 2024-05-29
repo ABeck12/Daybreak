@@ -428,7 +428,7 @@ namespace Daybreak
 
 		// 2D drawing
 		{
-			m_DrawBuffer2D->Bind();
+			// m_DrawBuffer2D->Bind();
 			RenderCommand::SetClearColor({ 0, 0, 0, 1 });
 			RenderCommand::Clear();
 			for (int i = 0; i < numberObjects; i++)
@@ -462,9 +462,10 @@ namespace Daybreak
 				}
 			}
 			Renderer2D::EndScene();
-			m_DrawBuffer2D->Unbind();
+			// m_DrawBuffer2D->Unbind();
 		}
 		// Lighting
+		if (false)
 		{
 			m_LightingBuffer->Bind();
 			Renderer2D::StartBatch();

@@ -24,7 +24,7 @@ public:
 		Daybreak::Auto::AutoScriptInclude();
 		// PushLayer(new SceneLayer());
 		// PushLayer(new LightingScene());
-		PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
+		PushLayer(new Daybreak::EditorLayer2(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
 	}
 
 	~Sandbox()
