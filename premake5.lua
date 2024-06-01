@@ -24,6 +24,7 @@ newaction
 		os.rmdir("./bin")
 		print("Removing intermediate binaries")
 		os.rmdir("./bin-int")
+
 		print("Removing project files")
 		os.remove("**.sln")
 		os.remove("**.vcxproj")
@@ -42,11 +43,6 @@ newaction
 		os.rmdir("./CmakeFiles")
 		os.remove("CmakeCache.txt")
 
-		os.remove("compile_commands.json")
-		os.rmdir("./compile_commands")
-		os.rmdir("./.cache")
-		os.rmdir("./.mypy_cache")
-
 		os.remove("**.code-workspace")
 		os.rmdir("./Tasks")
 		os.rmdir("./Daybreak/.vscode")
@@ -63,6 +59,13 @@ newaction
 		os.rmdir(".vscode")
 		os.rmdir(".vs")
 
+		print("Removing cached files")
+		os.remove("compile_commands.json")
+		os.rmdir("./compile_commands")
+		os.rmdir("./.cache")
+		os.rmdir("./.mypy_cache")
+
+		print("Removing auto generated cpp files")
 		os.remove("Sandbox/src/ScriptInclude.auto.cpp")
 		os.remove("Sandbox/src/ScriptInclude.auto.h")
 
