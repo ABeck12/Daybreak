@@ -106,7 +106,7 @@ namespace Daybreak
 				unsigned long long glyphSeed = (LCG_MULTIPLIER * (coloringSeed ^ i) + LCG_INCREMENT) * !!coloringSeed;
 				glyphs[i].edgeColoring(msdfgen::edgeColoringInkTrap, DEFAULT_ANGLE_THRESHOLD, glyphSeed);
 				return true; },
-								 m_Data->Glyphs.size())
+								 (int)m_Data->Glyphs.size())
 				.finish(THREAD_COUNT);
 		}
 		else
