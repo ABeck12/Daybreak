@@ -195,7 +195,7 @@ namespace Daybreak
 
 			auto& pc2d = entity.GetComponent<PolygonCollider2DComponent>();
 			out << YAML::Key << "Vertices" << YAML::Value << YAML::BeginSeq;
-			for (int i = 0; i < pc2d.Count; i++)
+			for (uint64_t i = 0; i < pc2d.Count; i++)
 			{
 				out << pc2d.Vertices[i];
 			}
@@ -367,7 +367,7 @@ namespace Daybreak
 					auto& pc2d = deserializedEntity.AddComponent<PolygonCollider2DComponent>();
 
 					pc2d.Count = pc2dComponent["Count"].as<uint32_t>();
-					for (int i = 0; i < pc2d.Count; i++)
+					for (uint32_t i = 0; i < pc2d.Count; i++)
 					{
 						pc2d.Vertices[i] = pc2dComponent["Vertices"][i].as<glm::vec2>();
 					}

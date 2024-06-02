@@ -60,7 +60,7 @@ namespace Daybreak
 		// {
 		// 	frameBuffer->BindAttachmentAsTexture(i, i);
 		// }
-		shader->SetIntArray("u_Textures", &boundAttachmentIndices[0], boundAttachmentIndices.size());
+		shader->SetIntArray("u_Textures", &boundAttachmentIndices[0], (uint32_t)boundAttachmentIndices.size());
 
 		RenderCommand::DrawIndexed(s_Data.frameBufferVA);
 		shader->Unbind();

@@ -85,7 +85,7 @@ namespace Daybreak
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
-		glDrawBuffers(m_AttachmentEnumsValues.size(), &m_AttachmentEnumsValues[0]);
+		glDrawBuffers((int)m_AttachmentEnumsValues.size(), &m_AttachmentEnumsValues[0]);
 
 		// This is probably not needed?
 		// for (size_t i = 0; i < m_AttachmentEnumsValues.size(); i++)

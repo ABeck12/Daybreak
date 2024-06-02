@@ -42,10 +42,18 @@ def Compile(flag: str) -> None:
         match flag:
             case '-r': os.system("make -j8 config=release")
             case '-d': os.system("make -j8 config=debug")
+        return
+
     elif os.path.exists("Daybreak.sln"):
+        msBuildPath = r"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
+        if not os.path.exists(msBuildPath):
+            print(f'Could not find MSBuild at path:\n\t{msBuildPath}')
+            return
+
         match flag:
-            case '-r': os.system(r'"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" Daybreak.sln -p:Configuration=Release -maxcpucount')
-            case '-d': os.system(r'"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" Daybreak.sln -p:Configuration=Debug -maxcpucount')
+            case '-r': os.system(f'"{msBuildPath}" Daybreak.sln -p:Configuration=Release -maxcpucount')
+            case '-d': os.system(f'"{msBuildPath}" Daybreak.sln -p:Configuration=Debug -maxcpucount')
+
     else:
         print("No Makefile or .sln file found!")
         
