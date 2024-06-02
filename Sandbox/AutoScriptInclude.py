@@ -25,23 +25,40 @@ def generateIncludeFile(includes: List[Include]) -> None:
     headerFile = "ScriptInclude.auto.h"
     sourceFile = "ScriptInclude.auto.cpp"
 
+    currentHeaderOutput: str = ""
+    currentSourceOutput: str = ""
 
-    with open(headerFile, "w") as file:
-        file.write("#pragma once\n#include <Daybreak.h>\n\n")
-        includeFiles: Set[str] = {include.filepath for include in includes}
-        for filepath in includeFiles:
-            file.write(f'#include "{filepath}"\n')
-        file.write("\nnamespace Daybreak::Auto\n{")
-        file.write("\n\tvoid AutoScriptInclude();\n}")
+    if os.path.exists(headerFile):
+        with open(headerFile,"r") as file:
+            currentHeaderOutput = file.read()
+    if os.path.exists(sourceFile):
+        with open(sourceFile,"r") as file:
+            currentSourceOutput = file.read()
 
-    with open(sourceFile, "w") as file:
-        file.write('#include "ScriptInclude.auto.h"\n\n')
-        file.write('void Daybreak::Auto::AutoScriptInclude()\n{\n')
 
-        for include in includes:
-            file.write(f'\tDB_REGISTER_SCRIPT({include.className});\n')
+    headerOutput: str = ""
+    headerOutput += "#pragma once\n#include <Daybreak.h>\n\n"
+    includeFiles: Set[str] = {include.filepath for include in includes}
+    for filepath in includeFiles:
+        headerOutput += f'#include "{filepath}"\n'
+    headerOutput += "\nnamespace Daybreak::Auto\n{"
+    headerOutput += "\n\tvoid AutoScriptInclude();\n}"
+        
+    if headerOutput != currentHeaderOutput:
+        with open(headerFile, "w") as file:
+                file.write(headerOutput)
 
-        file.write('}')
+
+    sourceOutput: str = ""
+    sourceOutput += '#include "ScriptInclude.auto.h"\n\n'
+    sourceOutput += 'void Daybreak::Auto::AutoScriptInclude()\n{\n'
+    for include in includes:
+        sourceOutput += f'\tDB_REGISTER_SCRIPT({include.className});\n'
+    sourceOutput += "}"
+
+    if sourceOutput != currentSourceOutput:
+        with open(sourceFile, "w") as file:
+                file.write(sourceOutput)
     return
 
 def main() -> None:
