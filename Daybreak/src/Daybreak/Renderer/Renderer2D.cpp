@@ -18,8 +18,6 @@ namespace Daybreak
 		glm::vec4 Color;
 		float TexIndex;
 		float TilingFactor;
-
-		// Editor-only
 		int EntityID;
 	};
 
@@ -30,6 +28,7 @@ namespace Daybreak
 		glm::vec4 Color;
 		float Fade;
 		float Thickness;
+		int EntityID;
 	};
 
 	struct LineVertex
@@ -60,7 +59,7 @@ namespace Daybreak
 		static const uint32_t MaxQuads = 1000;
 		static const uint32_t MaxVertices = 4 * MaxQuads;
 		static const uint32_t MaxIndices = 6 * MaxQuads;
-		static const uint32_t MaxLines = 10000;
+		static const uint32_t MaxLines = 250 * 2;
 
 		// For Quads
 		Ref<VertexBuffer> QuadVB;
@@ -77,7 +76,7 @@ namespace Daybreak
 		Ref<VertexBuffer> LineVB;
 		Ref<VertexArray> LineVA;
 		Ref<Shader> LineShader;
-		float DefaultLineWidth = 1.0f;
+		const float DefaultLineWidth = 1.0f;
 
 		Ref<VertexArray> TextVertexArray;
 		Ref<VertexBuffer> TextVertexBuffer;
@@ -180,6 +179,7 @@ namespace Daybreak
 			{ RenderDataTypes::Float4, std::string("a_Color") },
 			{ RenderDataTypes::Float, std::string("a_Fade") },
 			{ RenderDataTypes::Float, std::string("a_Thickness") },
+			{ RenderDataTypes::Int, std::string("a_EntityID") },
 		});
 		s_Data.CircleVA->AddVertexBuffer(s_Data.CircleVB);
 		s_Data.CircleVertexBufferBase = new CircleVertex[s_Data.MaxVertices];
@@ -536,8 +536,11 @@ namespace Daybreak
 
 	void Renderer2D::DrawLine(const glm::vec3& pos1, const glm::vec3& pos2, const glm::vec4& color)
 	{
-		if (s_Data.LineVertexCount >= Renderer2DData::MaxLines)
+		const uint32_t maxLineVertexCount = Renderer2DData::MaxLines / 2;
+		if (s_Data.LineVertexCount >= maxLineVertexCount)
+		{
 			NextBatch();
+		}
 
 		s_Data.LineVertexBufferPtr->Position = pos1;
 		s_Data.LineVertexBufferPtr->Color = color;

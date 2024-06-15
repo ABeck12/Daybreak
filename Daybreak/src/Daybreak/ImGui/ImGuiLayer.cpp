@@ -5,23 +5,23 @@
 #include "Daybreak/Core/Application.h"
 
 
-#include "imgui.h" //maybe not needed?
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
+#include <imgui.h> //maybe not needed?
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <ImGuizmo.h>
 
 // FIXME: Temporary
 #include <GLFW/glfw3.h>
 
 namespace Daybreak
 {
-	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
+	ImGuiLayer::ImGuiLayer()
+		: Layer("ImGuiLayer")
 	{
-
 	}
 
 	ImGuiLayer::~ImGuiLayer()
 	{
-
 	}
 
 	void ImGuiLayer::Begin()
@@ -29,6 +29,7 @@ namespace Daybreak
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		// ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()
@@ -63,7 +64,7 @@ namespace Daybreak
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigViewportsNoAutoMerge = true;
-		//io.ConfigViewportsNoTaskBarIcon = true;
+		// io.ConfigViewportsNoTaskBarIcon = true;
 
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

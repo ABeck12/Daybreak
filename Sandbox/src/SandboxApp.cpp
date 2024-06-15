@@ -4,7 +4,7 @@
 // #include "SceneLayer.h"
 #include "LightingScene.h"
 
-// #include <DaybreakEditor.h>
+#include <DaybreakEditor.h>
 #include "ScriptInclude.auto.h"
 
 // #include "ScriptableEntityTest.h"
@@ -23,8 +23,8 @@ public:
 	{
 		Daybreak::Auto::AutoScriptInclude();
 		// PushLayer(new SceneLayer());
-		PushLayer(new LightingScene());
-		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
+		// PushLayer(new LightingScene());
+		PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
 	}
 
 	~Sandbox()

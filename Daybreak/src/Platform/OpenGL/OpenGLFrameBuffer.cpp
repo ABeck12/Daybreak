@@ -64,6 +64,14 @@ namespace Daybreak
 					break;
 
 				case FrameBufferAttachmentTypes::RedInteger:
+					uint32_t redIntID;
+					glCreateTextures(GL_TEXTURE_2D, 1, &redIntID);
+					glBindTexture(GL_TEXTURE_2D, redIntID);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, m_Specification.Width, m_Specification.Height, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, nullptr);
+					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_RED_INTEGER, GL_TEXTURE_2D, redIntID, 0);
+					m_AttachmentIDs.emplace_back(redIntID);
+					m_AttachmentEnumsValues.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
+					colorAttachments++;
 					break;
 
 				case FrameBufferAttachmentTypes::Stencil:

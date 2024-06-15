@@ -21,6 +21,7 @@ project "Sandbox"
 		"../Daybreak/vendor/glad/include",
 		"../Daybreak/vendor/glfw/include",
 		"../Daybreak/vendor/imgui",
+		"../Daybreak/vendor/imguizmo",
 		"../Daybreak/vendor/glm",
 		"../Daybreak/vendor/stb_image",
 		"../Daybreak/vendor/entt/include",
@@ -36,7 +37,7 @@ project "Sandbox"
 	links
 	{
 		"Daybreak",
-		-- "DaybreakEditor",
+		"DaybreakEditor",
 	}
 
 	filter "system:windows"

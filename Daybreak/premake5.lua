@@ -13,6 +13,8 @@ project "Daybreak"
 		"src/**.cpp",
         "vendor/stb_image/stb_image.cpp",
         "vendor/miniaudio/miniaudio.cpp",
+		"vendor/ImGuizmo/ImGuizmo.h",
+		"vendor/ImGuizmo/ImGuizmo.cpp"
 	}
 	
 	includedirs
@@ -22,6 +24,7 @@ project "Daybreak"
 		"vendor/glad/include",
 		"vendor/glfw/include",
 		"vendor/imgui",
+		"vendor/imguizmo",
 		"vendor/glm",
 		"vendor/stb_image",
 		"vendor/entt/include",
@@ -46,6 +49,9 @@ project "Daybreak"
 
 	pchheader "dbpch.h"
 	pchsource "src/dbpch.cpp"
+
+	filter "files:vendor/ImGuizmo/**.cpp"
+	flags { "NoPCH" }
 
 	filter "system:windows"
 		systemversion "latest"
