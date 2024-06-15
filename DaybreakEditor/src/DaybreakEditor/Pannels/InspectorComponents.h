@@ -189,27 +189,19 @@ namespace Daybreak
 	void DrawComponentFields<ScriptComponent>(Entity& entity)
 	{
 		auto& sc = entity.GetComponent<ScriptComponent>();
-		auto registry = ScriptRegistry::GetRegistry();
-		int currentItem = 0;
-		int index = 0;
-		std::vector<char> chars;
-		std::vector<std::string> strings;
-		for (auto& item : registry)
+		const auto& registry = ScriptRegistry::GetRegistry();
+
+		if (ImGui::BeginCombo("Script", sc.TypeName.c_str()))
 		{
-			strings.emplace_back(item.first);
-			for (auto& character : item.first)
+			for (const auto& item : registry)
 			{
-				chars.emplace_back(character);
+				if (ImGui::Selectable(item.first.c_str()))
+				{
+					sc.TypeName = item.first;
+				}
 			}
-			chars.emplace_back(0);
-			if (item.first == sc.TypeName)
-			{
-				currentItem = index;
-			}
-			index++;
+			ImGui::EndCombo();
 		}
-		DrawField::Combobox("Scripts", currentItem, &chars[0]);
-		sc.TypeName = strings[currentItem];
 	}
 
 	template<typename T>
@@ -244,5 +236,4 @@ namespace Daybreak
 		}
 		ImGui::Separator();
 	}
-
 }
