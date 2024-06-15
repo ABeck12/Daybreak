@@ -25,6 +25,7 @@ namespace Daybreak
 		FrameBufferSpecifications m_Specification;
 		uint32_t m_RendererID;
 		std::vector<uint32_t> m_AttachmentEnumsValues;
+		std::vector<uint32_t> m_ColorBuffers;
 		std::vector<uint32_t> m_AttachmentIDs;
 	};
 }
