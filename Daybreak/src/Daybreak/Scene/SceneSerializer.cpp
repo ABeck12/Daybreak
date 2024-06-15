@@ -290,6 +290,7 @@ namespace Daybreak
 
 		std::string sceneName = data["Scene"].as<std::string>();
 		m_Scene->m_SceneName = sceneName;
+		m_Scene->m_Registry = entt::registry();
 		DB_CORE_LOG("Deserializing scene: \"{0}\"", sceneName);
 
 		auto entities = data["Entities"];

@@ -23,7 +23,7 @@ namespace Daybreak
 
 		void OnRuntimeStart();
 		void OnRuntimeUpdate(DeltaTime dt);
-		void OnRuntimeEnd();
+		void OnRuntimeStop();
 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntity(Entity& parent, const std::string& name = std::string());
@@ -46,15 +46,18 @@ namespace Daybreak
 
 		const std::string& GetName() const { return m_SceneName; }
 
-		void RenderScene(const Entity& cameraEntity);
+		void OnRenderScene(const Entity& cameraEntity);
+		void OnUpdateComponents(DeltaTime dt);
 
 		void SetStartTime(float time) { m_LastUpdateTime = time; }
 
-	private:
-		inline void OnPhysicsStart();
-		inline void OnPhysicsUpdate(DeltaTime dt);
-		inline void OnPhysicsStop();
+		void OnPhysicsStart();
+		void OnPhysicsUpdate(DeltaTime dt);
+		void OnPhysicsStop();
 
+		void ToggleDebugDraw() { m_DebugDraw = !m_DebugDraw; }
+
+	private:
 		// TODO: move to entity class?==============
 		inline glm::mat4 GetWorldTransform(Entity& entity);
 		inline glm::vec3 GetWorldPosition(Entity& entity);
@@ -85,11 +88,14 @@ namespace Daybreak
 		Ref<FrameBuffer> m_DrawBuffer2D;
 		Ref<Shader> m_LightingShader;
 		Ref<FrameBuffer> m_LightingBuffer;
+		Ref<FrameBuffer> m_ScreenBuffer;
+		glm::vec4 m_ClearColor = { 0, 0, 0, 1 };
 
 		friend class Entity;
 		friend class SceneSerializer;
 
 		// For Editor
 		friend class HierarchyPannel;
+		friend class ViewportPannel;
 	};
 }

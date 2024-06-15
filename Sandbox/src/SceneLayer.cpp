@@ -151,7 +151,7 @@ void SceneLayer::OnAttach()
 
 void SceneLayer::OnDetach()
 {
-	m_Scene->OnRuntimeEnd();
+	m_Scene->OnRuntimeStop();
 }
 
 void SceneLayer::OnUpdate(Daybreak::DeltaTime dt)

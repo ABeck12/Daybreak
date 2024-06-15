@@ -34,6 +34,8 @@ namespace Daybreak
 		screenSpec.Width = m_BufferWidth;
 		m_DrawBuffer2D = FrameBuffer::Create(screenSpec);
 
+		m_ScreenBuffer = FrameBuffer::Create(screenSpec);
+
 		m_LightingShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_LightingFrameBuffer.glsl");
 	}
 
@@ -41,7 +43,7 @@ namespace Daybreak
 	{
 		if (m_SceneRunning)
 		{
-			OnRuntimeEnd();
+			OnRuntimeStop();
 		}
 	}
 
@@ -225,7 +227,7 @@ namespace Daybreak
 		OnPhysicsStart();
 	}
 
-	void Scene::OnRuntimeUpdate(DeltaTime dt)
+	void Scene::OnUpdateComponents(DeltaTime dt)
 	{
 		{
 			auto view = m_Registry.view<AnimatorComponent>();
@@ -262,12 +264,16 @@ namespace Daybreak
 
 				sc.Instance->OnUpdate(dt);
 			});
-
-		OnPhysicsUpdate(dt);
-		RenderScene(GetActiveCameraEntity());
 	}
 
-	void Scene::OnRuntimeEnd()
+	void Scene::OnRuntimeUpdate(DeltaTime dt)
+	{
+		OnUpdateComponents(dt);
+		OnPhysicsUpdate(dt);
+		OnRenderScene(GetActiveCameraEntity());
+	}
+
+	void Scene::OnRuntimeStop()
 	{
 		OnPhysicsStop();
 
@@ -343,7 +349,7 @@ namespace Daybreak
 		}
 	}
 
-	void Scene::RenderScene(const Entity& cameraEntity)
+	void Scene::OnRenderScene(const Entity& cameraEntity)
 	{
 		enum class SceneRenderObjectType
 		{
@@ -426,10 +432,15 @@ namespace Daybreak
 		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
 		CheckResizeBuffers();
 
+		m_ScreenBuffer->Bind();
+		RenderCommand::SetClearColor({ 0, 0, 0, 1 });
+		RenderCommand::Clear();
+		m_ScreenBuffer->Unbind();
+
 		// 2D drawing
 		{
-			// m_DrawBuffer2D->Bind();
-			RenderCommand::SetClearColor({ 0, 0, 0, 1 });
+			m_DrawBuffer2D->Bind();
+			RenderCommand::SetClearColor(m_ClearColor);
 			RenderCommand::Clear();
 			for (int i = 0; i < numberObjects; i++)
 			{
@@ -462,10 +473,11 @@ namespace Daybreak
 				}
 			}
 			Renderer2D::EndScene();
-			// m_DrawBuffer2D->Unbind();
+			m_DrawBuffer2D->Unbind();
 		}
+
 		// Lighting
-		if (false)
+		// if (false)
 		{
 			m_LightingBuffer->Bind();
 			Renderer2D::StartBatch();
@@ -505,18 +517,22 @@ namespace Daybreak
 			Renderer2D::EndScene();
 			RenderCommand::SetBlendMode(RenderAPI::BlendModes::OneMinusSrcAlpha);
 			m_LightingBuffer->Unbind();
-
-			// FIXME: rework into renderpass
-			m_LightingBuffer->BindAttachmentAsTexture(0, 0); // Lighting RGBA32F
-			m_DrawBuffer2D->BindAttachmentAsTexture(0, 1);	 // Screen RGBA
-			m_DrawBuffer2D->BindAttachmentAsTexture(1, 2);	 // Screen Depth
-			Renderer::DrawFrameBuffer(m_LightingBuffer, m_LightingShader, { 0, 1, 2 });
 		}
+
+		// Draw final image to m_ScrenBuffer
+		// FIXME: rework into renderpass
+		m_LightingBuffer->BindAttachmentAsTexture(0, 0); // Lighting RGBA32F
+		m_DrawBuffer2D->BindAttachmentAsTexture(0, 1);	 // Screen RGBA
+		m_DrawBuffer2D->BindAttachmentAsTexture(1, 2);	 // Screen Depth
+
+		m_ScreenBuffer->Bind(); // If not running in editor comment out this line
+		Renderer::DrawFrameBuffer(m_LightingBuffer, m_LightingShader, { 0, 1, 2 });
 
 		if (m_DebugDraw)
 		{
 			DebugDraw();
 		}
+		m_ScreenBuffer->Unbind(); // If not running in editor comment out this line
 	}
 
 	void Scene::OnPhysicsUpdate(DeltaTime dt)
@@ -738,13 +754,7 @@ namespace Daybreak
 
 	void Scene::DebugDraw()
 	{
-		Entity cameraEntity = GetActiveCameraEntity();
-		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * cameraEntity.GetComponent<TransformComponent>().Position);
-		glm::mat4 rotation = glm::toMat4(glm::quat(cameraEntity.GetComponent<TransformComponent>().Rotation));
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Scale);
-
-		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
-
+		Renderer2D::NextBatch();
 		RenderCommand::SetLineWidth(1);
 
 		// FIXME: this is for the editor to render when the scene isnt playing
@@ -773,16 +783,4 @@ namespace Daybreak
 			m_BufferHeight = height;
 		}
 	}
-
-	// void Scene::LogEntities()
-	// {
-	// 	DB_LOG("========");
-	// 	auto view = m_Registry.view<TagComponent>();
-	// 	for (auto entity : view)
-	// 	{
-	// 		const TagComponent& tc = view.get<TagComponent>(entity);
-	// 		DB_LOG(tc.Tag);
-	// 	}
-	// 	DB_LOG("========");
-	// }
 }
