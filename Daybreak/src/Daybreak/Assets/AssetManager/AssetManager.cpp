@@ -88,7 +88,7 @@ namespace Daybreak
 		DB_CORE_ASSERT(false, "Could not find asset directory");
 	}
 
-	bool AssetManager::HasAssetPath(const std::filesystem::path& path)
+	bool AssetManager::HasAssetPath(const std::filesystem::path& path) const
 	{
 		if (m_Assets.Texture2Ds.find(path) != m_Assets.Texture2Ds.end())
 			return true;
@@ -101,7 +101,7 @@ namespace Daybreak
 		return false;
 	}
 
-	std::filesystem::path AssetManager::GetTexture2DFilepath(const Ref<Texture2D>& texture)
+	std::filesystem::path AssetManager::GetTexture2DFilepath(const Ref<Texture2D>& texture) const
 	{
 		for (const auto kv : m_Assets.Texture2Ds)
 		{
@@ -113,7 +113,7 @@ namespace Daybreak
 		return std::filesystem::relative(texture->GetFilepath(), m_AssetDirectoryPath).replace_extension("sprite");
 	}
 
-	std::filesystem::path AssetManager::GetAnimationFilepath(const Ref<Animation>& anim)
+	std::filesystem::path AssetManager::GetAnimationFilepath(const Ref<Animation>& anim) const
 	{
 		for (const auto kv : m_Assets.Animations)
 		{
@@ -125,7 +125,7 @@ namespace Daybreak
 		return std::filesystem::path("animations/" + anim->m_Name + ".anim");
 	}
 
-	std::filesystem::path AssetManager::GetAnimationControllerFilepath(const Ref<AnimationController>& controller)
+	std::filesystem::path AssetManager::GetAnimationControllerFilepath(const Ref<AnimationController>& controller) const
 	{
 		for (const auto kv : m_Assets.AnimationControllers)
 		{
@@ -281,13 +281,13 @@ namespace Daybreak
 		return controller;
 	}
 
-	void AssetManager::SerializeTexture2D(const Ref<Texture2D>& texture)
+	void AssetManager::SerializeTexture2D(const Ref<Texture2D>& texture) const
 	{
 		std::filesystem::path filepath = texture->GetFilepath();
 		SerializeTexture2D(texture, std::filesystem::relative(filepath.replace_extension("sprite"), m_AssetDirectoryPath));
 	}
 
-	void AssetManager::SerializeTexture2D(const Ref<Texture2D>& texture, const std::filesystem::path& assetPath)
+	void AssetManager::SerializeTexture2D(const Ref<Texture2D>& texture, const std::filesystem::path& assetPath) const
 	{
 		YAML::Emitter out;
 
@@ -299,7 +299,7 @@ namespace Daybreak
 		fout << out.c_str();
 	}
 
-	void AssetManager::SerializeAnimation(const Ref<Animation>& anim, const std::filesystem::path& assetPath)
+	void AssetManager::SerializeAnimation(const Ref<Animation>& anim, const std::filesystem::path& assetPath) const
 	{
 		YAML::Emitter out;
 
@@ -333,7 +333,7 @@ namespace Daybreak
 		fout << out.c_str();
 	}
 
-	void AssetManager::SerializeAnimationController(const Ref<AnimationController>& controller, const std::filesystem::path& assetPath)
+	void AssetManager::SerializeAnimationController(const Ref<AnimationController>& controller, const std::filesystem::path& assetPath) const
 	{
 		YAML::Emitter out;
 
