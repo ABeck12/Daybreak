@@ -37,7 +37,7 @@ namespace Daybreak
 		return texture;
 	}
 
-	Font::Font(const std::filesystem::path& filepath)
+	Font::Font(const std::filesystem::path& filepath, CharacterSet charSet)
 		: m_Data(new MSDFData()), m_Filepath(filepath)
 	{
 		m_FontName = filepath.stem().string();
@@ -54,22 +54,27 @@ namespace Daybreak
 			return;
 		}
 
-		struct CharsetRange
-		{
-			uint32_t Begin, End;
-		};
+		// struct CharsetRange
+		// {
+		// 	uint32_t Begin, End;
+		// };
 
 		// From imgui_draw.cpp
-		static const CharsetRange charsetRanges[] = {
-			{ 0x0020, 0x00FF }
-		};
+		// static const CharsetRange charsetRanges[] = {
+		// 	{ 0x0020, 0x00FF }
+		// };
 
 		msdf_atlas::Charset charset;
-		for (CharsetRange range : charsetRanges)
+		// for (CharsetRange range : charsetRanges)
+		// {
+		// 	for (uint32_t c = range.Begin; c <= range.End; c++)
+		// 		charset.add(c);
+		// }
+		for (uint32_t c = charSet.Min; c <= charSet.Max; c++)
 		{
-			for (uint32_t c = range.Begin; c <= range.End; c++)
-				charset.add(c);
+			charset.add(c);
 		}
+
 
 		double fontScale = 1.0;
 		m_Data->FontGeometry = msdf_atlas::FontGeometry(&m_Data->Glyphs);
@@ -97,27 +102,27 @@ namespace Daybreak
 #define THREAD_COUNT			8
 		// if MSDF || MTSDF
 
-		uint64_t coloringSeed = 0;
-		bool expensiveColoring = true;
-		if (expensiveColoring)
-		{
-			msdf_atlas::Workload([&glyphs = m_Data->Glyphs, &coloringSeed](int i, int threadNo) -> bool
-								 {
-				unsigned long long glyphSeed = (LCG_MULTIPLIER * (coloringSeed ^ i) + LCG_INCREMENT) * !!coloringSeed;
-				glyphs[i].edgeColoring(msdfgen::edgeColoringInkTrap, DEFAULT_ANGLE_THRESHOLD, glyphSeed);
-				return true; },
-								 (int)m_Data->Glyphs.size())
-				.finish(THREAD_COUNT);
-		}
-		else
-		{
-			unsigned long long glyphSeed = coloringSeed;
-			for (msdf_atlas::GlyphGeometry& glyph : m_Data->Glyphs)
-			{
-				glyphSeed *= LCG_MULTIPLIER;
-				glyph.edgeColoring(msdfgen::edgeColoringInkTrap, DEFAULT_ANGLE_THRESHOLD, glyphSeed);
-			}
-		}
+		// uint64_t coloringSeed = 0;
+		// bool expensiveColoring = true;
+		// if (expensiveColoring)
+		// {
+		// 	msdf_atlas::Workload([&glyphs = m_Data->Glyphs, &coloringSeed](int i, int threadNo) -> bool
+		// 						 {
+		// 		unsigned long long glyphSeed = (LCG_MULTIPLIER * (coloringSeed ^ i) + LCG_INCREMENT) * !!coloringSeed;
+		// 		glyphs[i].edgeColoring(msdfgen::edgeColoringInkTrap, DEFAULT_ANGLE_THRESHOLD, glyphSeed);
+		// 		return true; },
+		// 						 (int)m_Data->Glyphs.size())
+		// 		.finish(THREAD_COUNT);
+		// }
+		// else
+		// {
+		// 	unsigned long long glyphSeed = coloringSeed;
+		// 	for (msdf_atlas::GlyphGeometry& glyph : m_Data->Glyphs)
+		// 	{
+		// 		glyphSeed *= LCG_MULTIPLIER;
+		// 		glyph.edgeColoring(msdfgen::edgeColoringInkTrap, DEFAULT_ANGLE_THRESHOLD, glyphSeed);
+		// 	}
+		// }
 
 
 		m_AtlasTexture = CreateAndCacheAtlas<uint8_t, float, 3, msdf_atlas::msdfGenerator>(filepath.stem().string().c_str(), (float)emSize, m_Data->Glyphs, m_Data->FontGeometry, width, height);

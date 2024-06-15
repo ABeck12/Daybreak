@@ -9,10 +9,16 @@ namespace Daybreak
 {
 	struct MSDFData;
 
+	struct CharacterSet
+	{
+		uint16_t Min;
+		uint16_t Max;
+	};
+
 	class Font
 	{
 	public:
-		Font(const std::filesystem::path& font);
+		Font(const std::filesystem::path& font, CharacterSet charSet = { 0x0020, 0x00FF });
 		~Font();
 
 		const MSDFData* GetMSDFData() const { return m_Data; }
