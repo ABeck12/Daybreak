@@ -7,6 +7,21 @@ namespace Daybreak
 	class ContentBrowserPannel final : public Pannel
 	{
 	public:
+		enum class FileType
+		{
+			Default,
+			Directory,
+			Cpp,
+			Header,
+			Sprite,
+			Shader,
+			Image,
+			Scene,
+			Animation,
+			AnimationController,
+			Font,
+		};
+
 		ContentBrowserPannel();
 
 		virtual void OnAttach() override;
@@ -24,8 +39,9 @@ namespace Daybreak
 	private:
 		std::string m_PannelName = "ContentBrowserPannel";
 
-		Ref<Texture2D> m_FileTexture;
-		Ref<Texture2D> m_DirectoryTexture;
+		std::unordered_map<FileType, Ref<Texture2D>> m_TextureMap;
+		Ref<Texture2D> m_BackButton;
+		// Ref<Texture2D> m_DirectoryTexture;
 
 		std::filesystem::path m_ResourceDirectory;
 

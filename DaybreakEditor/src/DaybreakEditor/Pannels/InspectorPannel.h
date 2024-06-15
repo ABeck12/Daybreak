@@ -19,7 +19,6 @@ namespace Daybreak
 		virtual void OnImGuiRender() override;
 		virtual const std::string& GetName() const override { return m_PannelName; }
 
-
 	private:
 		void DrawEntityInspector(Entity& entity);
 		void DrawFileInspector(const std::filesystem::path& path);
@@ -27,6 +26,5 @@ namespace Daybreak
 	private:
 		std::string m_PannelName = "InspectorPannel";
 		std::string m_LastEntityName;
-		// Entity m_SelectedEntity; // TODO: Change to selected context once we can insptect things other than entities
 	};
 }

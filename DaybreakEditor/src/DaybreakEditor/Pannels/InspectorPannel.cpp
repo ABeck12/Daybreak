@@ -145,6 +145,13 @@ namespace Daybreak
 	{
 		ImGui::Text("%s", path.filename().string().c_str());
 		ImGui::Separator();
+
+		std::ifstream file(path);
+		std::string text;
+		while (getline(file, text))
+		{
+			ImGui::Text("%s", text.c_str());
+		}
 	}
 
 }
