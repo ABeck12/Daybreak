@@ -42,7 +42,7 @@ namespace Daybreak
 	void ContentBrowserPannel::OnImGuiRender()
 	{
 		ImGui::Begin("Content Browser");
-		std::filesystem::path assetDir = AssetManager::Get()->GetAssetDir();
+		const std::filesystem::path& assetDir = AssetManager::Get()->GetAssetDir();
 		if (ImGui::ImageButton("Back", (ImTextureID)(intptr_t)m_BackButton->GetRendererID(), { 20, 20 }, { 0, 1 }, { 1, 0 }) && m_CurrentPath != assetDir.parent_path())
 		{
 			m_CurrentPath = m_CurrentPath.parent_path();
@@ -82,7 +82,7 @@ namespace Daybreak
 
 	static ContentBrowserPannel::FileType MatchExtensionToFileType(const std::filesystem::path& path)
 	{
-		std::filesystem::path fileExtension = path.extension();
+		const std::filesystem::path fileExtension = path.extension();
 
 #define MATCH(extension, type)                       \
 	if (fileExtension == extension)                  \
@@ -105,8 +105,8 @@ namespace Daybreak
 
 	void ContentBrowserPannel::RenderFileButton(const std::filesystem::directory_entry& entry)
 	{
-		std::filesystem::path path = entry.path();
-		bool isDir = entry.is_directory();
+		const std::filesystem::path path = entry.path();
+		const bool isDir = entry.is_directory();
 
 		ImTextureID iconID;
 		if (isDir)
