@@ -35,7 +35,16 @@ namespace Daybreak
 		DrawField::InputInt("Render Layer", input);
 		sr.RenderLayer = (uint8_t)std::clamp<int>(input, 0, 32);
 
-		ImGui::Text("TODO: Add sprite filepath");
+		if (sr.Sprite)
+		{
+			const AssetManager* am = AssetManager::Get();
+			const std::string filename = am->GetTexture2DFilepath(sr.Sprite).filename().string();
+			DrawField::Text("Filename", filename);
+		}
+		else
+		{
+			DrawField::Text("Filename", "");
+		}
 	}
 
 	template<>
@@ -131,7 +140,16 @@ namespace Daybreak
 		DrawField::InputInt("Render Layer", input);
 		anim.RenderLayer = (uint8_t)std::clamp<int>(input, 0, 32);
 
-		ImGui::Text("Add anim controller filepath");
+		if (anim.Controller)
+		{
+			const AssetManager* am = AssetManager::Get();
+			const std::string filename = am->GetAnimationControllerFilepath(anim.Controller).filename().string();
+			DrawField::Text("Filename", filename);
+		}
+		else
+		{
+			DrawField::Text("Filename", "");
+		}
 	}
 
 	template<>
