@@ -213,11 +213,11 @@ namespace Daybreak
 
 		if (Input::IsKeyPressed(Key::Up))
 		{
-			cameraPos.z += 0.1f;
+			cameraPos.z += 1.0f;
 		}
 		if (Input::IsKeyPressed(Key::Down))
 		{
-			cameraPos.z -= 0.1f;
+			cameraPos.z -= 1.0f;
 		}
 		if (Input::IsKeyPressed(Key::Right))
 		{
