@@ -6,7 +6,7 @@
 #include "FramebufferTesting.h"
 #include "StressTesting.h"
 
-#include <DaybreakEditor.h>
+// #include <DaybreakEditor.h>
 #include "ScriptInclude.auto.h"
 
 // #include "ScriptableEntityTest.h"
