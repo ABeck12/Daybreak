@@ -29,11 +29,16 @@ namespace Daybreak
 		lightingSpec.AttachmentTypes = { FrameBufferAttachmentTypes::RGBA32F, FrameBufferAttachmentTypes::Depth };
 		m_LightingBuffer = FrameBuffer::Create(lightingSpec);
 
+		FrameBufferSpecifications bufferSpec2D;
+		bufferSpec2D.Height = m_BufferHeight;
+		bufferSpec2D.Width = m_BufferWidth;
+		bufferSpec2D.AttachmentTypes = { FrameBufferAttachmentTypes::RGBA, FrameBufferAttachmentTypes::RedInteger, FrameBufferAttachmentTypes::Depth };
+		m_DrawBuffer2D = FrameBuffer::Create(bufferSpec2D);
+
 		FrameBufferSpecifications screenSpec;
 		screenSpec.Height = m_BufferHeight;
 		screenSpec.Width = m_BufferWidth;
-		m_DrawBuffer2D = FrameBuffer::Create(screenSpec);
-
+		screenSpec.AttachmentTypes = { FrameBufferAttachmentTypes::RGBA, FrameBufferAttachmentTypes::Depth };
 		m_ScreenBuffer = FrameBuffer::Create(screenSpec);
 
 		m_LightingShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_LightingFrameBuffer.glsl");
@@ -432,15 +437,15 @@ namespace Daybreak
 		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
 		CheckResizeBuffers();
 
-		m_ScreenBuffer->Bind();
-		RenderCommand::SetClearColor({ 0, 0, 0, 1 });
-		RenderCommand::Clear();
-		m_ScreenBuffer->Unbind();
+		// m_ScreenBuffer->Bind();
+		// RenderCommand::SetClearColor({ 0, 0, 0, 1 });
+		// RenderCommand::Clear();
+		// m_ScreenBuffer->Unbind();
 
 		// 2D drawing
 		{
 			m_DrawBuffer2D->Bind();
-			RenderCommand::SetClearColor(m_ClearColor);
+			RenderCommand::SetClearColor({ -1, 0, 0, 1 });
 			RenderCommand::Clear();
 			for (int i = 0; i < numberObjects; i++)
 			{
@@ -476,8 +481,9 @@ namespace Daybreak
 			m_DrawBuffer2D->Unbind();
 		}
 
-		// Lighting
-		// if (false)
+// Lighting
+#if 0
+		if (false)
 		{
 			m_LightingBuffer->Bind();
 			Renderer2D::StartBatch();
@@ -521,18 +527,19 @@ namespace Daybreak
 
 		// Draw final image to m_ScrenBuffer
 		// FIXME: rework into renderpass
-		m_LightingBuffer->BindAttachmentAsTexture(0, 0); // Lighting RGBA32F
-		m_DrawBuffer2D->BindAttachmentAsTexture(0, 1);	 // Screen RGBA
-		m_DrawBuffer2D->BindAttachmentAsTexture(1, 2);	 // Screen Depth
+		// m_LightingBuffer->BindAttachmentAsTexture(0, 0); // Lighting RGBA32F
+		// m_DrawBuffer2D->BindAttachmentAsTexture(0, 1);	 // Screen RGBA
+		// m_DrawBuffer2D->BindAttachmentAsTexture(1, 2);	 // Screen Depth
 
-		m_ScreenBuffer->Bind(); // If not running in editor comment out this line
-		Renderer::DrawFrameBuffer(m_LightingBuffer, m_LightingShader, { 0, 1, 2 });
+#endif
+		// m_ScreenBuffer->Bind(); // If not running in editor comment out this line
+		// Renderer::DrawFrameBuffer(m_LightingBuffer, m_LightingShader, { 0, 1, 2 });
 
 		if (m_DebugDraw)
 		{
 			DebugDraw();
 		}
-		m_ScreenBuffer->Unbind(); // If not running in editor comment out this line
+		// m_ScreenBuffer->Unbind(); // If not running in editor comment out this line
 	}
 
 	void Scene::OnPhysicsUpdate(DeltaTime dt)

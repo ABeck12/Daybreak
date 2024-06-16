@@ -13,7 +13,7 @@ This is a 2D game engine based of Hazel engine.
 
 Fix pch file in premake
 
-# To Do List
+# To Do List OLD!!!!!!
 ### For Renderer2D:
     Font rendering
     Finish framebuffer class and add dynamic amounts of framebuffer attachments

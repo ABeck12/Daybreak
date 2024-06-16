@@ -20,6 +20,14 @@ namespace Daybreak
 
 	void OpenGLFrameBuffer::Remake()
 	{
+		// #define CHECK_ERROR                              \
+		// 	{                                               \
+		// 		GLenum err;                                 \
+		// 		while ((err = glGetError()) != GL_NO_ERROR) \
+		// 		{                                           \
+		// 			DB_CORE_ERROR((int)err);                \
+		// 		}                                           \
+		// 	}
 		glGenFramebuffers(1, &m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
@@ -38,6 +46,7 @@ namespace Daybreak
 					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachments, GL_TEXTURE_2D, rgbaID, 0);
 					m_AttachmentIDs.emplace_back(rgbaID);
 					m_AttachmentEnumsValues.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
+					m_ColorBuffers.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
 					colorAttachments++;
 					break;
 
@@ -51,6 +60,7 @@ namespace Daybreak
 					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachments, GL_TEXTURE_2D, rgba32FID, 0);
 					m_AttachmentIDs.emplace_back(rgba32FID);
 					m_AttachmentEnumsValues.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
+					m_ColorBuffers.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
 					colorAttachments++;
 
 				case FrameBufferAttachmentTypes::Depth:
@@ -67,10 +77,11 @@ namespace Daybreak
 					uint32_t redIntID;
 					glCreateTextures(GL_TEXTURE_2D, 1, &redIntID);
 					glBindTexture(GL_TEXTURE_2D, redIntID);
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, m_Specification.Width, m_Specification.Height, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, nullptr);
-					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_RED_INTEGER, GL_TEXTURE_2D, redIntID, 0);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, m_Specification.Width, m_Specification.Height, 0, GL_RED_INTEGER, GL_INT, nullptr);
+					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachments, GL_TEXTURE_2D, redIntID, 0);
 					m_AttachmentIDs.emplace_back(redIntID);
 					m_AttachmentEnumsValues.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
+					m_ColorBuffers.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachments);
 					colorAttachments++;
 					break;
 
@@ -78,10 +89,6 @@ namespace Daybreak
 					break;
 			}
 		}
-
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
 
 		DB_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "FrameBuffer is incomplete");
 
@@ -93,13 +100,7 @@ namespace Daybreak
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
-		glDrawBuffers((int)m_AttachmentEnumsValues.size(), &m_AttachmentEnumsValues[0]);
-
-		// This is probably not needed?
-		// for (size_t i = 0; i < m_AttachmentEnumsValues.size(); i++)
-		// {
-		// 	glFramebufferTexture2D(GL_FRAMEBUFFER, m_AttachmentEnumsValues[i], GL_TEXTURE_2D, GetAttachmentRendererID(i), 0);
-		// }
+		glDrawBuffers((int)m_ColorBuffers.size(), &m_ColorBuffers[0]);
 	}
 
 	void OpenGLFrameBuffer::Unbind() const
@@ -117,9 +118,19 @@ namespace Daybreak
 		Remake();
 	}
 
-	const void OpenGLFrameBuffer::BindAttachmentAsTexture(uint32_t attachmentIndex, uint32_t textureSlot) const
+	void OpenGLFrameBuffer::BindAttachmentAsTexture(uint32_t attachmentIndex, uint32_t textureSlot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + textureSlot);
 		glBindTexture(GL_TEXTURE_2D, GetAttachmentRendererID(attachmentIndex));
+	}
+
+	int OpenGLFrameBuffer::ReadPixel1I(uint32_t attachmentIndex, int x, int y) const
+	{
+		DB_CORE_ASSERT(attachmentIndex < m_AttachmentEnumsValues.size(), "Unknown attachment index {}", attachmentIndex);
+
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+		int pixelData;
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+		return pixelData;
 	}
 }

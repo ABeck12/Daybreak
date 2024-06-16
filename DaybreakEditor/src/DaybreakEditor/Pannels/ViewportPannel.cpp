@@ -79,13 +79,20 @@ namespace Daybreak
 
 		float cursorYBeforeImage = ImGui::GetCursorPos().y;
 
-		uint32_t textureID = m_Scene->m_ScreenBuffer->GetAttachmentRendererID(0);
+		// uint32_t textureID = m_Scene->m_ScreenBuffer->GetAttachmentRendererID(0);
+		uint32_t textureID = m_Scene->m_DrawBuffer2D->GetAttachmentRendererID(0);
 		const ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 
 		const float windowWidth = ImGui::GetWindowWidth();
 		m_ImageSize = { windowWidth, windowWidth / m_AspectRatio };
-		ImGui::SetCursorPos({ 0.5f * (windowWidth - m_ImageSize.x),
-							  0.5f * (viewportSize.y - m_ImageSize.y) + ImGui::GetCursorPosY() });
+		glm::vec2 cursorPos = { 0.5f * (windowWidth - m_ImageSize.x),
+								0.5f * (viewportSize.y - m_ImageSize.y) + ImGui::GetCursorPosY() };
+		ImGui::SetCursorPos({ cursorPos.x, cursorPos.y });
+
+		// Used for mouse picking
+		const glm::vec2 imageUpperRightCorner = { ImGui::GetWindowPos().x + ImGui::GetCursorPos().x, ImGui::GetWindowPos().y + ImGui::GetCursorPos().y };
+		const glm::vec2 imageLowerLeftCorner = imageUpperRightCorner + m_ImageSize;
+
 		ImGui::Image((void*)(intptr_t)textureID, { m_ImageSize.x, m_ImageSize.y },
 					 { 0, 1 }, { 1, 0 });
 		if (ImGui::BeginDragDropTarget())
@@ -117,6 +124,21 @@ namespace Daybreak
 			UpdateEditorCameraPosition();
 		}
 
+
+		// Mousepicking
+		const glm::vec2 screenSize = { Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() };
+		const glm::vec2 mousePos = { ImGui::GetMousePos().x, ImGui::GetMousePos().y };
+		glm::vec2 imageFraction = (mousePos - imageUpperRightCorner) / (imageLowerLeftCorner - imageUpperRightCorner);
+		imageFraction = glm::clamp(imageFraction, 0.0f, 1.0f);
+		const glm::vec2 pickPosition = imageFraction * screenSize;
+		m_Scene->m_DrawBuffer2D->Bind();
+		int entityIDVal = m_Scene->m_DrawBuffer2D->ReadPixel1I(1, (int)pickPosition.x, (int)(screenSize.y - pickPosition.y));
+		m_Scene->m_DrawBuffer2D->Unbind();
+		if (entityIDVal > -1 && entityIDVal < m_Scene->m_Registry.size() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		{
+			Entity selectedEntity = Entity((entt::entity)entityIDVal, m_Scene.get());
+			SelectionContext::SetContext(CreateRef<EntityContext>(selectedEntity));
+		}
 		ImGui::End();
 	}
 

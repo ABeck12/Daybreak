@@ -17,6 +17,7 @@ out vec2 v_TexCoord;
 out float v_TexIndex;
 out vec4 v_Color;
 out float v_TilingFactor;
+out flat int v_EntityID;
 
 void main()
 {
@@ -25,17 +26,20 @@ void main()
 	v_TexIndex = a_TexIndex;
 	v_Color = a_Color;
 	v_TilingFactor = a_TilingFactor;
+	v_EntityID = a_EntityID;
 };
 
 #shader FRAGMENT
 #version 460 core
 
 layout(location = 0) out vec4 o_Color;
+layout(location = 1) out int o_EntityID;
 
 in vec2 v_TexCoord;
 in float v_TexIndex;
 in vec4 v_Color;
 in float v_TilingFactor;
+in flat int v_EntityID;
 
 uniform sampler2D u_Textures[32];
 
@@ -46,6 +50,6 @@ void main()
 	if (textureColor.a == 0.0)
 		discard;
 	o_Color = textureColor;
-
+	o_EntityID = v_EntityID;
 	// o_Color = vec4(v_TexCoord.x, v_TexCoord.y, 0.0f, 1.0f); //DEBUG color checker
 };
