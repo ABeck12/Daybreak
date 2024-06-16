@@ -12,6 +12,8 @@ workspace "Daybreak"
 require("vendor/premake/premake-vscode")
 require("vendor/premake/export-compile-commands")
 
+flags { "MultiProcessorCompile" }
+
 outputloc = _WORKING_DIR 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
