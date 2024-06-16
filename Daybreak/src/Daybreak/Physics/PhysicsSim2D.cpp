@@ -153,8 +153,8 @@ namespace Daybreak
 
 	void PhysicsSim2D::FixedStepSimulation()
 	{
-		const int32_t velocityIterations = 6;
-		const int32_t positionIterations = 2;
+		const int32_t velocityIterations = 10;
+		const int32_t positionIterations = 12;
 		m_PhysicsWorld->Step(0.016f, velocityIterations, positionIterations); // For now this is the fixed delta time
 	}
 
