@@ -118,9 +118,19 @@ namespace Daybreak
 		Remake();
 	}
 
-	const void OpenGLFrameBuffer::BindAttachmentAsTexture(uint32_t attachmentIndex, uint32_t textureSlot) const
+	void OpenGLFrameBuffer::BindAttachmentAsTexture(uint32_t attachmentIndex, uint32_t textureSlot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + textureSlot);
 		glBindTexture(GL_TEXTURE_2D, GetAttachmentRendererID(attachmentIndex));
+	}
+
+	int OpenGLFrameBuffer::ReadPixel1I(uint32_t attachmentIndex, int x, int y) const
+	{
+		DB_CORE_ASSERT(attachmentIndex < m_AttachmentEnumsValues.size(), "Unknown attachment index {}", attachmentIndex);
+
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+		int pixelData;
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+		return pixelData;
 	}
 }
