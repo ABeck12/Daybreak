@@ -1,5 +1,55 @@
 Scene: Test Scene
 Entities:
+  - Entity: 14310509106623175170
+    TagComponent:
+      Tag: Entity
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [24.5284367, 7.39003849, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 23.2570152, 1]
+    SpriteRendererComponent:
+      Sprite: ~
+      TintColor: [0.482625484, 0.0372683778, 0.439637512, 1]
+      TilingFactor: 1
+      RenderLayer: 0
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+      Enabled: true
+  - Entity: 16407989004459125601
+    TagComponent:
+      Tag: Entity
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [-24.3451252, 7.84863758, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 24.010603, 1]
+    SpriteRendererComponent:
+      Sprite: ~
+      TintColor: [0.56396848, 0.0475842692, 0.586872578, 1]
+      TilingFactor: 1
+      RenderLayer: 0
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+      Enabled: true
   - Entity: 111967812404684787
     TagComponent:
       Tag: Entity
@@ -71,7 +121,7 @@ Entities:
     TransformComponent:
       Position: [0, -4, 0]
       Rotation: [0, 0, 0]
-      Scale: [15, 1, 1]
+      Scale: [50, 1, 1]
     SpriteRendererComponent:
       Sprite: sprites\Test.sprite
       TintColor: [1, 1, 1, 1]
@@ -108,13 +158,15 @@ Entities:
       ChildrenIDs:
         []
     TransformComponent:
-      Position: [0, 0, -10]
+      Position: [0, 0, -20]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       CameraProjection: [[1.35799515, 0, 0, 0], [0, 2.41421342, 0, 0], [0, 0, -1.00267017, -1], [0, 0, -0.200267017, 0]]
       Primary: true
       Type: Perspective
+    ScriptComponent:
+      TypeName: ArrowKeyMoveable
   - Entity: 6543958417763370994
     TagComponent:
       Tag: Player

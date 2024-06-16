@@ -3,6 +3,8 @@
 
 // #include "SceneLayer.h"
 #include "LightingScene.h"
+#include "FramebufferTesting.h"
+#include "StressTesting.h"
 
 #include <DaybreakEditor.h>
 #include "ScriptInclude.auto.h"
@@ -24,7 +26,9 @@ public:
 		Daybreak::Auto::AutoScriptInclude();
 		// PushLayer(new SceneLayer());
 		// PushLayer(new LightingScene());
-		PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
+		// PushLayer(new FBTesting());
+		PushLayer(new StressTestLayer());
+		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
 	}
 
 	~Sandbox()

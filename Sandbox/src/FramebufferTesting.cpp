@@ -37,11 +37,11 @@ void FBTesting::OnUpdate(Daybreak::DeltaTime dt)
 {
 	m_FB->Bind();
 	Daybreak::RenderCommand::Clear();
-	Daybreak::RenderCommand::SetClearColor({ 1, 1, 1, 1 });
-	// uint32_t id = m_FB->GetAttachmentRendererID(1);
-	glDrawBuffer(GL_COLOR_ATTACHMENT1);
 	Daybreak::RenderCommand::SetClearColor({ -1, 0, 0, 1 });
-	Daybreak::RenderCommand::Clear();
+	// uint32_t id = m_FB->GetAttachmentRendererID(1);
+	// glDrawBuffer(GL_COLOR_ATTACHMENT1);
+	// Daybreak::RenderCommand::SetClearColor({ -1, 0, 0, 1 });
+	// Daybreak::RenderCommand::Clear();
 	m_FB->Bind();
 
 	// m_FB->Bind();

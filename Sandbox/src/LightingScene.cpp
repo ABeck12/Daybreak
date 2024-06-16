@@ -8,18 +8,13 @@ LightingScene::LightingScene()
 	Daybreak::SceneSerializer serializer(m_Scene);
 	serializer.Deserialize(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene");
 	Daybreak::Entity playerEntity = m_Scene->GetEntityByName("Player");
-	// playerEntity.GetComponent<Daybreak::TransformComponent>().Scale.x = -2;
+
 	auto& pl = playerEntity.AddComponent<Daybreak::PointLight2DComponent>();
-	pl.InnerRadius = 1.0f;
-	pl.OuterRadius = 5.0f;
-	// playerEntity.GetComponent<Daybreak::TransformComponent>().Scale.y = -1.5;
 
 
 	Daybreak::Entity parent = m_Scene->CreateEntity("parent");
 	auto& parentTr = parent.GetComponent<Daybreak::TransformComponent>();
 	parentTr.Position.x = -3;
-	// parentTr.Rotation.z = 1.4f;
-	// parentTr.Scale.x = -1;
 	auto& parentRb = parent.AddComponent<Daybreak::Rigidbody2DComponent>();
 	parentRb.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
 	auto& parentBc = parent.AddComponent<Daybreak::BoxCollider2DComponent>();
@@ -32,8 +27,6 @@ LightingScene::LightingScene()
 
 	// parentPl.Intensity = 10;
 	Daybreak::Entity child = m_Scene->CreateEntity(parent, "child");
-	// auto& childRb = child.AddComponent<Daybreak::Rigidbody2DComponent>();
-	// childRb.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
 	auto& childBc = child.AddComponent<Daybreak::BoxCollider2DComponent>();
 	auto& childSr = child.AddComponent<Daybreak::SpriteRendererComponent>();
 	childSr.TintColor = { 0, 0, 1, 1 };
@@ -41,71 +34,17 @@ LightingScene::LightingScene()
 	childTr.Position = { 1, 0, 0 };
 
 	Daybreak::Entity child2 = m_Scene->CreateEntity(child, "child2");
-	// auto& childRb = child.AddComponent<Daybreak::Rigidbody2DComponent>();
-	// childRb.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
 	auto& child2Cc = child2.AddComponent<Daybreak::CircleCollider2DComponent>();
 	child2Cc.Radius = sqrt(2) / 2;
-	// auto& child2Sr = child2.AddComponent<Daybreak::SpriteRendererComponent>();
-	// child2Sr.TintColor = { 0, 1, 0, 1 };
 	auto& child2Tr = child2.GetComponent<Daybreak::TransformComponent>();
 	child2Tr.Position = { -1, 1, 0 };
 
 
 	Daybreak::Entity child3 = m_Scene->CreateEntity(child2, "child3");
-	// auto& childRb = child.AddComponent<Daybreak::Rigidbody2DComponent>();
-	// childRb.Type = Daybreak::Rigidbody2DComponent::BodyType::Dynamic;
-	// auto& child3Bc = child3.AddComponent<Daybreak::BoxCollider2DComponent>();
 	auto& child3Pc = child3.AddComponent<Daybreak::PolygonCollider2DComponent>();
 	child3Pc.Count = 3;
-	// auto& rb = child3.AddComponent<Daybreak::Rigidbody2DComponent>();
-	// auto& child3Sr = child3.AddComponent<Daybreak::SpriteRendererComponent>();
-	// child3Sr.TintColor = { 1, 1, 0, 1 };
 	auto& child3Tr = child3.GetComponent<Daybreak::TransformComponent>();
 	child3Tr.Position = { -1, 1, 0 };
-	// auto playerEntity = m_Scene->GetEntityByName("Player");
-	// Daybreak::Entity playerChild = m_Scene->CreateEntity(playerEntity, "PlayerChild");
-	// auto& playerChildTr = playerChild.GetComponent<Daybreak::TransformComponent>();
-	// playerChildTr.Position = { 0, 1, 0 };
-	// auto& playerChildSr = playerChild.AddComponent<Daybreak::SpriteRendererComponent>();
-	// auto& playerChildBc2d = playerChild.AddComponent<Daybreak::BoxCollider2DComponent>();
-
-	// {
-	// 	Daybreak::Entity e = m_Scene->CreateEntity("test");
-	// 	auto& transform = e.GetComponent<Daybreak::TransformComponent>();
-	// 	transform.Position = { -2, -3, 0 };
-	// 	auto& sr = e.AddComponent<Daybreak::SpriteRendererComponent>();
-	// 	sr.TintColor = { 1, 1, 1, 0.5 };
-	// }
-
-	// {
-	// 	Daybreak::Entity e = m_Scene->CreateEntity("test2");
-	// 	auto& transform = e.GetComponent<Daybreak::TransformComponent>();
-	// 	transform.Position = { -1.5, -3, 0 };
-	// 	auto& sr = e.AddComponent<Daybreak::SpriteRendererComponent>();
-	// 	sr.TintColor = { 1, 1, 0, 0.5 };
-	// }
-	// {
-	// 	Daybreak::Entity e = m_Scene->CreateEntity("test2");
-	// 	auto& transform = e.GetComponent<Daybreak::TransformComponent>();
-	// 	transform.Position = { -1, -2.5, -.5 };
-	// 	auto& sr = e.AddComponent<Daybreak::SpriteRendererComponent>();
-	// 	sr.TintColor = { 1, 0, 0, 0.5 };
-	// }
-	// {
-	// 	Daybreak::Entity e = m_Scene->CreateEntity("test3");
-	// 	auto& transform = e.GetComponent<Daybreak::TransformComponent>();
-	// 	transform.Position = { 0, 3, 1 };
-	// 	// auto& sr = e.AddComponent<Daybreak::SpriteRendererComponent>();
-	// 	// sr.TintColor = { 1, 1, 0, 0.5 };
-	// }
-
-
-	// for (int i = 0; i < 2000; i++)
-	// {
-	// 	Daybreak::Entity e = m_Scene->CreateEntity(std::to_string(i));
-	// 	e.AddComponent<Daybreak::SpriteRendererComponent>();
-	// 	e.GetComponent<Daybreak::TransformComponent>().Position.z = 1;
-	// }
 }
 
 void LightingScene::OnAttach()
