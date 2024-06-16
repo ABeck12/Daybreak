@@ -6,7 +6,7 @@
 #include "FramebufferTesting.h"
 #include "StressTesting.h"
 
-// #include <DaybreakEditor.h>
+#include <DaybreakEditor.h>
 #include "ScriptInclude.auto.h"
 
 // #include "ScriptableEntityTest.h"
@@ -27,8 +27,8 @@ public:
 		// PushLayer(new SceneLayer());
 		// PushLayer(new LightingScene());
 		// PushLayer(new FBTesting());
-		PushLayer(new StressTestLayer());
-		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
+		// PushLayer(new StressTestLayer());
+		PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
 	}
 
 	~Sandbox()
