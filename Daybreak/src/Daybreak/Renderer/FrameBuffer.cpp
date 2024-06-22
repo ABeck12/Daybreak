@@ -6,8 +6,8 @@
 
 namespace Daybreak
 {
-    Ref<FrameBuffer> FrameBuffer::Create(const FrameBufferSpecifications& spec)
-    {
-        return CreateRef<OpenGLFrameBuffer>(spec);
-    }
+	Ref<FrameBuffer> FrameBuffer::Create(const FrameBufferSpecifications& spec)
+	{
+		return CreateRef<OpenGLFrameBuffer>(spec);
+	}
 }

@@ -10,17 +10,17 @@ namespace Daybreak
 	{
 		switch (type)
 		{
-			case RenderDataTypes::Float:    return GL_FLOAT;
-			case RenderDataTypes::Float2:   return GL_FLOAT;
-			case RenderDataTypes::Float3:   return GL_FLOAT;
-			case RenderDataTypes::Float4:   return GL_FLOAT;
-			case RenderDataTypes::Mat3:     return GL_FLOAT;
-			case RenderDataTypes::Mat4:     return GL_FLOAT;
-			case RenderDataTypes::Int:      return GL_INT;
-			case RenderDataTypes::Int2:     return GL_INT;
-			case RenderDataTypes::Int3:     return GL_INT;
-			case RenderDataTypes::Int4:     return GL_INT;
-			case RenderDataTypes::Bool:     return GL_BOOL;
+			case RenderDataTypes::Float: return GL_FLOAT;
+			case RenderDataTypes::Float2: return GL_FLOAT;
+			case RenderDataTypes::Float3: return GL_FLOAT;
+			case RenderDataTypes::Float4: return GL_FLOAT;
+			case RenderDataTypes::Mat3: return GL_FLOAT;
+			case RenderDataTypes::Mat4: return GL_FLOAT;
+			case RenderDataTypes::Int: return GL_INT;
+			case RenderDataTypes::Int2: return GL_INT;
+			case RenderDataTypes::Int3: return GL_INT;
+			case RenderDataTypes::Int4: return GL_INT;
+			case RenderDataTypes::Bool: return GL_BOOL;
 		}
 		return 0;
 	}
@@ -48,56 +48,56 @@ namespace Daybreak
 		{
 			switch (element.Type)
 			{
-			case RenderDataTypes::Float:
-			case RenderDataTypes::Float2:
-			case RenderDataTypes::Float3:
-			case RenderDataTypes::Float4:
-			{
-				glEnableVertexAttribArray(m_VertexBufferIndex);
-				glVertexAttribPointer(m_VertexBufferIndex,
-					element.GetComponentCount(),
-					RenderDataTypesToOpenGLBaseType(element.Type),
-					element.Normalized ? GL_TRUE : GL_FALSE,
-					layout.GetStride(),
-					(const void*)element.Offset);
-				m_VertexBufferIndex++;
-				break;
-			}
-			case RenderDataTypes::Int:
-			case RenderDataTypes::Int2:
-			case RenderDataTypes::Int3:
-			case RenderDataTypes::Int4:
-			case RenderDataTypes::Bool:
-			{
-				glEnableVertexAttribArray(m_VertexBufferIndex);
-				glVertexAttribIPointer(m_VertexBufferIndex,
-					element.GetComponentCount(),
-					RenderDataTypesToOpenGLBaseType(element.Type),
-					layout.GetStride(),
-					(const void*)element.Offset);
-				m_VertexBufferIndex++;
-				break;
-			}
-			case RenderDataTypes::Mat3:
-			case RenderDataTypes::Mat4:
-			{
-				uint8_t count = element.GetComponentCount();
-				for (uint8_t i = 0; i < count; i++)
+				case RenderDataTypes::Float:
+				case RenderDataTypes::Float2:
+				case RenderDataTypes::Float3:
+				case RenderDataTypes::Float4:
 				{
 					glEnableVertexAttribArray(m_VertexBufferIndex);
 					glVertexAttribPointer(m_VertexBufferIndex,
-						count,
-						RenderDataTypesToOpenGLBaseType(element.Type),
-						element.Normalized ? GL_TRUE : GL_FALSE,
-						layout.GetStride(),
-						(const void*)(element.Offset + sizeof(float) * count * i));
-					glVertexAttribDivisor(m_VertexBufferIndex, 1);
+										  element.GetComponentCount(),
+										  RenderDataTypesToOpenGLBaseType(element.Type),
+										  element.Normalized ? GL_TRUE : GL_FALSE,
+										  layout.GetStride(),
+										  (const void*)element.Offset);
 					m_VertexBufferIndex++;
+					break;
 				}
-				break;
-			}
-			default:
-				DB_CORE_ASSERT(false, "Unknown RenderDataTypes!");
+				case RenderDataTypes::Int:
+				case RenderDataTypes::Int2:
+				case RenderDataTypes::Int3:
+				case RenderDataTypes::Int4:
+				case RenderDataTypes::Bool:
+				{
+					glEnableVertexAttribArray(m_VertexBufferIndex);
+					glVertexAttribIPointer(m_VertexBufferIndex,
+										   element.GetComponentCount(),
+										   RenderDataTypesToOpenGLBaseType(element.Type),
+										   layout.GetStride(),
+										   (const void*)element.Offset);
+					m_VertexBufferIndex++;
+					break;
+				}
+				case RenderDataTypes::Mat3:
+				case RenderDataTypes::Mat4:
+				{
+					uint8_t count = element.GetComponentCount();
+					for (uint8_t i = 0; i < count; i++)
+					{
+						glEnableVertexAttribArray(m_VertexBufferIndex);
+						glVertexAttribPointer(m_VertexBufferIndex,
+											  count,
+											  RenderDataTypesToOpenGLBaseType(element.Type),
+											  element.Normalized ? GL_TRUE : GL_FALSE,
+											  layout.GetStride(),
+											  (const void*)(element.Offset + sizeof(float) * count * i));
+						glVertexAttribDivisor(m_VertexBufferIndex, 1);
+						m_VertexBufferIndex++;
+					}
+					break;
+				}
+				default:
+					DB_CORE_ASSERT(false, "Unknown RenderDataTypes!");
 			}
 		}
 
