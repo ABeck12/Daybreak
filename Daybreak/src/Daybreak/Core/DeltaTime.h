@@ -5,7 +5,8 @@ namespace Daybreak
 	class DeltaTime
 	{
 	public:
-		DeltaTime(float time) : m_Time(time) {}
+		DeltaTime(float time)
+			: m_Time(time) {}
 
 		operator float() const { return m_Time; }
 
