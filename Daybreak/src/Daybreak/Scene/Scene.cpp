@@ -219,7 +219,7 @@ namespace Daybreak
 	void Scene::OnRuntimeStart()
 	{
 		m_SceneRunning = true;
-		m_Registry.view<ScriptComponent>().each([=](auto entity, ScriptComponent& sc)
+		m_Registry.view<ScriptComponent>().each([this](auto entity, ScriptComponent& sc)
 												{
 			// TODO: Move to Scene::OnScenePlay
 			if (!sc.Instance)
@@ -253,7 +253,7 @@ namespace Daybreak
 		}
 
 		m_Registry.view<ScriptComponent, ActiveComponent>().each(
-			[=](entt::entity entity, ScriptComponent& sc, ActiveComponent& ac)
+			[this, dt](entt::entity entity, ScriptComponent& sc, ActiveComponent& ac)
 			{
 				if (!ac.Active)
 				{
@@ -282,7 +282,7 @@ namespace Daybreak
 	{
 		OnPhysicsStop();
 
-		m_Registry.view<ScriptComponent>().each([=](auto entity, ScriptComponent& sc)
+		m_Registry.view<ScriptComponent>().each([this](auto entity, ScriptComponent& sc)
 												{
 				// TODO: Move to Scene::OnSceneStop
 				// This NEEDS to be fixed. Not every sc will have an active instance?						  
