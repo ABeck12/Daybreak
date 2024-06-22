@@ -26,6 +26,7 @@
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Renderer/SubTexture.h"
 #include "Daybreak/Renderer/Camera.h"
+#include "Daybreak/Renderer/Font.h"
 
 #include "Daybreak/Assets/Animation.h"
 

@@ -1,31 +1,37 @@
 #pragma once
 
-#include <Daybreak.h>
+#include "DaybreakEditor/Pannels/Pannel.h"
+
+#include "DaybreakEditor/Pannels/SelectionContext.h"
 
 namespace Daybreak
 {
-	class HierarchyPannel
+	class HierarchyPannel final : public Pannel
 	{
 	public:
-		HierarchyPannel() = default;
-		HierarchyPannel(const Ref<Scene> scene);
+		HierarchyPannel(Ref<Scene> scene);
 
-		void Render();
-		// void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
-		bool HasSelectedEntity() { return m_SelectionContext; }
-		glm::vec2 GetSelectedEntityPosition();
-		void SetScene(const Ref<Scene> scene);
+		virtual void OnAttach() override;
+		virtual void OnDetach() override;
+		virtual void OnUpdate(DeltaTime dt) override;
+		virtual void OnEvent(Event& event) override;
+		virtual void OnImGuiRender() override;
+		virtual const std::string& GetName() const override { return m_PannelName; }
 
-	private:
-		void DrawEntityRow(Entity entity);
-		void DrawInspectorComponents(Entity entity);
-
-		template<typename T>
-		void DisplayAddComponentEntry(const std::string& entryName);
+		// Entity GetSelectedEntity() { return m_SelectedEntity; }
+		// void ResetSelected() { m_SelectedEntity = m_Scene->GetEntityByUUID(m_SelectedEntityID); }
+		void SetScene(Ref<Scene> scene) { m_Scene = scene; }
 
 	private:
-		Entity m_SelectionContext;
-		std::string m_ActiveEntityName;
-		Ref<Scene> m_ActiveScene;
+		void DrawEntityRow(Entity entity, bool drawRowAsChild = false);
+
+		void RemoveEntityAsChild(Entity parent, Entity child);
+		void AddEntityAsChild(Entity parent, Entity child);
+
+	private:
+		std::string m_PannelName = "HierarchyPannel";
+		Ref<Scene> m_Scene;
+		// Entity m_SelectedEntity;
+		// UUID m_SelectedEntityID;
 	};
 }

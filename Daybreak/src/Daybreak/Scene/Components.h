@@ -8,6 +8,7 @@
 #include "Daybreak/Assets/Animation.h"
 #include "Daybreak/Scripting/ScriptRegistry.h"
 #include "Daybreak/Scripting/Script.h"
+#include "Daybreak/Renderer/Font.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -22,6 +23,8 @@ namespace Daybreak
 
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
+		IDComponent(UUID id)
+			: ID(id) {}
 	};
 
 	struct RelationshipComponent
@@ -35,13 +38,13 @@ namespace Daybreak
 		RelationshipComponent(const RelationshipComponent&) = default;
 	};
 
-	// struct ActiveComponent
-	// {
-	// 	bool Active = true;
+	struct ActiveComponent
+	{
+		bool Active = true;
 
-	// 	ActiveComponent() = default;
-	// 	ActiveComponent(const ActiveComponent&) = default;
-	// };
+		ActiveComponent() = default;
+		ActiveComponent(const ActiveComponent&) = default;
+	};
 
 	struct TransformComponent
 	{
@@ -71,12 +74,39 @@ namespace Daybreak
 		Ref<Texture2D> Sprite;
 		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float TilingFactor = 1.0f;
-		// uint8_t RenderLayer = 0;
+		uint8_t RenderLayer = 0;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(Ref<Texture2D> sprite)
 			: Sprite(sprite) {}
+	};
+
+	struct AnimatorComponent
+	{
+		Ref<AnimationController> Controller;
+		bool IsPlaying = true;
+		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		uint8_t RenderLayer = 0;
+
+
+		AnimatorComponent() = default;
+		AnimatorComponent(const AnimatorComponent&) = default;
+	};
+
+	struct TextRendererComponent
+	{
+		std::string Text = "";
+		Ref<Font> Font = Font::GetDefault();
+		glm::vec4 Color = glm::vec4(1.0f);
+		float Kerning = 0;
+		float LineSpacing = 0;
+		uint8_t RenderLayer = 0;
+
+		TextRendererComponent() = default;
+		TextRendererComponent(const TextRendererComponent&) = default;
+		TextRendererComponent(const std::string& text)
+			: Text(text) {}
 	};
 
 	struct CameraComponent
@@ -100,7 +130,7 @@ namespace Daybreak
 		glm::vec2 Size = { 0.5f, 0.5f };
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		uint32_t CollisionLayer = 0;
+		uint8_t CollisionLayer = 0;
 		bool IsTrigger = false;
 		bool Enabled = true;
 
@@ -116,7 +146,7 @@ namespace Daybreak
 		float Radius = 0.5f;
 		glm::vec2 Offset = { 0.0f, 0.0f };
 
-		uint32_t CollisionLayer = 0;
+		uint8_t CollisionLayer = 0;
 		bool IsTrigger = false;
 		bool Enabled = true;
 
@@ -125,6 +155,31 @@ namespace Daybreak
 
 		CircleCollider2DComponent() = default;
 		CircleCollider2DComponent(const CircleCollider2DComponent&) = default;
+	};
+
+	struct PolygonCollider2DComponent
+	{
+		glm::vec2 Vertices[8] {
+			{ -0.5, -0.5 },
+			{ -0.5, 0.5 },
+			{ 0.5, -0.5 },
+			{ 0.5, 0.5 },
+			{ 0.0, 0.0 },
+			{ 0.0, 0.0 },
+			{ 0.0, 0.0 },
+			{ 0.0, 0.0 },
+		};
+		uint32_t Count = 4;
+
+		uint8_t CollisionLayer = 0;
+		bool IsTrigger = false;
+		bool Enabled = true;
+
+		void* RuntimeFixture = nullptr;
+		void* RuntimeBody = nullptr;
+
+		PolygonCollider2DComponent() = default;
+		PolygonCollider2DComponent(const PolygonCollider2DComponent&) = default;
 	};
 
 	struct Rigidbody2DComponent
@@ -161,42 +216,31 @@ namespace Daybreak
 		Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
 	};
 
-	struct AnimatorComponent
-	{
-		Ref<AnimationController> Controller;
-		bool IsPlaying = true;
-		glm::vec4 TintColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-
-		AnimatorComponent() = default;
-		AnimatorComponent(const AnimatorComponent&) = default;
-	};
-
 	// Forward decleration
 	class Script;
 
-	struct NativeScriptComponent
+	struct ScriptComponent
 	{
 		Script* Instance = nullptr;
 		std::string TypeName = "";
 
 		Script* (*InstantiateScript)(const std::string&);
-		void (*DestroyScript)(NativeScriptComponent*);
+		void (*DestroyScript)(ScriptComponent*);
 
 		template<typename T>
 		void Bind()
 		{
-			TypeName = std::string(typeid(T).name()).erase(0, 6);
+			TypeName = DB_STRUCT_NAME(T);
 			ScriptRegistry::RegisterType<T>();
 
 			InstantiateScript = [](const std::string&)
 			{
 				return static_cast<Script*>(new T());
 			};
-			DestroyScript = [](NativeScriptComponent* nsc)
+			DestroyScript = [](ScriptComponent* sc)
 			{
-				delete nsc->Instance;
-				nsc->Instance = nullptr;
+				delete sc->Instance;
+				sc->Instance = nullptr;
 			};
 		}
 
@@ -208,13 +252,41 @@ namespace Daybreak
 			{
 				return ScriptRegistry::GetRegisteredType(name);
 			};
-			DestroyScript = [](NativeScriptComponent* nsc)
+			DestroyScript = [](ScriptComponent* sc)
 			{
-				delete nsc->Instance;
-				nsc->Instance = nullptr;
+				delete sc->Instance;
+				sc->Instance = nullptr;
 			};
 		}
 	};
 
+	struct PointLight2DComponent
+	{
+		float InnerRadius = 0.0f;
+		float OuterRadius = 0.5f;
+		float Intensity = 1.0f;
+		// float Falloff = 0.5f;
+		glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+	};
 
+	struct GlobalLight2DComponent
+	{
+		float Intensity = 1.0f;
+		glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+	};
+
+	template<typename... Component>
+	struct ComponentGroup
+	{
+	};
+
+	using AllComponents =
+		ComponentGroup<TransformComponent,
+					   RelationshipComponent, ActiveComponent,
+					   SpriteRendererComponent,
+					   CameraComponent, AnimatorComponent,
+					   ScriptComponent, Rigidbody2DComponent, BoxCollider2DComponent,
+					   CircleCollider2DComponent, PolygonCollider2DComponent,
+					   TextRendererComponent,
+					   PolygonCollider2DComponent, GlobalLight2DComponent>;
 }

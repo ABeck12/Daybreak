@@ -36,20 +36,20 @@ namespace Daybreak
 		Ref<Animation> LoadAnimation(const std::filesystem::path& assetPath);
 		Ref<AnimationController> LoadAnimationController(const std::filesystem::path& assetPath);
 
-		bool HasAssetPath(const std::filesystem::path& path);
+		bool HasAssetPath(const std::filesystem::path& path) const;
 
-		void FindAssetsDirectory();
+		std::filesystem::path GetTexture2DFilepath(const Ref<Texture2D>& texture) const;
+		std::filesystem::path GetAnimationFilepath(const Ref<Animation>& anim) const;
+		std::filesystem::path GetAnimationControllerFilepath(const Ref<AnimationController>& anim) const;
 
-		std::filesystem::path GetTexture2DFilepath(const Ref<Texture2D>& texture);
-		std::filesystem::path GetAnimationFilepath(const Ref<Animation>& anim);
-		std::filesystem::path GetAnimationControllerFilepath(const Ref<AnimationController>& anim);
-
-		void SerializeTexture2D(const Ref<Texture2D>& texture);
-		void SerializeTexture2D(const Ref<Texture2D>& texture, const std::filesystem::path& assetPath);
-		void SerializeAnimation(const Ref<Animation>& anim, const std::filesystem::path& assetPath);
-		void SerializeAnimationController(const Ref<AnimationController>& controller, const std::filesystem::path& assetPath);
+		void SerializeTexture2D(const Ref<Texture2D>& texture) const;
+		void SerializeTexture2D(const Ref<Texture2D>& texture, const std::filesystem::path& assetPath) const;
+		void SerializeAnimation(const Ref<Animation>& anim, const std::filesystem::path& assetPath) const;
+		void SerializeAnimationController(const Ref<AnimationController>& controller, const std::filesystem::path& assetPath) const;
 
 	private:
+		void FindAssetsDirectory();
+
 		Ref<Texture2D> DeserializeTexture2D(const std::filesystem::path& filepath);
 		Ref<Animation> DeserializeAnimation(const std::filesystem::path& filepath);
 		Ref<AnimationController> DeserializeAnimationController(const std::filesystem::path& filepath);

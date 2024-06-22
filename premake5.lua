@@ -24,6 +24,7 @@ newaction
 		os.rmdir("./bin")
 		print("Removing intermediate binaries")
 		os.rmdir("./bin-int")
+
 		print("Removing project files")
 		os.remove("**.sln")
 		os.remove("**.vcxproj")
@@ -42,22 +43,32 @@ newaction
 		os.rmdir("./CmakeFiles")
 		os.remove("CmakeCache.txt")
 
-		os.remove("compile_commands.json")
-		os.rmdir("./compile_commands")
-		os.rmdir("./.cache")
-
 		os.remove("**.code-workspace")
 		os.rmdir("./Tasks")
 		os.rmdir("./Daybreak/.vscode")
-		os.rmdir("./Daybreak/box2d/.vscode")
-		os.rmdir("./Daybreak/glad/.vscode")
-		os.rmdir("./Daybreak/glfw/.vscode")
-		os.rmdir("./Daybreak/imgui/.vscode")
-		os.rmdir("./Daybreak/yaml-cpp/.vscode/c_cpp_properties.json")
+		os.rmdir("./Daybreak/vendor/box2d/.vscode")
+		os.rmdir("./Daybreak/vendor/glad/.vscode")
+		os.rmdir("./Daybreak/vendor/glfw/.vscode")
+		os.rmdir("./Daybreak/vendorimgui/.vscode")
+		os.rmdir("./Daybreak/vendor/yaml-cpp/.vscode/c_cpp_properties.json")
+		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/.vscode")
+		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/msdfgen/.vscode")
+		os.rmdir("./Daybreak/vendor/msdf-atlas-gen/msdfgen/freetype/.vscode")
 		os.rmdir("./Sandbox/.vscode")
 		os.rmdir("./DaybreakEditor/.vscode")
 		os.rmdir(".vscode")
 		os.rmdir(".vs")
+
+		print("Removing cached files")
+		os.remove("compile_commands.json")
+		os.rmdir("./compile_commands")
+		os.rmdir("./.cache")
+		os.rmdir("./.mypy_cache")
+
+		print("Removing auto generated cpp files")
+		os.remove("Sandbox/src/ScriptInclude.auto.cpp")
+		os.remove("Sandbox/src/ScriptInclude.auto.h")
+
 		print("Done")
 	end
 }
@@ -78,6 +89,7 @@ group "Dependencies"
 	include "Daybreak/vendor/glad"
 	include "Daybreak/vendor/imgui"
 	include "Daybreak/vendor/yaml-cpp"
+	include "Daybreak/vendor/msdf-atlas-gen"
 group ""
 
 include "Daybreak"

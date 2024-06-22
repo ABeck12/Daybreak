@@ -12,6 +12,15 @@ project "DaybreakEditor"
 		"src/**.h",
 		"src/**.cpp",
 	}
+
+	removefiles 
+	{ 
+		"src/EditorLayer.cpp",
+		"src/EditorLayer.h",
+		"src/Pannels/HierarchyPannel.cpp",
+		"src/Pannels/HierarchyPannel.h",
+
+	}
 	
 	includedirs
 	{
@@ -21,6 +30,7 @@ project "DaybreakEditor"
 		"../Daybreak/vendor/glad/include",
 		"../Daybreak/vendor/glfw/include",
 		"../Daybreak/vendor/imgui",
+		"../Daybreak/vendor/imguizmo",
 		"../Daybreak/vendor/glm",
 		"../Daybreak/vendor/stb_image",
 		"../Daybreak/vendor/entt/include",

@@ -2,63 +2,90 @@
 
 <img src="Resources/DaybreakLogo.png" alt="drawing" width="300"/>
 
-# Daybreak
-Daybreak Engine
+# Daybreak Engine
+This is a 2D and 2.5D game engine based of Hazel engine. I am developing Daybreak in my spare time to learn how to make applications and game engines as well as how to use C++. 
 
+Daybreak is intented to be cross platform eventually but has only been tested with windows. While all dependent libraries should be cross platform  an error will be thrown when trying to compile on mac or linux.
+
+## Setup
+Daybreak uses C++ 20 and can be built using premake. Premake binaries are included as well as a python script to make the calls for ease of use (I made this so that I can work with .sln files in vscode. I dont like visual studio). 
+
+- Step 1: Cloning\
+Clone recursivly from github to get all required submodules
 ```git clone https://github.com/ABeck12/Daybreak.git --recurse-submodules```
 
-This is a 2D game engine based of Hazel engine.
+- Step 2: Build project files\
+Generate project or make files using the ```build.py``` script. Call ```python build.py vs``` for Visual Studio .sln files and ```python build.py make``` for makefiles.
+NOTE: Currently the makefiles generated from premake do not compile properly!
+
+- Step 3: Compiling and running\
+If you aren't using visual studio then calling ```python build.py compile``` will compile either the .sln or makefiles. Calling ```python build.py run``` will run the game. 
 
 
+## To Do List
+### Renderer and Renderer2D:
+- Graphics Context class
+- Shader Library? This is partly implemented with the additon of the asset manager. But that also needs a rework
+- Fix render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
+- Actually use RenderAPI pointer instead of just hardcoding all classes to use opengl implementation. (Low priority)
+- Rework camera class such that it is no longer just a mat4 and you can set the view matrix in a better way rather then just setting a new mat4
+    - Also includes CameraComponent struct
+- Add some framebuffer and renderering pipeline. Render passes
+    - Some way to pipe the output from one frame buffer to another that is more automatic
+    - This includes actually fixing lighting
+- Add framebuffer clear function in class instead of just binding and then calling clear
 
-Fix pch file in premake
+- Multithreaded renderering
+    - Command queue
+- Post proscessing. Needs framebuffer and render pipeline/renderpass implementation
+    - Bloom
+    - Color correction
+    - Arbitrary shader execution on final buffer?
+- Better performance tracking with # of draw calls, etc.
+- Culling
+- GPU soring for depth instead of on CPU in scene class
+    - Or if using CPU add culling for the sorting
+- Swap chain for framebuffers
+- Shadows
+- Lighting
+    - Polygon lights
+    - Spot lights
+- Paricle system with ParticleComponent
+- Pre-compiling of shader binaries
 
-# To Do List
-### For Renderer2D:
-    Font rendering
-    Finish framebuffer class and add dynamic amounts of framebuffer attachments
-    Graphics Context
-    Uniform Buffer?
-    Shader Library
-    Update the OpenGLTexture2D class
-    Render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
-    Circle rendering
-    RenderAPI pointer
-    Rework camera class such that it is no longer just a mat4 and you can set the view matrix in a better way rather then just setting a new mat4
-
-### For Physics2D:
-    IsColliding function
-    Rework static s_ActiveSim pointer into a project class
-    Physics Layers -> rework as enums instead of actual numbers
-    Check for memory leaks from box2d userdata and scene ptr. Do I need to delete scene*? Do box2d userdatas need to be manually deleted?
+### Physics2D:
+- IsColliding function
+- Rework static s_ActiveSim pointer into a project class
+- Physics Layers -> rework as enums instead of actual numbers
+- Rework physics update function in scene class such that we dont have to destroy and recreate the fixtures every frame
+- Line colliders?
 
 ### Project:
-    This should own the physics sim, AssetManager, ScriptableEntity registries
+- This should own the physics sim, AssetManager, ScriptableEntity registries
 
-### Scene
-    Cloning of scenes for runtime -> SUPER SCUFFED RN PLEASE FIX
-    Component and Entity active or not
-        Includes rendering
-    If I am not going to use C# rework ScriptableEntitys to just be scripts
-    Scene saving and loading
-        SpriteRenderer.Sprite needs to be reworked. Need to be able to save/load component even when no sprite is defined ie. white sprite default
-    Add OnScenePlay and OnSceneStop
-    Fix relationship components
-    Multiple components per entity?
-        Needed for colliders and maybe NativeScripts
-    Render layers and ordering -> rework to enum class instead of just numbers like physics collider layers?
+### Scene:
+- Multiple of the same components per entity?
+    - Needed for colliders and maybe NativeScripts
+- Trim down class it feels very bloated right now
+- Some way to keep entities loaded between scene transitions
+- Circle renderer component? Or add circles to sprite renderer?
+- Particle components
 
-### Low Priority:
-    Make a weakref system using std::weak_ptr? or maybe std::object_ptr?
-    Fix premake files
-    Change windowswindow to glwfwindow since glfw is cross platform
-    Add input suppport for gamepads
+### Asset Manager:
+- Rework to allow for better loading and unloading
+- Unloading of assets once they are not used anymore. Probably happens on scene changes
+- Rework animation and controller naming for serializing
+- Rework asset manager pipeline to be less manual
+    - Perhaps some importer for aesprite or krita?
+- Asset packing and binary formats
 
-### Medium Priority:
-    Make a asset manager system with Daybreak specific files for images, shaders?, animation sources, sound files?
-    Rework audio to not be totally scuffed
-    Add ability to pass args from sandbox to Daybreak when starting engine. This is stuff like initial window size etc.
+### Misc:
+- Make a weakref system using std::weak_ptr? or maybe std::object_ptr?
+- Change windowswindow to glwfwindow since glfw is cross platform
+- Go over all code to make sure it is optimized
+- Add ability to pass arbitrary args from sandbox to Daybreak when starting engine. This is stuff like initial window size etc.
+- Reduce the use of static singleton variables if possible? PhysicsSim2D, ScriptRegistry, and others. 
+- Fix controller input for all gamepad types, ie. ps5 and switch (xbox works for now)
 
-### High Priority:
-    Add in timing and function profiling 
-    Fix local filepaths when not running exe from vscode
+### Audio:
+- Add support

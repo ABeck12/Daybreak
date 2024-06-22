@@ -1,0 +1,144 @@
+Scene: Test Scene 2
+Entities:
+  - Entity: 1147464592796381790
+    TagComponent:
+      Tag: Box
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, -2, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Sprite: ~
+      TintColor: [1, 1, 1, 1]
+      TilingFactor: 1
+      RenderLayer: 0
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+      Enabled: true
+  - Entity: 6649748316455117619
+    TagComponent:
+      Tag: Background
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, 0, -1]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Sprite: sprites\Background.sprite
+      TintColor: [1, 1, 1, 1]
+      TilingFactor: 1
+      RenderLayer: 0
+  - Entity: 10404437930564180493
+    TagComponent:
+      Tag: Floor
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, -4, 0]
+      Rotation: [0, 0, 0]
+      Scale: [15, 1, 1]
+    SpriteRendererComponent:
+      Sprite: sprites\Test.sprite
+      TintColor: [1, 1, 1, 1]
+      TilingFactor: 1
+      RenderLayer: 0
+    Rigidbody2DComponent:
+      Type: Static
+      ContinuousDetection: false
+      AllowSleep: true
+      Velocity: [0, 0]
+      FixedRotation: false
+      Mass: 1
+      GravityScale: 1
+      AngularDrag: 1
+      LinearDrag: 1
+      Density: 1
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+      Enabled: true
+  - Entity: 13502861251573656965
+    TagComponent:
+      Tag: Camera
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 6543958417763370994
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, 0, -10]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      CameraProjection: [[1.35799515, 0, 0, 0], [0, 2.41421342, 0, 0], [0, 0, -1.00267017, -1], [0, 0, -0.200267017, 0]]
+      Primary: true
+      Type: Perspective
+  - Entity: 6543958417763370994
+    TagComponent:
+      Tag: Player
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 1
+      ChildrenIDs:
+        - 13502861251573656965
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    AnimatorComponent:
+      Controller: animations/unknown.controller
+      IsPlaying: true
+      TintColor: [1, 1, 1, 1]
+      RenderLayer: 0
+    Rigidbody2DComponent:
+      Type: Dynamic
+      ContinuousDetection: false
+      AllowSleep: false
+      Velocity: [0, 0]
+      FixedRotation: true
+      Mass: 1
+      GravityScale: 1
+      AngularDrag: 1
+      LinearDrag: 1
+      Density: 1
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    BoxCollider2DComponent:
+      Size: [0.100000001, 0.479999989]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+      Enabled: true
+    ScriptComponent:
+      TypeName: MoveableComponent

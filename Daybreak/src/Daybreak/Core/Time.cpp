@@ -7,5 +7,19 @@
 
 namespace Daybreak
 {
-	float Time::GetTime() { return (float)glfwGetTime(); }
+	double Time::GetTime()
+	{
+		return glfwGetTime();
+	}
+
+	ScopeTimer::ScopeTimer(const std::string& name)
+		: m_Name(name)
+	{
+		m_StartTime = Time::GetTime();
+	}
+
+	ScopeTimer::~ScopeTimer()
+	{
+		DB_LOG("{} duration = {:.3f}ms", m_Name, (Time::GetTime() - m_StartTime) * 1000);
+	}
 }

@@ -17,6 +17,7 @@ CMakeLists.txt
 /CMakeFiles
 CMakeCache.txt
 /.cache
+/.mypy_cache
 /compile_commands
 /compile_commands.json
 # .clangd
@@ -25,3 +26,6 @@ CMakeCache.txt
 /Tasks
 **/.vscode
 **.code-workspace
+
+Sandbox/src/ScriptInclude.auto.cpp
+Sandbox/src/ScriptInclude.auto.h

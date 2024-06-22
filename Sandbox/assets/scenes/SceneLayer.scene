@@ -1,30 +1,99 @@
 Scene: Test Scene
 Entities:
-  - Entity: 10616627966083807066
+  - Entity: 14310509106623175170
     TagComponent:
-      Tag: Box
+      Tag: Entity
+    ActiveComponent:
+      Active: true
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 0
       ChildrenIDs:
         []
     TransformComponent:
-      Position: [0, -2, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Position: [24.5284367, 7.39003849, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 23.2570152, 1]
     SpriteRendererComponent:
       Sprite: ~
-      TintColor: [1, 1, 1, 1]
+      TintColor: [0.482625484, 0.0372683778, 0.439637512, 1]
       TilingFactor: 1
+      RenderLayer: 0
     BoxCollider2DComponent:
       Size: [0.5, 0.5]
       Offset: [0, 0]
       CollisionLayer: 0
       IsTrigger: false
       Enabled: true
-  - Entity: 7622924313198126550
+  - Entity: 16407989004459125601
+    TagComponent:
+      Tag: Entity
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [-24.3451252, 7.84863758, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 24.010603, 1]
+    SpriteRendererComponent:
+      Sprite: ~
+      TintColor: [0.56396848, 0.0475842692, 0.586872578, 1]
+      TilingFactor: 1
+      RenderLayer: 0
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+      Enabled: true
+  - Entity: 111967812404684787
+    TagComponent:
+      Tag: Entity
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 1147464592796381790
+    TagComponent:
+      Tag: Box
+    ActiveComponent:
+      Active: true
+    RelationshipComponent:
+      ParentID: 0
+      AmountOfChildren: 0
+      ChildrenIDs:
+        []
+    TransformComponent:
+      Position: [4.29184723, -1.29746509, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Sprite: ~
+      TintColor: [1, 1, 1, 1]
+      TilingFactor: 1
+      RenderLayer: 0
+    BoxCollider2DComponent:
+      Size: [0.5, 0.5]
+      Offset: [0, 0]
+      CollisionLayer: 0
+      IsTrigger: false
+      Enabled: true
+  - Entity: 6649748316455117619
     TagComponent:
       Tag: Background
+    ActiveComponent:
+      Active: true
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 0
@@ -35,12 +104,15 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Sprite: sprites/Background.sprite
+      Sprite: sprites\Background.sprite
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
-  - Entity: 15716352420939806158
+      RenderLayer: 0
+  - Entity: 10404437930564180493
     TagComponent:
       Tag: Floor
+    ActiveComponent:
+      Active: true
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 0
@@ -49,11 +121,12 @@ Entities:
     TransformComponent:
       Position: [0, -4, 0]
       Rotation: [0, 0, 0]
-      Scale: [15, 1, 1]
+      Scale: [50, 1, 1]
     SpriteRendererComponent:
-      Sprite: sprites/Test.sprite
+      Sprite: sprites\Test.sprite
       TintColor: [1, 1, 1, 1]
       TilingFactor: 1
+      RenderLayer: 0
     Rigidbody2DComponent:
       Type: Static
       ContinuousDetection: false
@@ -74,38 +147,45 @@ Entities:
       CollisionLayer: 0
       IsTrigger: false
       Enabled: true
-  - Entity: 11403053491194060344
+  - Entity: 13502861251573656965
     TagComponent:
       Tag: Camera
+    ActiveComponent:
+      Active: true
     RelationshipComponent:
-      ParentID: 15395440304351909262
+      ParentID: 6543958417763370994
       AmountOfChildren: 0
       ChildrenIDs:
         []
     TransformComponent:
-      Position: [0, 0, -10]
+      Position: [0, 0, -20]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       CameraProjection: [[1.35799515, 0, 0, 0], [0, 2.41421342, 0, 0], [0, 0, -1.00267017, -1], [0, 0, -0.200267017, 0]]
       Primary: true
       Type: Perspective
-  - Entity: 15395440304351909262
+    ScriptComponent:
+      TypeName: ArrowKeyMoveable
+  - Entity: 6543958417763370994
     TagComponent:
       Tag: Player
+    ActiveComponent:
+      Active: true
     RelationshipComponent:
       ParentID: 0
       AmountOfChildren: 1
       ChildrenIDs:
-        - 11403053491194060344
+        - 13502861251573656965
     TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
+      Position: [-3.1677928, 50.0766403079, 0]
+      Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     AnimatorComponent:
       Controller: animations/unknown.controller
       IsPlaying: true
       TintColor: [1, 1, 1, 1]
+      RenderLayer: 0
     Rigidbody2DComponent:
       Type: Dynamic
       ContinuousDetection: false
@@ -126,5 +206,5 @@ Entities:
       CollisionLayer: 0
       IsTrigger: false
       Enabled: true
-    NativeScriptComponent:
+    ScriptComponent:
       TypeName: MoveableComponent

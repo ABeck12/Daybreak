@@ -1,7 +1,7 @@
 project "Daybreak"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "On"
 
 	targetdir (outputloc .. "/bin/" .. outputdir .. "/%{prj.name}")
@@ -11,9 +11,10 @@ project "Daybreak"
 	{
 		"src/**.h",
 		"src/**.cpp",
-		-- "%{prj.name}/src/**.hpp",
         "vendor/stb_image/stb_image.cpp",
         "vendor/miniaudio/miniaudio.cpp",
+		"vendor/ImGuizmo/ImGuizmo.h",
+		"vendor/ImGuizmo/ImGuizmo.cpp"
 	}
 	
 	includedirs
@@ -23,11 +24,15 @@ project "Daybreak"
 		"vendor/glad/include",
 		"vendor/glfw/include",
 		"vendor/imgui",
+		"vendor/imguizmo",
 		"vendor/glm",
 		"vendor/stb_image",
 		"vendor/entt/include",
 		"vendor/miniaudio",
 		"vendor/yaml-cpp/include",
+		"vendor/msdf-atlas-gen/msdfgen",
+		"vendor/msdf-atlas-gen/msdfgen/include",
+		"vendor/msdf-atlas-gen/msdf-atlas-gen",
 		"src"
 	}
 
@@ -38,11 +43,15 @@ project "Daybreak"
 		"glfw",
 		"Imgui",
 		"yaml-cpp",
+		"msdf-atlas-gen",
 		"opengl32.lib"
 	}
 
 	pchheader "dbpch.h"
 	pchsource "src/dbpch.cpp"
+
+	filter "files:vendor/ImGuizmo/**.cpp"
+	flags { "NoPCH" }
 
 	filter "system:windows"
 		systemversion "latest"
@@ -69,18 +78,3 @@ project "Daybreak"
 		symbols "On"
 		runtime "Release"
 		optimize "on"
-
-
-	-- filter "configurations:Dist"
-	-- 	defines
-	-- 	{
-	-- 		"DB_DIST",
-	-- 	}
-	-- 	symbols "On"
-	
-
-	-- buildoptions
-	-- {
-    --     "/MT"
-    -- }
-

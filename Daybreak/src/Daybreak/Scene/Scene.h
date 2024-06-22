@@ -5,6 +5,8 @@
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Physics/PhysicsSim2D.h"
 #include "Daybreak/Core/UUID.h"
+#include "Daybreak/Renderer/FrameBuffer.h"
+#include "Daybreak/Renderer/Shader.h"
 
 #include <entt.hpp>
 
@@ -21,7 +23,7 @@ namespace Daybreak
 
 		void OnRuntimeStart();
 		void OnRuntimeUpdate(DeltaTime dt);
-		void OnRuntimeEnd();
+		void OnRuntimeStop();
 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntity(Entity& parent, const std::string& name = std::string());
@@ -42,30 +44,58 @@ namespace Daybreak
 			return m_Registry.view<Components...>();
 		}
 
-		const std::string& GetName() { return m_SceneName; }
+		const std::string& GetName() const { return m_SceneName; }
 
-		void RenderScene();
-		void EditorRenderScene(Entity& editorCameraEntity);
+		void OnRenderScene(const Entity& cameraEntity);
+		void OnUpdateComponents(DeltaTime dt);
 
 		void SetStartTime(float time) { m_LastUpdateTime = time; }
 
+		void OnPhysicsStart();
+		void OnPhysicsUpdate(DeltaTime dt);
+		void OnPhysicsStop();
+
+		void ToggleDebugDraw() { m_DebugDraw = !m_DebugDraw; }
+
 	private:
-		inline void OnPhysicsStart();
-		inline void OnPhysicsUpdate(DeltaTime dt);
-		inline void OnPhysicsStop();
+		// TODO: move to entity class?==============
+		inline glm::mat4 GetWorldTransform(Entity& entity);
+		inline glm::vec3 GetWorldPosition(Entity& entity);
+		inline glm::vec3 GetWorldScale(Entity& entity);
+
+		template<typename T>
+		Entity& GetParentEntityWith(Entity& entity);
+
+		template<typename T>
+		bool HasParentEntityWith(Entity& entity);
+		// ========================================
+
+		void DebugDraw();
+		void CheckResizeBuffers();
 
 	private:
 		std::string m_SceneName;
 		entt::registry m_Registry;
 		PhysicsSim2D* m_PhysicsSim2D;
 		float m_LastUpdateTime = 0.0f;
+		bool m_DebugDraw = true;
+		bool m_SceneRunning = false;
 
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
+
+		// Renderering
+		uint32_t m_BufferWidth, m_BufferHeight;
+		Ref<FrameBuffer> m_DrawBuffer2D;
+		Ref<Shader> m_LightingShader;
+		Ref<FrameBuffer> m_LightingBuffer;
+		Ref<FrameBuffer> m_ScreenBuffer;
+		glm::vec4 m_ClearColor = { 0, 0, 0, 1 };
 
 		friend class Entity;
 		friend class SceneSerializer;
 
 		// For Editor
 		friend class HierarchyPannel;
+		friend class ViewportPannel;
 	};
 }

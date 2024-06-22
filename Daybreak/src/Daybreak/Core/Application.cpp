@@ -65,7 +65,7 @@ namespace Daybreak
 	{
 		while (m_Running)
 		{
-			float time = Time::GetTime();
+			float time = (float)Time::GetTime();
 			DeltaTime dt = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
