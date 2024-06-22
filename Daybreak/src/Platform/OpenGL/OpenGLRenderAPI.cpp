@@ -26,6 +26,9 @@ namespace Daybreak
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
+
+		// Face culling
+		glEnable(GL_CULL_FACE);
 	}
 
 	void OpenGLRenderAPI::Clear()

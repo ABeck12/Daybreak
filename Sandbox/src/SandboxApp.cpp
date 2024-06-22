@@ -25,9 +25,9 @@ public:
 	{
 		Daybreak::Auto::AutoScriptInclude();
 		// PushLayer(new SceneLayer());
-		// PushLayer(new LightingScene());
+		PushLayer(new LightingScene());
 		// PushLayer(new FBTesting());
-		PushLayer(new StressTestLayer());
+		// PushLayer(new StressTestLayer());
 		// PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
 	}
 
