@@ -5,8 +5,6 @@
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Physics/PhysicsSim2D.h"
 #include "Daybreak/Core/UUID.h"
-#include "Daybreak/Renderer/FrameBuffer.h"
-#include "Daybreak/Renderer/Shader.h"
 
 #include <entt.hpp>
 
@@ -14,6 +12,7 @@ namespace Daybreak
 {
 	// forward decleration
 	class Entity;
+	class SceneRenderer;
 
 	class Scene
 	{
@@ -57,6 +56,7 @@ namespace Daybreak
 
 		void ToggleDebugDraw() { m_DebugDraw = !m_DebugDraw; }
 
+
 	private:
 		// TODO: move to entity class?==============
 		inline glm::mat4 GetWorldTransform(Entity& entity);
@@ -71,7 +71,6 @@ namespace Daybreak
 		// ========================================
 
 		void DebugDraw();
-		void CheckResizeBuffers();
 
 	private:
 		std::string m_SceneName;
@@ -81,15 +80,8 @@ namespace Daybreak
 		bool m_DebugDraw = true;
 		bool m_SceneRunning = false;
 
+		Scope<SceneRenderer> m_SceneRenderer;
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
-
-		// Renderering
-		uint32_t m_BufferWidth, m_BufferHeight;
-		Ref<FrameBuffer> m_DrawBuffer2D;
-		Ref<Shader> m_LightingShader;
-		Ref<FrameBuffer> m_LightingBuffer;
-		Ref<FrameBuffer> m_ScreenBuffer;
-		glm::vec4 m_ClearColor = { 0, 0, 0, 1 };
 
 		friend class Entity;
 		friend class SceneSerializer;

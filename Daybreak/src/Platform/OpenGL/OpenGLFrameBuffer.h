@@ -18,6 +18,9 @@ namespace Daybreak
 		virtual const uint32_t GetAttachmentRendererID(uint32_t index = 0) const override { return m_AttachmentIDs[index]; }
 		virtual void Resize(uint32_t width, uint32_t height) override;
 
+		virtual const glm::vec4& GetClearColor() const override { return m_Specification.ClearColor; }
+
+
 		virtual int ReadPixel1I(uint32_t attachmentIndex, int x, int y) const override;
 
 	private:
