@@ -21,6 +21,8 @@ namespace Daybreak
 		void DrawGlobalLight2D(const GlobalLight2DComponent& globalLight);
 
 		const Ref<FrameBuffer>& GetFinalBuffer() const { return m_FinalBuffer; }
+		const Ref<FrameBuffer>& GetDrawBuffer2D() const { return m_DrawBuffer2D; }
+
 		void DrawToScreen();
 
 		void StartDrawBuffer2D();
