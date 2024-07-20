@@ -7,10 +7,6 @@
 #include "Daybreak/Renderer/Font.h"
 #include "Daybreak/Renderer/SubTexture.h"
 
-// Remove once scene renderer class is done
-// #include "Daybreak/Scene/Components.h"
-// #include "Daybreak/Scene/Entity.h"
-
 namespace Daybreak
 {
 	class Renderer2D
@@ -50,11 +46,6 @@ namespace Daybreak
 							 const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void DrawQuad(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& p4,
 							 const glm::vec4& tintColor = glm::vec4(1.0f));
-
-
-		// Remove once scene renderer class is done
-		// static void DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRenderer, int entityID);
-		// static void DrawSprite(const glm::mat4& transform, const AnimatorComponent& anim, int entityID);
 
 		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotDeg,
 									const Ref<Texture2D>& texture, const glm::vec4& tintColor = glm::vec4(1.0f));

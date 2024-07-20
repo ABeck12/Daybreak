@@ -323,26 +323,6 @@ namespace Daybreak
 		DrawQuad({ position.x, position.y, 0.0f }, size, color);
 	}
 
-	// void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRenderer, int entityID)
-	// {
-	// 	if (spriteRenderer.Sprite)
-	// 		DrawQuad(glm::scale(transform, { (float)spriteRenderer.Sprite->GetWidth() / (float)spriteRenderer.Sprite->GetTexutreSpecifications().PixelsPerUnit, (float)spriteRenderer.Sprite->GetHeight() / (float)spriteRenderer.Sprite->GetTexutreSpecifications().PixelsPerUnit, 1.0f }),
-	// 				 spriteRenderer.Sprite, spriteRenderer.TintColor, spriteRenderer.TilingFactor, (int)entityID);
-	// 	else
-	// 		DrawQuad(transform, s_Data.WhiteTexture, spriteRenderer.TintColor, spriteRenderer.TilingFactor, entityID);
-	// }
-
-	// void Renderer2D::DrawSprite(const glm::mat4& transform, const AnimatorComponent& anim, int entityID)
-	// {
-	// 	// FIXME: TEMPORARY
-	// 	if (!anim.Controller)
-	// 		return;
-	// 	auto currentFrame = anim.Controller->GetActiveAnimation()->GetCurrentKeyFrame();
-	// 	TextureSpecifications spec = currentFrame.Sprite->GetTexture()->GetTexutreSpecifications();
-	// 	Renderer2D::DrawQuad(glm::scale(transform, { (float)currentFrame.Sprite->GetWidth() / (float)spec.PixelsPerUnit, (float)currentFrame.Sprite->GetHeight() / (float)spec.PixelsPerUnit, 1.0f }),
-	// 						 currentFrame.Sprite, anim.TintColor, 1.0f, (int)entityID);
-	// }
-
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& tintColor, const float tilingFactor, int entityID)
 	{
 		DrawQuad(transform, s_Data.WhiteTexture, tintColor, tilingFactor, entityID);

@@ -2,6 +2,7 @@
 #include <imgui.h>
 #include <glad/glad.h>
 #include "Daybreak/Renderer/SceneRenderer.h"
+#include "Daybreak/Scene/Components.h"
 
 RendererTesting::RendererTesting()
 {
@@ -12,18 +13,22 @@ RendererTesting::RendererTesting()
 
 	auto test = m_Scene->CreateEntity("Test");
 	auto& gl = test.AddComponent<Daybreak::GlobalLight2DComponent>();
-	gl.Intensity = 0;
+	gl.Intensity = 1;
 	// gl.Color = { 0, 1, 0 };
 	auto& plTest = test.AddComponent<Daybreak::PointLight2DComponent>();
 	plTest.Color = { 1, 0, 0 };
 	plTest.OuterRadius = 2.5;
-	plTest.Intensity = 2;
+	plTest.Intensity = 0;
+
+	auto test2 = m_Scene->CreateEntity("Test2");
+	auto& tr = test2.GetComponent<Daybreak::TransformComponent>();
+	tr.Position = { 0, 5, 0 };
 
 	auto player = m_Scene->GetEntityByName("Player");
 	auto& pl = player.AddComponent<Daybreak::PointLight2DComponent>();
 	// pl.Color = { 1, 0, 0 };
 	pl.OuterRadius = 5;
-	// pl.Intensity = 2;
+	pl.Intensity = 0;
 
 	// Daybreak::Ref<Daybreak::Shader> computeTest = Daybreak::Shader::Create("test compute", "C:\\dev\\Daybreak\\Sandbox\\assets\\shaders\\testCompute.glsl");
 }
@@ -81,12 +86,12 @@ void RendererTesting::OnImGuiRender()
 	ImGui::Begin("ImGui Layer");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	ImGui::End();
-
+#if 0
 	ImGui::Begin("Images");
 	float width = 1280;
 	float height = 720;
 	ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_BloomBufferFinal->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
-	ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_BloomBuffer->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
+	ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_BloomMask->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
 	for (size_t i = 0; i < m_Scene->m_SceneRenderer->m_BloomDownscaleBuffers.size(); i++)
 	{
 		ImGui::Text("%s", std::to_string(i).c_str());
@@ -103,26 +108,38 @@ void RendererTesting::OnImGuiRender()
 		ImGui::Text("%s", std::to_string(i).c_str());
 		ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_BloomUpscaleBuffers[i]->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
 	}
+	ImGui::End();
+
+	// ImGui::Begin("Light and Final");
+	// width = 1280 / 2.0;
+	// height = 720 / 2.0;
+	// ImGui::Text("Light");
 	// ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_LightBuffer2D->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
-	// ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_DrawBuffer2D->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
+	// // ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_DrawBuffer2D->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
+	// ImGui::Text("Final");
 	// ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_FinalBuffer->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
-	ImGui::End();
+	// ImGui::End();
 
-	ImGui::Begin("Final Buffer");
-	width = float(m_Scene->m_SceneRenderer->m_FinalBuffer->GetSpecification().Width);
-	height = float(m_Scene->m_SceneRenderer->m_FinalBuffer->GetSpecification().Height);
-	ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_FinalBuffer->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
+	// ImGui::Begin("Final Buffer");
+	// width = float(m_Scene->m_SceneRenderer->m_FinalBuffer->GetSpecification().Width);
+	// height = float(m_Scene->m_SceneRenderer->m_FinalBuffer->GetSpecification().Height);
+	// ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_FinalBuffer->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
 
-	ImGui::End();
+	// ImGui::End();
 
 	ImGui::Begin("Blur Options");
-	ImGui::DragFloat("Color strength", &m_Scene->m_SceneRenderer->m_Strength);
-	ImGui::DragFloat("Directions", &m_Scene->m_SceneRenderer->m_BloomBlurDirections);
-	ImGui::DragFloat("Quality", &m_Scene->m_SceneRenderer->m_BloomQuality);
-	ImGui::DragFloat("Size", &m_Scene->m_SceneRenderer->m_BloomSize);
+	// ImGui::DragFloat("Strength", &m_Scene->GetEntityByName("Test2").GetComponent<Daybreak::SpriteRendererComponent>().Emissivity);
+	ImGui::DragFloat("Color strength", &m_Scene->m_SceneRenderer->m_Strength, 0.01f, 0.0, 100.0);
+	ImGui::DragFloat("Gamma", &m_Scene->m_SceneRenderer->m_Gamma, 0.01f, 0.0, 10.0);
+	ImGui::DragFloat("Exposure", &m_Scene->m_SceneRenderer->m_Exposure, 0.01f, 0.0, 10.0);
+	// ImGui::DragFloat("Directions", &m_Scene->m_SceneRenderer->m_BloomBlurDirections);
+	// ImGui::DragFloat("Quality", &m_Scene->m_SceneRenderer->m_BloomQuality);
+	// ImGui::DragFloat("Size", &m_Scene->m_SceneRenderer->m_BloomSize, 0.1, 0.0, FLT_MAX);
+	// ImGui::DragFloat("Downscale Size", &m_Scene->m_SceneRenderer->m_DownscaleSize, 0.05, 0.0, FLT_MAX);
+	// ImGui::DragFloat("Upscale Size", &m_Scene->m_SceneRenderer->m_UpscaleSize, 0.05, 0.0, FLT_MAX);
 
 	ImGui::End();
-
+#endif
 
 	// float width = 1280;
 	// float height = 720;

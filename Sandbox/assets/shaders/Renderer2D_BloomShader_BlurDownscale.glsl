@@ -20,55 +20,57 @@ layout(location = 0) out vec4 o_Color;
 in vec2 v_TexCoord;
 
 uniform sampler2D u_Textures[32];
-
-uniform float u_Directions;
-uniform float u_Quality;
-uniform float u_Size;
 uniform vec2 u_Resolution;
 
 void main()
 {
-    
-    float Pi = 6.28318530718; // Pi*2
-    
-    float Directions = u_Directions;
-    float Size = u_Size;
-    float Quality = u_Quality;
 
+    vec2 srcTexelSize = 2 / u_Resolution;
+    float x = srcTexelSize.x;
+    float y = srcTexelSize.y;
 
-    // GAUSSIAN BLUR SETTINGS {{{
-    // float Directions = 16.0; // BLUR DIRECTIONS (Default 16.0 - More is better but slower)
-    // float Quality = 10.0; // BLUR QUALITY (Default 4.0 - More is better but slower)
-    // float Size = 32.0; // BLUR SIZE (Radius)
-    // GAUSSIAN BLUR SETTINGS }}}
+    // Take 13 samples around current texel:
+    // a - b - c
+    // - j - k -
+    // d - e - f
+    // - l - m -
+    // g - h - i
+    // === ('e' is the current texel) ===
+    vec3 a = texture(u_Textures[0], vec2(v_TexCoord.x - 2*x, v_TexCoord.y + 2*y)).rgb;
+    vec3 b = texture(u_Textures[0], vec2(v_TexCoord.x,       v_TexCoord.y + 2*y)).rgb;
+    vec3 c = texture(u_Textures[0], vec2(v_TexCoord.x + 2*x, v_TexCoord.y + 2*y)).rgb;
 
-    vec4 previousBufferTexture = texture(u_Textures[0], v_TexCoord);
+    vec3 d = texture(u_Textures[0], vec2(v_TexCoord.x - 2*x, v_TexCoord.y)).rgb;
+    vec3 e = texture(u_Textures[0], vec2(v_TexCoord.x,       v_TexCoord.y)).rgb;
+    vec3 f = texture(u_Textures[0], vec2(v_TexCoord.x + 2*x, v_TexCoord.y)).rgb;
 
-    // vec2 iResolution = vec2(1920,1080);
-    vec2 iResolution = vec2(1280,720);
-    iResolution = u_Resolution;
+    vec3 g = texture(u_Textures[0], vec2(v_TexCoord.x - 2*x, v_TexCoord.y - 2*y)).rgb;
+    vec3 h = texture(u_Textures[0], vec2(v_TexCoord.x,       v_TexCoord.y - 2*y)).rgb;
+    vec3 i = texture(u_Textures[0], vec2(v_TexCoord.x + 2*x, v_TexCoord.y - 2*y)).rgb;
 
+    vec3 j = texture(u_Textures[0], vec2(v_TexCoord.x - x, v_TexCoord.y + y)).rgb;
+    vec3 k = texture(u_Textures[0], vec2(v_TexCoord.x + x, v_TexCoord.y + y)).rgb;
+    vec3 l = texture(u_Textures[0], vec2(v_TexCoord.x - x, v_TexCoord.y - y)).rgb;
+    vec3 m = texture(u_Textures[0], vec2(v_TexCoord.x + x, v_TexCoord.y - y)).rgb;
 
-    vec2 Radius = Size/iResolution.xy;
-    
-    // const float dTheta = 0.05;
-    // Blur calculations
-    for( float d=0.0; d<Pi; d+=Pi/Directions)
-    {
-		for(float i=1.0/Quality; i<=1.0; i+=1.0/Quality)
-        {
-			o_Color += texture( u_Textures[0], v_TexCoord+vec2(cos(d),sin(d))*Radius*i);
+    // Apply weighted distribution:
+    // 0.5 + 0.125 + 0.125 + 0.125 + 0.125 = 1
+    // a,b,d,e * 0.125
+    // b,c,e,f * 0.125
+    // d,e,g,h * 0.125
+    // e,f,h,i * 0.125
+    // j,k,l,m * 0.5
+    // This shows 5 square areas that are being sampled. But some of them overlap,
+    // so to have an energy preserving downsample we need to make some adjustments.
+    // The weights are the distributed, so that the sum of j,k,l,m (e.g.)
+    // contribute 0.5 to the final color output. The code below is written
+    // to effectively yield this sum. We get:
+    // 0.125*5 + 0.03125*4 + 0.0625*4 = 1
+    vec3 downsample = vec3(0);
+    downsample = e*0.125;
+    downsample += (a+c+g+i)*0.03125;
+    downsample += (b+d+f+h)*0.0625;
+    downsample += (j+k+l+m)*0.125;
 
-            // vec4 color1 = texture( u_Textures[0], v_TexCoord+vec2(cos(d),sin(d))*Radius*i);
-            // vec4 color2 = texture( u_Textures[0], v_TexCoord+vec2(cos(d+dTheta),sin(d+dTheta))*Radius*i);
-            // vec4 color3 = texture( u_Textures[0], v_TexCoord+vec2(cos(d-dTheta),sin(d-dTheta))*Radius*i);
-
-            // o_Color += (color1+color2+color3)/3;
-            // Color += color1;
-        }
-    }
-    
-    // Output to screen
-    o_Color /= Quality * Directions + 15;
-    // o_Color /= Quality * Directions;
+    o_Color = vec4(downsample,1);
 };

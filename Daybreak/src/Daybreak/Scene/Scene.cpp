@@ -489,7 +489,6 @@ namespace Daybreak
 		}
 
 		m_SceneRenderer->DrawToScreen();
-		// m_SceneRenderer->DoBloom();
 
 		if (m_DebugDraw)
 		{
