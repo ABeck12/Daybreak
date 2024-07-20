@@ -133,4 +133,20 @@ namespace Daybreak
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 		return pixelData;
 	}
+
+	void OpenGLFrameBuffer::Blit(const Ref<FrameBuffer>& target, uint32_t sourceAttachment, uint32_t targetAttachment) const
+	{
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, GetRendererID());
+		glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + sourceAttachment,
+							   GL_TEXTURE_2D, GetAttachmentRendererID(), 0);
+
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target->GetRendererID());
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + targetAttachment,
+							   GL_TEXTURE_2D, target->GetAttachmentRendererID(), 0);
+
+
+		glBlitFramebuffer(0, 0, GetSpecification().Width, GetSpecification().Height,
+						  0, 0, target->GetSpecification().Width, target->GetSpecification().Height,
+						  GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	}
 }

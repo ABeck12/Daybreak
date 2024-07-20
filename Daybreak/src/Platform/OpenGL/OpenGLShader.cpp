@@ -6,6 +6,69 @@
 
 namespace Daybreak
 {
+	OpenGLShader::OpenGLShader(const std::string& name, const std::filesystem::path& filepath)
+		: m_Name(name)
+	{
+		std::ifstream stream(filepath);
+
+
+		ShaderType type = ShaderType::NONE;
+
+		std::string line;
+		std::stringstream ss[3];
+		while (getline(stream, line))
+		{
+			if (line.find("#shader") != std::string::npos)
+			{
+				if (line.find("VERTEX") != std::string::npos)
+				{
+					type = ShaderType::VERTEX;
+				}
+				else if (line.find("FRAGMENT") != std::string::npos)
+				{
+					type = ShaderType::FRAGMENT;
+				}
+				else if (line.find("COMPUTE") != std::string::npos)
+				{
+					type = ShaderType::COMPUTE;
+				}
+			}
+			else
+			{
+				ss[(int)type] << line << "\n";
+			}
+		}
+		std::string vertexSrc = ss[0].str();
+		std::string fragmentSrc = ss[1].str();
+		std::string computeSrc = ss[2].str();
+
+		m_RendererID = glCreateProgram();
+
+		if (computeSrc.size() > 0)
+		{
+			uint32_t cs = CompileShader(GL_COMPUTE_SHADER, computeSrc);
+			glAttachShader(m_RendererID, cs);
+
+			glLinkProgram(m_RendererID);
+			glValidateProgram(m_RendererID);
+
+			glDeleteProgram(cs);
+		}
+		if (vertexSrc.size() > 0 && fragmentSrc.size() > 0)
+		{
+			uint32_t vs = CompileShader(GL_VERTEX_SHADER, vertexSrc);
+			uint32_t fs = CompileShader(GL_FRAGMENT_SHADER, fragmentSrc);
+
+			glAttachShader(m_RendererID, vs);
+			glAttachShader(m_RendererID, fs);
+			glLinkProgram(m_RendererID);
+			glValidateProgram(m_RendererID);
+
+			glDeleteShader(vs);
+			glDeleteShader(fs);
+		}
+	}
+
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 		: m_Name(name)
 	{
@@ -23,55 +86,18 @@ namespace Daybreak
 		glDeleteShader(fs);
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& name, const std::filesystem::path& filepath)
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& computeSrc)
 		: m_Name(name)
 	{
-		std::ifstream stream(filepath);
-
-		enum class ShaderType
-		{
-			NONE = -1,
-			VERTEX = 0,
-			FRAGMENT = 1
-		};
-
-		ShaderType type = ShaderType::NONE;
-
-		std::string line;
-		std::stringstream ss[2];
-		while (getline(stream, line))
-		{
-			if (line.find("#shader") != std::string::npos)
-			{
-				if (line.find("VERTEX") != std::string::npos)
-				{
-					type = ShaderType::VERTEX;
-				}
-				else if (line.find("FRAGMENT") != std::string::npos)
-				{
-					type = ShaderType::FRAGMENT;
-				}
-			}
-			else
-			{
-				ss[(int)type] << line << "\n";
-			}
-		}
-		std::string vertexSrc = ss[0].str();
-		std::string fragmentSrc = ss[1].str();
-
 		m_RendererID = glCreateProgram();
 
-		uint32_t vs = CompileShader(GL_VERTEX_SHADER, vertexSrc);
-		uint32_t fs = CompileShader(GL_FRAGMENT_SHADER, fragmentSrc);
+		uint32_t cs = CompileShader(GL_COMPUTE_SHADER, computeSrc);
+		glAttachShader(m_RendererID, cs);
 
-		glAttachShader(m_RendererID, vs);
-		glAttachShader(m_RendererID, fs);
 		glLinkProgram(m_RendererID);
 		glValidateProgram(m_RendererID);
 
-		glDeleteShader(vs);
-		glDeleteShader(fs);
+		glDeleteProgram(cs);
 	}
 
 	OpenGLShader::~OpenGLShader()
@@ -140,7 +166,7 @@ namespace Daybreak
 	// Please make this better this was copied over from the openGL test renderer
 	uint32_t OpenGLShader::CompileShader(uint32_t shaderType, const std::string& shaderSrc)
 	{
-		if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER)
+		if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER && shaderType != GL_COMPUTE_SHADER)
 		{
 			DB_CORE_ERROR("Unknown Shader type {0}", shaderType);
 		}
@@ -158,10 +184,53 @@ namespace Daybreak
 			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 			char* message = (char*)alloca(length * sizeof(char));
 			glGetShaderInfoLog(id, length, &length, message);
-			DB_CORE_ERROR("Failed to compile {0} shader \"{1}\" {2}", (shaderType == GL_VERTEX_SHADER ? "vertex" : "fragment"), this->m_Name, message);
+
+#ifdef DB_ENABLE_LOGGING
+			std::string shaderTypeName;
+			switch (shaderType)
+			{
+				case GL_VERTEX_SHADER:
+					shaderTypeName = "vertex";
+					break;
+				case GL_FRAGMENT_SHADER:
+					shaderTypeName = "fragment";
+					break;
+				case GL_COMPUTE_SHADER:
+					shaderTypeName = "compute";
+					break;
+			}
+			DB_CORE_ERROR("Failed to compile {0} shader {1} {2}", shaderTypeName, m_Name, message);
+#endif
+
 			glDeleteShader(id);
 			return 0;
 		}
 		return id;
+	}
+
+	void OpenGLShader::DispatchCompute(const uint32_t numGroupsX, const uint32_t numGroupsY, const uint32_t numGroupsZ) const
+	{
+		DB_CORE_ASSERT(GetShaderType() == ShaderType::COMPUTE, "Can not dispatch non-compute shader {0}", m_Name);
+		Bind();
+		glDispatchCompute(numGroupsX, numGroupsY, numGroupsZ);
+		glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	}
+
+	const OpenGLShader::ShaderType OpenGLShader::GetShaderType() const
+	{
+		int out;
+		glGetShaderiv(m_RendererID, GL_SHADER_TYPE, &out);
+
+		switch (out)
+		{
+			case GL_VERTEX_SHADER:
+				return ShaderType::VERTEX;
+			case GL_FRAGMENT_SHADER:
+				return ShaderType::FRAGMENT;
+			case GL_COMPUTE_SHADER:
+				return ShaderType::COMPUTE;
+			default:
+				return ShaderType::NONE;
+		}
 	}
 }

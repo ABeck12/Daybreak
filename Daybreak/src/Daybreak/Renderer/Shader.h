@@ -14,6 +14,8 @@ namespace Daybreak
 
 		virtual const std::string& GetName() const = 0;
 
+		virtual void DispatchCompute(const uint32_t numGroupsX, const uint32_t numGroupsY, const uint32_t numGroupsZ) const = 0;
+
 		virtual void SetInt1(const std::string& name, const uint32_t value) const = 0;
 		virtual void SetIntArray(const std::string& name, const int* values, uint32_t count) const = 0;
 		virtual void SetFloat1(const std::string& name, const float value) const = 0;
@@ -25,6 +27,7 @@ namespace Daybreak
 
 		static Ref<Shader> Create(const std::string& name, const std::filesystem::path& filepath);
 		static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+		// static Ref<Shader> Create(const std::string& name, const std::string& computeSrc);
 	};
 
 	class ShaderLibrary

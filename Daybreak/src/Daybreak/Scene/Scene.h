@@ -56,6 +56,7 @@ namespace Daybreak
 
 		void ToggleDebugDraw() { m_DebugDraw = !m_DebugDraw; }
 
+		Scope<SceneRenderer> m_SceneRenderer;
 
 	private:
 		// TODO: move to entity class?==============
@@ -80,7 +81,6 @@ namespace Daybreak
 		bool m_DebugDraw = true;
 		bool m_SceneRunning = false;
 
-		Scope<SceneRenderer> m_SceneRenderer;
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
 
 		friend class Entity;

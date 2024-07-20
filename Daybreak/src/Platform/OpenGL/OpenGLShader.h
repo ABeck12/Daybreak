@@ -9,13 +9,17 @@ namespace Daybreak
 	class OpenGLShader final : public Shader
 	{
 	public:
-		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
 		OpenGLShader(const std::string& name, const std::filesystem::path& filepath);
+
+		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+		OpenGLShader(const std::string& name, const std::string& computeSrc);
 
 		virtual ~OpenGLShader();
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
+
+		virtual void DispatchCompute(const uint32_t numGroupsX, const uint32_t numGroupsY, const uint32_t numGroupsZ) const override;
 
 		virtual void SetInt1(const std::string& name, const uint32_t value) const override;
 		virtual void SetIntArray(const std::string& name, const int* values, uint32_t count) const override;
@@ -30,6 +34,16 @@ namespace Daybreak
 
 	private:
 		uint32_t CompileShader(uint32_t shaderType, const std::string& shaderSrc);
+
+		enum class ShaderType
+		{
+			NONE = -1,
+			VERTEX = 0,
+			FRAGMENT = 1,
+			COMPUTE = 2,
+		};
+
+		const ShaderType GetShaderType() const;
 
 	private:
 		uint32_t m_RendererID;

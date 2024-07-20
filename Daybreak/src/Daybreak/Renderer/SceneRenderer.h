@@ -26,9 +26,9 @@ namespace Daybreak
 		void DrawToScreen();
 
 		void StartDrawBuffer2D();
-
 		void StartLightBuffer2D();
-		// void StopLightBuffer2D();
+
+		void DoBloom();
 
 		void CheckResize();
 
@@ -40,10 +40,23 @@ namespace Daybreak
 		Ref<FrameBuffer> m_LightBuffer2D;
 		Ref<FrameBuffer> m_FinalBuffer;
 
-		// Ref<Shader> m_LightingShader;
+		// Regular bloom stuff
+		Ref<FrameBuffer> m_BloomBuffer;
+		Ref<FrameBuffer> m_BloomBufferFinal;
+		float m_BloomBlurDirections = 32.0f;
+		float m_BloomSize = 32.0f;
+		float m_BloomQuality = 8.0f;
+		std::array<Ref<FrameBuffer>, 7> m_BloomDownscaleBuffers;
+		std::array<Ref<FrameBuffer>, 7> m_BloomUpscaleBuffers;
+
+		float m_Strength = 1;
+		Ref<Shader> m_BloomShader;
+		Ref<Shader> m_BloomBlurDownscaleShader;
+		Ref<Shader> m_BloomBlurUpscaleShader;
+
 		Ref<Shader> m_DefaultDrawShader;
 		Ref<Shader> m_FinalShader;
 
-		friend class RendererTesting;
+		friend class RendererTesting; // TODO Temporary
 	};
 }

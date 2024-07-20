@@ -34,7 +34,10 @@ namespace Daybreak
 
 		virtual const FrameBufferSpecifications& GetSpecification() const = 0;
 		virtual const uint32_t GetAttachmentRendererID(uint32_t index = 0) const = 0;
+		virtual const uint32_t GetRendererID() const = 0;
+
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
+        virtual void Blit(const Ref<FrameBuffer>& target, uint32_t sourceAttachment = 0, uint32_t targetAttachment = 0) const = 0;
 
 		virtual const glm::vec4& GetClearColor() const = 0;
 

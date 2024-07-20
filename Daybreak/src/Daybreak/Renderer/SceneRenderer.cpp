@@ -36,6 +36,34 @@ namespace Daybreak
 		};
 		m_DrawBuffer2D = FrameBuffer::Create(drawBuffer2DSpec);
 
+		FrameBufferSpecifications bloomBufferSpec;
+		bloomBufferSpec.Height = m_BufferHeight;
+		bloomBufferSpec.Width = m_BufferWidth;
+		bloomBufferSpec.ClearColor = { 0, 0, 0, 1 };
+		bloomBufferSpec.AttachmentTypes = {
+			FrameBufferAttachmentTypes::RGBA32F,
+		};
+		m_BloomBuffer = FrameBuffer::Create(bloomBufferSpec);
+		// bloomBufferSpec.AttachmentTypes = { FrameBufferAttachmentTypes::RGBA };
+		m_BloomBufferFinal = FrameBuffer::Create(bloomBufferSpec);
+
+		for (size_t i = 0; i < m_BloomDownscaleBuffers.size(); i++)
+		{
+			bloomBufferSpec.Width = m_BufferWidth / (1 << (i + 1));
+			bloomBufferSpec.Height = m_BufferHeight / (1 << (i + 1));
+			// bloomBufferSpec.Width = uint32_t(m_BufferWidth / (1.8 * (i + 1)));
+			// bloomBufferSpec.Height = uint32_t(m_BufferHeight / (1.8 * (i + 1)));
+			m_BloomDownscaleBuffers[i] = FrameBuffer::Create(bloomBufferSpec);
+			m_BloomUpscaleBuffers[i] = FrameBuffer::Create(bloomBufferSpec);
+		}
+
+		// for (size_t i = 0; i < m_BloomUpscaleBuffers.size(); i++)
+		// {
+		// 	bloomBufferSpec.Width = m_BufferWidth / (1 << (i + 1));
+		// 	bloomBufferSpec.Height = m_BufferHeight / (1 << (i + 1));
+		// 	m_BloomUpscaleBuffers[i] = FrameBuffer::Create(bloomBufferSpec);
+		// }
+
 		FrameBufferSpecifications finalBufferSpec;
 		finalBufferSpec.Height = m_BufferHeight;
 		finalBufferSpec.Width = m_BufferWidth;
@@ -46,8 +74,10 @@ namespace Daybreak
 		};
 		m_FinalBuffer = FrameBuffer::Create(finalBufferSpec);
 
-		// m_LightingShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_LightingFrameBuffer.glsl");
 		m_DefaultDrawShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_DefaultFrameBufferDraw.glsl");
+		m_BloomShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_BloomShader.glsl");
+		m_BloomBlurDownscaleShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_BloomShader_BlurDownscale.glsl");
+		m_BloomBlurUpscaleShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_BloomShader_BlurUpscale.glsl");
 		m_FinalShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_FinalShader.glsl");
 	}
 
@@ -147,10 +177,69 @@ namespace Daybreak
 		RenderCommand::Clear();
 	}
 
-	// void SceneRenderer::StopLightBuffer2D()
-	// {
-	// 	RenderCommand::SetBlendMode(RenderAPI::BlendModes::OneMinusSrcAlpha);
-	// }
+	void SceneRenderer::DoBloom()
+	{
+		m_BloomBufferFinal->Bind();
+		RenderCommand::SetClearColor({ 0, 0, 0, 1 });
+		RenderCommand::Clear();
+
+		Renderer2D::NextBatch();
+		m_BloomBuffer->Bind();
+		RenderCommand::SetClearColor({ 0, 0, 0, 1 });
+		RenderCommand::Clear();
+
+		// Renderer2D::DrawQuad({ 5, 3 }, { 1, 1 }, { 0.005, 0.05, 0.05, 1 });
+		// Renderer2D::DrawQuad({ 3, 3 }, { 1, 1 }, { 0.1, 1, 1, 1 });
+		// Renderer2D::DrawQuad({ 0, 3 }, { 1, 1 }, { 1, 1, 1, 1 });
+		// Renderer2D::DrawCircle({ -4, 4 }, 2, { 0.1, 0.91, 0.05, 1 });
+		Renderer2D::DrawString("Bloom", Font::GetDefault(), { -6, -4, 0 }, { 7, 7 }, { m_Strength * 1, m_Strength * 0.1, m_Strength * 0.1, 1 });
+		Renderer2D::EndScene();
+
+		// Downsample
+		m_BloomBlurDownscaleShader->Bind();
+		m_BloomBlurDownscaleShader->SetFloat1("u_Directions", m_BloomBlurDirections);
+		m_BloomBlurDownscaleShader->SetFloat1("u_Size", m_BloomSize);
+		m_BloomBlurDownscaleShader->SetFloat1("u_Quality", m_BloomQuality);
+		m_BloomBuffer->BindAttachmentAsTexture(0, 0);
+		for (size_t i = 0; i < m_BloomDownscaleBuffers.size(); i++)
+		{
+			m_BloomBlurDownscaleShader->Bind();
+			m_BloomBlurDownscaleShader->SetFloat2("u_Resolution", { m_BloomDownscaleBuffers[i]->GetSpecification().Width, m_BloomDownscaleBuffers[i]->GetSpecification().Height });
+			m_BloomDownscaleBuffers[i]->Bind();
+			RenderCommand::Clear();
+			Renderer::DrawFrameBuffer(m_BloomDownscaleBuffers[i], m_BloomBlurDownscaleShader);
+			m_BloomDownscaleBuffers[i]->BindAttachmentAsTexture(0, 0);
+		}
+
+		// Upsample
+		std::vector<int> indices;
+		indices.emplace_back(0);
+		m_BloomBuffer->BindAttachmentAsTexture(0, 0);
+		for (size_t i = 0; i < m_BloomDownscaleBuffers.size(); i++)
+		{
+			indices.emplace_back((int)i);
+			m_BloomDownscaleBuffers[i]->BindAttachmentAsTexture(0, uint32_t(i) + 1);
+		}
+
+		int lastBufferIndex = int(m_BloomDownscaleBuffers.size() - 1);
+		m_BloomDownscaleBuffers[lastBufferIndex]->Blit(m_BloomUpscaleBuffers[lastBufferIndex]);
+		for (int i = int(m_BloomUpscaleBuffers.size() - 2); i >= 0; i--)
+		{
+			m_BloomDownscaleBuffers[i]->BindAttachmentAsTexture(0, 0);
+			m_BloomUpscaleBuffers[i + i]->BindAttachmentAsTexture(0, 1);
+
+			m_BloomUpscaleBuffers[i]->Bind();
+			RenderCommand::Clear();
+			Renderer::DrawFrameBuffer(m_BloomUpscaleBuffers[i], m_BloomBlurUpscaleShader);
+		}
+
+		// Final image
+		m_BloomBufferFinal->Bind();
+		RenderCommand::Clear();
+		m_BloomBuffer->BindAttachmentAsTexture(0, 0);
+		m_BloomUpscaleBuffers[0]->BindAttachmentAsTexture(0, 1);
+		Renderer::DrawFrameBuffer(m_BloomBufferFinal, m_BloomShader, { 0, 1 });
+	}
 
 	void SceneRenderer::DrawToScreen()
 	{

@@ -64,7 +64,8 @@ project "Daybreak"
 		defines 
 		{
 			"DB_DEBUG",
-			"DB_ENABLE_ASSERTS"
+			"DB_ENABLE_ASSERTS",
+			"DB_ENABLE_LOGGING"
 		}
 		symbols "On"
 		runtime "Debug"
@@ -73,7 +74,8 @@ project "Daybreak"
 		defines 
 		{
 			"DB_RELEASE",
-			"DB_ENABLE_ASSERTS"
+			"DB_ENABLE_ASSERTS",
+			"DB_ENABLE_LOGGING"
 		}
 		symbols "On"
 		runtime "Release"
