@@ -10,6 +10,7 @@
 #include "DaybreakEditor/EditorLayer.h"
 
 #include "DaybreakEditor/Pannels/SelectionContext.h"
+#include "Daybreak/Renderer/SceneRenderer.h"
 
 namespace Daybreak
 {
@@ -28,19 +29,19 @@ namespace Daybreak
 	{
 		if (m_IsPlaying)
 		{
-			m_Scene->m_ClearColor = m_RuntimeClearColor;
+			// m_Scene->m_ClearColor = m_RuntimeClearColor;
 			m_Scene->OnRenderScene(m_Scene->GetActiveCameraEntity());
 		}
 		else if (!m_IsPlaying)
 		{
-			m_Scene->m_ClearColor = m_EditorClearColor;
+			// m_Scene->m_ClearColor = m_EditorClearColor;
 			m_Scene->OnRenderScene(m_EditorCameraEntity);
 		}
 		if (m_DrawGrid)
 		{
-			m_Scene->m_ScreenBuffer->Bind();
+			m_Scene->m_SceneRenderer->GetFinalBuffer()->Bind();
 			DrawGrid();
-			m_Scene->m_ScreenBuffer->Unbind();
+			m_Scene->m_SceneRenderer->GetFinalBuffer()->Unbind();
 		}
 	}
 
@@ -80,7 +81,7 @@ namespace Daybreak
 		float cursorYBeforeImage = ImGui::GetCursorPos().y;
 
 		// uint32_t textureID = m_Scene->m_ScreenBuffer->GetAttachmentRendererID(0);
-		uint32_t textureID = m_Scene->m_DrawBuffer2D->GetAttachmentRendererID(0);
+		uint32_t textureID = m_Scene->m_SceneRenderer->GetFinalBuffer()->GetAttachmentRendererID(0);
 		const ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 
 		const float windowWidth = ImGui::GetWindowWidth();
@@ -131,9 +132,9 @@ namespace Daybreak
 		glm::vec2 imageFraction = (mousePos - imageUpperRightCorner) / (imageLowerLeftCorner - imageUpperRightCorner);
 		imageFraction = glm::clamp(imageFraction, 0.0f, 1.0f);
 		const glm::vec2 pickPosition = imageFraction * screenSize;
-		m_Scene->m_DrawBuffer2D->Bind();
-		int entityIDVal = m_Scene->m_DrawBuffer2D->ReadPixel1I(1, (int)pickPosition.x, (int)(screenSize.y - pickPosition.y));
-		m_Scene->m_DrawBuffer2D->Unbind();
+		m_Scene->m_SceneRenderer->GetDrawBuffer2D()->Bind();
+		int entityIDVal = m_Scene->m_SceneRenderer->GetDrawBuffer2D()->ReadPixel1I(1, (int)pickPosition.x, (int)(screenSize.y - pickPosition.y));
+		m_Scene->m_SceneRenderer->GetDrawBuffer2D()->Unbind();
 		if (entityIDVal > -1 && entityIDVal < m_Scene->m_Registry.size() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 		{
 			Entity selectedEntity = Entity((entt::entity)entityIDVal, m_Scene.get());

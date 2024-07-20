@@ -52,7 +52,8 @@ project "Sandbox"
 		defines 
 		{
 			"DB_DEBUG",
-			"DB_ENABLE_ASSERTS"
+			"DB_ENABLE_ASSERTS",
+			"DB_ENABLE_LOGGING"
 		}
 		symbols "On"
 		runtime "Debug"
@@ -62,7 +63,8 @@ project "Sandbox"
 		defines 
 		{
 			"DB_RELEASE",
-			"DB_ENABLE_ASSERTS"
+			"DB_ENABLE_ASSERTS",
+			"DB_ENABLE_LOGGING"
 		}
 		symbols "On"
 		runtime "Release"

@@ -21,7 +21,7 @@ namespace Daybreak
 
 		static void OnWindowResize(uint32_t width, uint32_t height);
 
-		static void DrawFrameBuffer(const Ref<FrameBuffer>& frameBuffer, const Ref<Shader>& shader, std::vector<int> boundAttachmentIndices = { 0 });
+		static void DrawFrameBuffer(const Ref<FrameBuffer>& frameBuffer, const Ref<Shader>& shader, const std::vector<int>& boundAttachmentIndices = { 0 });
 
 		static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); }
 		// static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));

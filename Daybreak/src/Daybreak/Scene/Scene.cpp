@@ -16,32 +16,14 @@
 #include <box2d/box2d.h>
 #include <variant>
 
+#include "Daybreak/Renderer/SceneRenderer.h"
+
 namespace Daybreak
 {
 	Scene::Scene(const std::string& name)
 		: m_SceneName(name)
 	{
-		m_BufferWidth = Application::Get().GetWindow().GetWidth();
-		m_BufferHeight = Application::Get().GetWindow().GetHeight();
-		FrameBufferSpecifications lightingSpec;
-		lightingSpec.Height = m_BufferHeight;
-		lightingSpec.Width = m_BufferWidth;
-		lightingSpec.AttachmentTypes = { FrameBufferAttachmentTypes::RGBA32F, FrameBufferAttachmentTypes::Depth };
-		m_LightingBuffer = FrameBuffer::Create(lightingSpec);
-
-		FrameBufferSpecifications bufferSpec2D;
-		bufferSpec2D.Height = m_BufferHeight;
-		bufferSpec2D.Width = m_BufferWidth;
-		bufferSpec2D.AttachmentTypes = { FrameBufferAttachmentTypes::RGBA, FrameBufferAttachmentTypes::RedInteger, FrameBufferAttachmentTypes::Depth };
-		m_DrawBuffer2D = FrameBuffer::Create(bufferSpec2D);
-
-		FrameBufferSpecifications screenSpec;
-		screenSpec.Height = m_BufferHeight;
-		screenSpec.Width = m_BufferWidth;
-		screenSpec.AttachmentTypes = { FrameBufferAttachmentTypes::RGBA, FrameBufferAttachmentTypes::Depth };
-		m_ScreenBuffer = FrameBuffer::Create(screenSpec);
-
-		m_LightingShader = AssetManager::Get()->LoadShader("shaders/Renderer2D_LightingFrameBuffer.glsl");
+		m_SceneRenderer = CreateScope<SceneRenderer>();
 	}
 
 	Scene::~Scene()
@@ -124,7 +106,7 @@ namespace Daybreak
 
 		if (entity.HasComponent<ScriptComponent>())
 		{
-			auto sc = entity.GetComponent<ScriptComponent>();
+			auto& sc = entity.GetComponent<ScriptComponent>();
 			sc.Instance->OnDestroy();
 		}
 
@@ -430,23 +412,18 @@ namespace Daybreak
 
 		std::sort(renderObjects.begin(), renderObjects.end());
 
-		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * cameraEntity.GetComponent<TransformComponent>().Position);
-		glm::mat4 rotation = glm::toMat4(glm::quat(cameraEntity.GetComponent<TransformComponent>().Rotation));
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraEntity.GetComponent<TransformComponent>().Scale);
+		TransformComponent& cameraTransform = cameraEntity.GetComponent<TransformComponent>();
+		glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(-1, -1, 1) * cameraTransform.Position);
+		glm::mat4 rotation = glm::toMat4(glm::quat(cameraTransform.Rotation));
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), cameraTransform.Scale);
 
 		Renderer2D::BeginScene(cameraEntity.GetComponent<CameraComponent>().Camera, scale * rotation * translation);
-		CheckResizeBuffers();
 
-		// m_ScreenBuffer->Bind();
-		// RenderCommand::SetClearColor({ 0, 0, 0, 1 });
-		// RenderCommand::Clear();
-		// m_ScreenBuffer->Unbind();
+		m_SceneRenderer->CheckResize();
 
 		// 2D drawing
 		{
-			m_DrawBuffer2D->Bind();
-			RenderCommand::SetClearColor({ -1, 0, 0, 1 });
-			RenderCommand::Clear();
+			m_SceneRenderer->StartDrawBuffer2D();
 			for (int i = 0; i < numberObjects; i++)
 			{
 				Entity entity = { renderObjects[i].Entity, this };
@@ -456,55 +433,45 @@ namespace Daybreak
 					continue;
 				}
 
-				auto& transform = entity.GetComponent<TransformComponent>();
+				TransformComponent& transform = entity.GetComponent<TransformComponent>();
 				switch (renderObjects[i].RenderType)
 				{
 					case SceneRenderObjectType::Sprite:
 					{
-						Renderer2D::DrawSprite(renderObjects[i].Transform, std::get<SpriteRendererComponent>(renderObjects[i].Component), (int)(renderObjects[i].Entity));
+						m_SceneRenderer->DrawSpriteRenderer(renderObjects[i].Transform,
+															std::get<SpriteRendererComponent>(renderObjects[i].Component),
+															(int)(renderObjects[i].Entity));
 						break;
 					}
 					case SceneRenderObjectType::Animator:
 					{
-						Renderer2D::DrawSprite(renderObjects[i].Transform, std::get<AnimatorComponent>(renderObjects[i].Component), (int)(renderObjects[i].Entity));
+						m_SceneRenderer->DrawAnimator(renderObjects[i].Transform,
+													  std::get<AnimatorComponent>(renderObjects[i].Component),
+													  (int)(renderObjects[i].Entity));
 						break;
 					}
 					case SceneRenderObjectType::Text:
 					{
-						TextRendererComponent text = std::get<TextRendererComponent>(renderObjects[i].Component);
-						Renderer2D::DrawString(text.Text, text.Font, renderObjects[i].Transform, text.Color, text.Kerning, text.LineSpacing, (int)(renderObjects[i].Entity));
+						m_SceneRenderer->DrawTextRenderer(renderObjects[i].Transform,
+														  std::get<TextRendererComponent>(renderObjects[i].Component),
+														  (int)(renderObjects[i].Entity));
 						break;
 					}
 				}
 			}
 			Renderer2D::EndScene();
-			m_DrawBuffer2D->Unbind();
 		}
 
-// Lighting
-#if 0
-		if (false)
+		// Lighting
 		{
-			m_LightingBuffer->Bind();
 			Renderer2D::StartBatch();
-
-			auto globalLightView = m_Registry.view<GlobalLight2DComponent>();
-			if (globalLightView.size() == 0)
-			{
-				RenderCommand::SetClearColor({ 1, 1, 1, 1 });
-				RenderCommand::Clear();
-			}
-			else
+			m_SceneRenderer->StartLightBuffer2D();
+			const auto globalLightView = m_Registry.view<GlobalLight2DComponent>();
+			if (globalLightView.size() > 0)
 			{
 				Entity entity = { globalLightView[0], this };
-				GlobalLight2DComponent gl = entity.GetComponent<GlobalLight2DComponent>();
-				RenderCommand::SetClearColor({
-					gl.Color.r * gl.Intensity,
-					gl.Color.g * gl.Intensity,
-					gl.Color.b * gl.Intensity,
-					1,
-				});
-				RenderCommand::Clear();
+				GlobalLight2DComponent& gl = entity.GetComponent<GlobalLight2DComponent>();
+				m_SceneRenderer->DrawGlobalLight2D(gl);
 			}
 
 			RenderCommand::SetBlendMode(RenderAPI::BlendModes::One);
@@ -512,34 +479,21 @@ namespace Daybreak
 			for (auto e : pointLightView)
 			{
 				Entity entity = { e, this };
-				TransformComponent tr = entity.GetComponent<TransformComponent>();
-				PointLight2DComponent pl = entity.GetComponent<PointLight2DComponent>();
-				Renderer2D::DrawCircle(tr.Position,
-									   pl.OuterRadius,
-									   glm::vec4(pl.Color.r, pl.Color.g, pl.Color.b, 1.0f) * pl.Intensity,
-									   ((pl.OuterRadius - pl.InnerRadius) / pl.OuterRadius) / pl.Intensity,
-									   1.0f);
+				TransformComponent& tr = entity.GetComponent<TransformComponent>();
+				PointLight2DComponent& pl = entity.GetComponent<PointLight2DComponent>();
+				m_SceneRenderer->DrawPointLight2D(tr.Position, pl);
 			}
+
 			Renderer2D::EndScene();
 			RenderCommand::SetBlendMode(RenderAPI::BlendModes::OneMinusSrcAlpha);
-			m_LightingBuffer->Unbind();
 		}
 
-		// Draw final image to m_ScrenBuffer
-		// FIXME: rework into renderpass
-		// m_LightingBuffer->BindAttachmentAsTexture(0, 0); // Lighting RGBA32F
-		// m_DrawBuffer2D->BindAttachmentAsTexture(0, 1);	 // Screen RGBA
-		// m_DrawBuffer2D->BindAttachmentAsTexture(1, 2);	 // Screen Depth
-
-#endif
-		// m_ScreenBuffer->Bind(); // If not running in editor comment out this line
-		// Renderer::DrawFrameBuffer(m_LightingBuffer, m_LightingShader, { 0, 1, 2 });
+		m_SceneRenderer->DrawToScreen();
 
 		if (m_DebugDraw)
 		{
 			DebugDraw();
 		}
-		// m_ScreenBuffer->Unbind(); // If not running in editor comment out this line
 	}
 
 	void Scene::OnPhysicsUpdate(DeltaTime dt)
@@ -775,19 +729,5 @@ namespace Daybreak
 		}
 		m_PhysicsSim2D->DebugDraw();
 		Renderer2D::EndScene();
-	}
-
-	void Scene::CheckResizeBuffers()
-	{
-		uint32_t width = Application::Get().GetWindow().GetWidth();
-		uint32_t height = Application::Get().GetWindow().GetHeight();
-		if (m_BufferHeight != height || m_BufferWidth != width)
-		{
-			m_DrawBuffer2D->Resize(width, height);
-			m_LightingBuffer->Resize(width, height);
-
-			m_BufferWidth = width;
-			m_BufferHeight = height;
-		}
 	}
 }

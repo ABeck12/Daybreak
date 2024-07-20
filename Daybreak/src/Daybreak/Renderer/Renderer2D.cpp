@@ -323,27 +323,12 @@ namespace Daybreak
 		DrawQuad({ position.x, position.y, 0.0f }, size, color);
 	}
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& spriteRenderer, int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& tintColor, const float tilingFactor, int entityID)
 	{
-		if (spriteRenderer.Sprite)
-			DrawQuad(glm::scale(transform, { (float)spriteRenderer.Sprite->GetWidth() / (float)spriteRenderer.Sprite->GetTexutreSpecifications().PixelsPerUnit, (float)spriteRenderer.Sprite->GetHeight() / (float)spriteRenderer.Sprite->GetTexutreSpecifications().PixelsPerUnit, 1.0f }),
-					 spriteRenderer.Sprite, spriteRenderer.TintColor, spriteRenderer.TilingFactor, (int)entityID);
-		else
-			DrawQuad(transform, s_Data.WhiteTexture, spriteRenderer.TintColor, spriteRenderer.TilingFactor, entityID);
+		DrawQuad(transform, s_Data.WhiteTexture, tintColor, tilingFactor, entityID);
 	}
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const AnimatorComponent& anim, int entityID)
-	{
-		// FIXME: TEMPORARY
-		if (!anim.Controller)
-			return;
-		auto currentFrame = anim.Controller->GetActiveAnimation()->GetCurrentKeyFrame();
-		TextureSpecifications spec = currentFrame.Sprite->GetTexture()->GetTexutreSpecifications();
-		Renderer2D::DrawQuad(glm::scale(transform, { (float)currentFrame.Sprite->GetWidth() / (float)spec.PixelsPerUnit, (float)currentFrame.Sprite->GetHeight() / (float)spec.PixelsPerUnit, 1.0f }),
-							 currentFrame.Sprite, anim.TintColor, 1.0f, (int)entityID);
-	}
-
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec4& tintColor, const float& tilingFactor, int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec4& tintColor, const float tilingFactor, int entityID)
 	{
 		constexpr size_t quadVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
@@ -419,11 +404,11 @@ namespace Daybreak
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		DrawQuad(transform, subtexture, tintColor);
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor, const float& tilingFactor, int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor, const float tilingFactor, int entityID)
 	{
 		constexpr size_t quadVertexCount = 4;
 		const Ref<Texture2D> texture = subtexture->GetTexture();
@@ -466,38 +451,38 @@ namespace Daybreak
 		s_Data.QuadIndexCount += 6;
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotDeg, const Ref<Texture2D>& texture, const glm::vec4& tintColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotDeg, const Ref<Texture2D>& texture, const glm::vec4& tintColor)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-		glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(rotDeg), { 0.0f, 0.0f, 1.0f });
+		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		const glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(rotDeg), { 0.0f, 0.0f, 1.0f });
 		DrawQuad(transform * rotate, texture, tintColor);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotDeg, const Ref<Texture2D>& texture, const glm::vec4& tintColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float rotDeg, const Ref<Texture2D>& texture, const glm::vec4& tintColor)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotDeg, texture, tintColor);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotDeg, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotDeg, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-		glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(rotDeg), { 0.0f, 0.0f, 1.0f });
+		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		const glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(rotDeg), { 0.0f, 0.0f, 1.0f });
 		DrawQuad(transform * rotate, subtexture, tintColor);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotDeg, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float rotDeg, const Ref<SubTexture2D>& subtexture, const glm::vec4& tintColor)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotDeg, subtexture, tintColor);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float& rotDeg, const glm::vec4& color)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotDeg, const glm::vec4& color)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-		glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(rotDeg), { 0.0f, 0.0f, 1.0f });
+		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		const glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(rotDeg), { 0.0f, 0.0f, 1.0f });
 		DrawQuad(rotate * transform, s_Data.WhiteTexture, color);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float& rotDeg, const glm::vec4& color)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float rotDeg, const glm::vec4& color)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotDeg, color);
 	}
@@ -525,7 +510,7 @@ namespace Daybreak
 
 	void Renderer2D::DrawCircle(const glm::vec3& position, const float radius, const glm::vec4& color, const float fade, const float thickness)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { radius * 2, radius * 2, 1.0f });
+		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { radius * 2, radius * 2, 1.0f });
 		DrawCircle(transform, color, fade, thickness);
 	}
 
@@ -560,7 +545,7 @@ namespace Daybreak
 
 	void Renderer2D::DrawLine(const glm::vec2& pos, float deg, float length, const glm::vec4& color)
 	{
-		float radians = glm::radians(deg);
+		const float radians = glm::radians(deg);
 		DrawLine(pos, { pos.x + length * cos(radians), pos.y + length * sin(radians) }, color);
 	}
 
@@ -683,7 +668,7 @@ namespace Daybreak
 								const glm::vec4& color, float kerning, float lineSpacing,
 								int entityID)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		DrawString(string, font, transform, color, kerning, lineSpacing, entityID);
 	}
 }
