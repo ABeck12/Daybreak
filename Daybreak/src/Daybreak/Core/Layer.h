@@ -1,7 +1,5 @@
 #pragma once
 
-#include "dbpch.h"
-
 #include "Daybreak/Events/Event.h"
 #include "Daybreak/Core/DeltaTime.h"
 

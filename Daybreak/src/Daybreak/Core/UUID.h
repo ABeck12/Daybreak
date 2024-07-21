@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <stdint.h>
 
 namespace Daybreak
 {
@@ -28,7 +28,7 @@ namespace std
 	template<>
 	struct hash<Daybreak::UUID>
 	{
-		std::size_t operator()(const Daybreak::UUID& uuid) const
+		size_t operator()(const Daybreak::UUID& uuid) const
 		{
 			return (uint64_t)uuid;
 		}

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "dbpch.h"
+#include <string>
 
+#include "Daybreak/Core/Base.h"
 #include "Daybreak/Core/DeltaTime.h"
 #include "Daybreak/Physics/PhysicsSim2D.h"
 #include "Daybreak/Core/UUID.h"

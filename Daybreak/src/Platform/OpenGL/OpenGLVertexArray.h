@@ -1,7 +1,5 @@
 #pragma once
 
-#include "dbpch.h"
-
 #include "Daybreak/Renderer/VertexArray.h"
 
 namespace Daybreak

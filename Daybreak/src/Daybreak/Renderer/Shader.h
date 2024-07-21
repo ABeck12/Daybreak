@@ -1,6 +1,13 @@
 #pragma once
 
-#include "dbpch.h"
+#include <stdint.h>
+#include <string>
+#include <filesystem>
+#include <unordered_map>
+
+#include <glm/glm.hpp>
+
+#include "Daybreak/Core/Base.h"
 
 namespace Daybreak
 {

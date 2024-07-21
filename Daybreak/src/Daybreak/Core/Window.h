@@ -1,6 +1,7 @@
 #pragma once
 
-#include "dbpch.h"
+#include <string>
+#include <stdint.h>
 
 #include "Daybreak/Events/Event.h"
 

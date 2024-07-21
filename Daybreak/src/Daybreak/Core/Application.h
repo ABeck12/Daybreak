@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dbpch.h"
+#include "Daybreak/Core/Base.h"
 
 #include "Daybreak/Core/Window.h"
 #include "Daybreak/Core/LayerStack.h"

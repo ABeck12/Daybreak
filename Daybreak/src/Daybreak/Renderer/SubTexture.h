@@ -1,8 +1,8 @@
 #pragma once
 
-#include "dbpch.h"
-
 #include "Daybreak/Renderer/Texture.h"
+
+#include <glm/glm.hpp>
 
 namespace Daybreak
 {

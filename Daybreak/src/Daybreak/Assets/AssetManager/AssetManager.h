@@ -1,7 +1,5 @@
 #pragma once
 
-#include "dbpch.h"
-
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Renderer/Shader.h"
 #include "Daybreak/Assets/Animation.h"

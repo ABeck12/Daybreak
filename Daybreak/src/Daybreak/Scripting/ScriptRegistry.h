@@ -1,6 +1,10 @@
 #pragma once
 
-#include "dbpch.h"
+#include <string>
+#include <unordered_map>
+#include <functional>
+
+#include "Daybreak/Core/Base.h"
 
 #define DB_SCRIPT
 
