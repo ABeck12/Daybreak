@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "Daybreak/Renderer/SubTexture.h"
 #include "Daybreak/Renderer/Texture.h"
 #include "Daybreak/Core/DeltaTime.h"
