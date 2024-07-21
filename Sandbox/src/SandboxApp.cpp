@@ -3,6 +3,7 @@
 
 // #include "SceneLayer.h"
 #include "LightingScene.h"
+#include "RendererTesting.h"
 #include "FramebufferTesting.h"
 #include "StressTesting.h"
 
@@ -27,6 +28,7 @@ public:
 		// PushLayer(new SceneLayer());
 		// PushLayer(new LightingScene());
 		// PushLayer(new FBTesting());
+		// PushLayer(new RendererTesting());
 		// PushLayer(new StressTestLayer());
 		PushLayer(new Daybreak::EditorLayer(Daybreak::AssetManager::Get()->GetAssetDir() / "scenes/SceneLayer.scene"));
 	}

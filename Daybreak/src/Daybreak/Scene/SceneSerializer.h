@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+
 #include "Daybreak/Scene/Scene.h"
 
 namespace Daybreak

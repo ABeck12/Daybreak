@@ -51,7 +51,7 @@ namespace Daybreak
 		Renderer2D::Shutdown();
 	}
 
-	void Renderer::DrawFrameBuffer(const Ref<FrameBuffer>& frameBuffer, const Ref<Shader>& shader, std::vector<int> boundAttachmentIndices)
+	void Renderer::DrawFrameBuffer(const Ref<FrameBuffer>& frameBuffer, const Ref<Shader>& shader, const std::vector<int>& boundAttachmentIndices)
 	{
 		shader->Bind();
 

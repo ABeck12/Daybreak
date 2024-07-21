@@ -1,6 +1,9 @@
 #pragma once
 
-#include "dbpch.h"
+#include <stdint.h>
+#include <filesystem>
+
+#include "Daybreak/Core/Base.h"
 
 namespace Daybreak
 {
@@ -23,7 +26,7 @@ namespace Daybreak
 		uint32_t Height = 1;
 		ImageFormat Format = ImageFormat::RGBA;
 		TextureFilterType Filter = TextureFilterType::Point;
-		uint32_t PixelsPerUnit = 100;
+		uint32_t PixelsPerUnit = 100; // TODO: Move out of this class
 	};
 
 	class Texture

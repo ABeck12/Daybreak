@@ -1,7 +1,5 @@
 #pragma once
 
-#include "dbpch.h"
-
 #include "Daybreak/Events/Event.h"
 #include "Daybreak/Core/DeltaTime.h"
 
@@ -20,6 +18,7 @@ namespace Daybreak
 		virtual void OnImGuiRender() {}
 
 		inline const std::string& GetName() const { return m_DebugName; }
+
 	protected:
 		std::string m_DebugName;
 	};

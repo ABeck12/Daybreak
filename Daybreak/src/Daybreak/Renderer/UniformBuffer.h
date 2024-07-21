@@ -1,6 +1,8 @@
 #pragma once
 
-#include "dbpch.h"
+#include <stdint.h>
+
+#include "Daybreak/Core/Base.h"
 
 namespace Daybreak
 {

@@ -153,8 +153,8 @@ namespace Daybreak
 
 	void PhysicsSim2D::FixedStepSimulation()
 	{
-		const int32_t velocityIterations = 6;
-		const int32_t positionIterations = 2;
+		const int32_t velocityIterations = 10;
+		const int32_t positionIterations = 12;
 		m_PhysicsWorld->Step(0.016f, velocityIterations, positionIterations); // For now this is the fixed delta time
 	}
 
@@ -357,7 +357,7 @@ namespace Daybreak
 	{
 		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
-			auto bc2d = entity.GetComponent<BoxCollider2DComponent>();
+			BoxCollider2DComponent& bc2d = entity.GetComponent<BoxCollider2DComponent>();
 			b2Body* body = (b2Body*)bc2d.RuntimeBody;
 			if (body)
 			{
@@ -368,7 +368,7 @@ namespace Daybreak
 		}
 		if (entity.HasComponent<BoxCollider2DComponent>())
 		{
-			auto cc2d = entity.GetComponent<CircleCollider2DComponent>();
+			CircleCollider2DComponent& cc2d = entity.GetComponent<CircleCollider2DComponent>();
 			b2Body* body = (b2Body*)cc2d.RuntimeBody;
 			if (body)
 			{
@@ -379,7 +379,7 @@ namespace Daybreak
 		}
 		if (entity.HasComponent<PolygonCollider2DComponent>())
 		{
-			auto pc2d = entity.GetComponent<PolygonCollider2DComponent>();
+			PolygonCollider2DComponent& pc2d = entity.GetComponent<PolygonCollider2DComponent>();
 			b2Body* body = (b2Body*)pc2d.RuntimeBody;
 			if (body)
 			{
@@ -390,7 +390,7 @@ namespace Daybreak
 		}
 		if (entity.HasComponent<Rigidbody2DComponent>())
 		{
-			auto rb2d = entity.GetComponent<Rigidbody2DComponent>();
+			Rigidbody2DComponent& rb2d = entity.GetComponent<Rigidbody2DComponent>();
 			if (rb2d.RuntimeBody)
 			{
 				m_PhysicsWorld->DestroyBody((b2Body*)rb2d.RuntimeBody);

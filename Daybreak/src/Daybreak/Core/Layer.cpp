@@ -11,7 +11,6 @@ namespace Daybreak
 
 	Layer::~Layer()
 	{
-
 	}
 
 }

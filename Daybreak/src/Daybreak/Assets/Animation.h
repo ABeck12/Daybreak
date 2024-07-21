@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dbpch.h"
+#include <functional>
 
 #include "Daybreak/Renderer/SubTexture.h"
 #include "Daybreak/Renderer/Texture.h"
@@ -28,7 +28,7 @@ namespace Daybreak
 
 		void AddActionForKeyFrame(uint32_t frameIndex, const AnimationAction& action);
 
-		KeyFrame GetCurrentKeyFrame() const { return m_KeyFrames[m_CurrentKeyFrame]; }
+		const KeyFrame& GetCurrentKeyFrame() const { return m_KeyFrames[m_CurrentKeyFrame]; }
 		uint32_t GetMaxKeyFrames() const { return (uint32_t)(m_KeyFrames.size() - 1); }
 		const std::vector<KeyFrame>& GetKeyFrames() const { return m_KeyFrames; }
 
