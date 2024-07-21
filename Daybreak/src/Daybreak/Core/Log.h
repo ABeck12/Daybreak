@@ -1,10 +1,7 @@
 #pragma once
 
-#include "dbpch.h"
-
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
-
 
 namespace Daybreak
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dbpch.h"
+#include <functional>
 
 #include "Daybreak/Renderer/SubTexture.h"
 #include "Daybreak/Renderer/Texture.h"

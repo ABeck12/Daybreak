@@ -1,7 +1,5 @@
 #pragma once
 
-#include "dbpch.h"
-
 #include <glm/gtx/string_cast.hpp>
 
 

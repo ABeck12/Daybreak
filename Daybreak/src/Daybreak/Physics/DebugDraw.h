@@ -1,8 +1,7 @@
 #pragma once
 
-#include "dbpch.h"
-
 #include <box2d/b2_draw.h>
+#include <glm/glm.hpp>
 
 namespace Daybreak
 {
