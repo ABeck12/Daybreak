@@ -178,7 +178,7 @@ Entities:
       ChildrenIDs:
         - 13502861251573656965
     TransformComponent:
-      Position: [-3.1677928, 5.0766403079, 0]
+      Position: [3.1677928, 5.0766403079, 0]
       Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     AnimatorComponent:

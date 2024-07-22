@@ -263,14 +263,36 @@ namespace Daybreak
 		float InnerRadius = 0.0f;
 		float OuterRadius = 0.5f;
 		float Intensity = 1.0f;
-		// float Falloff = 0.5f;
 		glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+
+		PointLight2DComponent() = default;
+		PointLight2DComponent(const PointLight2DComponent&) = default;
 	};
 
 	struct GlobalLight2DComponent
 	{
 		float Intensity = 1.0f;
 		glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+
+		GlobalLight2DComponent() = default;
+		GlobalLight2DComponent(const GlobalLight2DComponent&) = default;
+	};
+
+	// struct SpotLight2DComponent
+	// {
+	// 	float InnerRadius = 0.5f;
+	// 	float OuterRadius = 1.0f;
+	// 	float InnerAngle = 0.261799f; // 15 degrees in radians
+	// 	float OuterAngle = 0.523599f; // 30 degrees in radians
+	// 	glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+	// };
+
+	struct ShadowCasterComponent
+	{
+		glm::vec2 Size = { 1.0f, 1.0f };
+
+		ShadowCasterComponent() = default;
+		ShadowCasterComponent(const ShadowCasterComponent&) = default;
 	};
 
 	template<typename... Component>

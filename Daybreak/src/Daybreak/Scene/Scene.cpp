@@ -476,12 +476,28 @@ namespace Daybreak
 
 			RenderCommand::SetBlendMode(RenderAPI::BlendModes::One);
 			auto pointLightView = m_Registry.view<PointLight2DComponent>();
+			auto castorView = m_Registry.view<ShadowCasterComponent>();
+
+			std::vector<ShadowCasterComponent> castors;
+			std::vector<glm::vec2> positions;
+			for (auto e : castorView)
+			{
+				Entity entity = { e, this };
+				ShadowCasterComponent& scc = entity.GetComponent<ShadowCasterComponent>();
+				TransformComponent& tr = entity.GetComponent<TransformComponent>();
+				castors.emplace_back(scc);
+				positions.emplace_back(glm::vec2(tr.Position.x, tr.Position.y));
+			}
+			m_SceneRenderer->SetShadowCastors(castors);
+			m_SceneRenderer->SetShadowCastorPositions(positions);
+
 			for (auto e : pointLightView)
 			{
 				Entity entity = { e, this };
 				TransformComponent& tr = entity.GetComponent<TransformComponent>();
 				PointLight2DComponent& pl = entity.GetComponent<PointLight2DComponent>();
-				m_SceneRenderer->DrawPointLight2D(tr.Position, pl);
+				// m_SceneRenderer->DrawPointLight2D(tr.Position, pl);
+				m_SceneRenderer->DrawPointLight2DWithShadows(tr.Position, pl);
 			}
 
 			Renderer2D::EndScene();
@@ -489,10 +505,11 @@ namespace Daybreak
 		}
 
 		m_SceneRenderer->DrawToScreen();
+		// m_SceneRenderer->TestShadowDrawing();
 
 		if (m_DebugDraw)
 		{
-			DebugDraw();
+			// DebugDraw();
 		}
 	}
 

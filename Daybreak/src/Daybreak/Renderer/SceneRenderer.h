@@ -29,9 +29,26 @@ namespace Daybreak
 		void StartLightBuffer2D();
 		void CheckResize();
 
+		void TestShadowDrawing();
+		void SetShadowCastors(const std::vector<ShadowCasterComponent>& castors) { m_Castors = castors; }
+		void SetShadowCastorPositions(const std::vector<glm::vec2>& positions) { m_CastorPositions = positions; }
+
+		void DrawPointLight2DWithShadows(const glm::vec3 position, const PointLight2DComponent& pointLight);
+
 	private:
 		uint32_t m_BufferWidth;
 		uint32_t m_BufferHeight;
+
+		std::vector<ShadowCasterComponent> m_Castors;
+		std::vector<glm::vec2> m_CastorPositions;
+
+
+		// Shadow testing
+		glm::vec2 m_LightPos = { 0, 0 };
+		float m_LightRadius = 5.0f;
+		glm::vec2 m_CastorPos = { 3, 0 };
+		float m_CastorWidth = 1.0f;
+		float m_CastorHeight = 1.0f;
 
 
 		Ref<FrameBuffer> m_DrawBuffer2D;

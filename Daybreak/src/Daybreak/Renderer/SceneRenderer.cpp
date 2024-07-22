@@ -7,6 +7,9 @@
 #include "Daybreak/Core/Application.h"
 #include "Daybreak/Assets/AssetManager/AssetManager.h"
 #include "Daybreak/Renderer/RenderCommand.h"
+#include "glm/geometric.hpp"
+
+#include "glad/glad.h"
 
 namespace Daybreak
 {
@@ -242,5 +245,180 @@ namespace Daybreak
 		m_FinalBuffer->BindAttachmentAsTexture(0, 0); // RGBA
 		m_FinalBuffer->BindAttachmentAsTexture(1, 1); // Depth
 		Renderer::DrawFrameBuffer(nullptr, m_DefaultDrawShader, { 0, 1 });
+	}
+
+	glm::vec2 calcPointOnRadius(const glm::vec2 light, const float radius, const glm::vec2 point)
+	{
+		glm::vec2 direction = glm::normalize(point - light);
+		return (radius - glm::length(light - point)) * 2 * direction + point;
+		// return (radius - glm::length(light - point)) * direction + point;
+	}
+
+	std::pair<glm::vec2, glm::vec2> calcClosestPoints(const glm::vec2 light, const glm::vec2* castorVertices)
+	{
+		float distances[4] = {};
+		for (int i = 0; i < 4; i++)
+		{
+			distances[i] = glm::length(light - castorVertices[i]);
+		}
+
+		int smallestIndex = 0;
+		float smallestDistance = FLT_MAX;
+		for (int i = 0; i < 4; i++)
+		{
+			if (distances[i] < smallestDistance)
+			{
+				smallestDistance = distances[i];
+				smallestIndex = i;
+			}
+		}
+		int secondSmallestIndex = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			if (distances[i] <= smallestDistance && i != smallestIndex)
+			{
+				secondSmallestIndex = i;
+			}
+		}
+		return std::make_pair(castorVertices[smallestIndex], castorVertices[secondSmallestIndex]);
+	}
+
+	void SceneRenderer::TestShadowDrawing()
+	{
+		float dotSize = 0.1f;
+
+		glm::vec2 castorVertices[4] = {
+			{ m_CastorPos.x + m_CastorWidth / 2, m_CastorPos.y + m_CastorHeight / 2 },
+			{ m_CastorPos.x - m_CastorWidth / 2, m_CastorPos.y + m_CastorHeight / 2 },
+			{ m_CastorPos.x + m_CastorWidth / 2, m_CastorPos.y - m_CastorHeight / 2 },
+			{ m_CastorPos.x - m_CastorWidth / 2, m_CastorPos.y - m_CastorHeight / 2 },
+		};
+
+		// Draw light and shadow caster points
+		{
+			Renderer2D::NextBatch();
+			RenderCommand::SetClearColor({ 0.3, 0.3, 0.3, 1 });
+			RenderCommand::Clear();
+			Renderer2D::DrawCircle(m_LightPos, m_LightRadius, { 1, 1, 0, 0.3 });
+			Renderer2D::DrawCircle(m_LightPos, dotSize, { 1, 1, 0, 1 }); // Light
+
+			Renderer2D::DrawCircle(castorVertices[0], dotSize, { 1, 0, 0, 1 });
+			Renderer2D::DrawCircle(castorVertices[1], dotSize, { 1, 0, 0, 1 });
+			Renderer2D::DrawCircle(castorVertices[2], dotSize, { 1, 0, 0, 1 });
+			Renderer2D::DrawCircle(castorVertices[3], dotSize, { 1, 0, 0, 1 });
+			Renderer2D::EndScene();
+			Renderer2D::NextBatch();
+		}
+
+		{
+#if 0
+		// TODO Get the 2 closest vertices automatically
+		glm::vec2 closetVertices[2] = { castorVertices[1], castorVertices[3] };
+
+
+		// TODO Add a check to see if the castor vertices are inside the lights radius. If not then we dont need to draw anything
+		float distance0 = glm::length(closetVertices[0] - m_LightPos);
+		float distance1 = glm::length(closetVertices[1] - m_LightPos);
+
+		if (distance0 > m_LightRadius || distance1 > m_LightRadius)
+			return;
+
+		// Calculate and draw the endpoints on the circle
+		glm::vec2 endpoints[2];
+		// TODO Add chord offset such that both points lie outside the circle and the the line between them is tangent
+		endpoints[0] = calcPointOnRadius(m_LightPos, m_LightRadius, closetVertices[0]);
+		endpoints[1] = calcPointOnRadius(m_LightPos, m_LightRadius, closetVertices[1]);
+
+		Renderer2D::DrawQuad(closetVertices[1], closetVertices[0], endpoints[0], endpoints[1], { 0, 0, 0, 0.3 });
+
+		Renderer2D::DrawCircle(endpoints[0], dotSize, { 0, 1, 0, 1 });
+		Renderer2D::DrawCircle(endpoints[1], dotSize, { 0, 1, 0, 1 });
+
+		Renderer2D::EndScene();
+#endif
+		}
+
+		const float lightRad2 = m_LightRadius * m_LightRadius;
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++) // This double counts the draws. We only need 6 but were doing 12
+			{
+				if (i == j)
+					continue;
+
+				glm::vec2& p1 = castorVertices[i];
+				glm::vec2& p2 = castorVertices[j];
+
+				if (glm::length2(p1 - m_LightPos) > lightRad2 || glm::length2(p2 - m_LightPos) > lightRad2)
+					continue;
+
+				glm::vec2 q1 = calcPointOnRadius(m_LightPos, m_LightRadius, p1);
+				glm::vec2 q2 = calcPointOnRadius(m_LightPos, m_LightRadius, p2);
+
+				// Need to sort them to be in ccw order
+
+				Renderer2D::DrawCircle(q1, dotSize, { 0, 1, 0, 1 });
+				Renderer2D::DrawCircle(q2, dotSize, { 0, 1, 0, 1 });
+
+				Renderer2D::DrawQuad(p2, p1, q1, q2, { 0, 0, 0, 0.3 });
+			}
+		}
+		Renderer2D::EndScene();
+	}
+
+	void SceneRenderer::DrawPointLight2DWithShadows(const glm::vec3 position, const PointLight2DComponent& pointLight)
+	{
+		{
+			Renderer2D::DrawCircle(position,
+								   pointLight.OuterRadius,
+								   glm::vec4(pointLight.Color.r, pointLight.Color.g, pointLight.Color.b, 1.0f) * pointLight.Intensity,
+								   ((pointLight.OuterRadius - pointLight.InnerRadius) / pointLight.OuterRadius) / pointLight.Intensity,
+								   1.0f);
+			Renderer2D::EndScene();
+			Renderer2D::NextBatch();
+		}
+		const size_t numberCastors = m_Castors.size();
+		const glm::vec2 pos = glm::vec2(position);
+		for (size_t i = 0; i < numberCastors; i++)
+		{
+			const ShadowCasterComponent& castor = m_Castors[i];
+			const glm::vec2& castorPosition = m_CastorPositions[i];
+
+			const glm::vec2 castorVertices[4] = {
+				{ castorPosition.x + castor.Size.x / 2, castorPosition.y + castor.Size.y / 2 },
+				{ castorPosition.x - castor.Size.x / 2, castorPosition.y + castor.Size.y / 2 },
+				{ castorPosition.x + castor.Size.x / 2, castorPosition.y - castor.Size.y / 2 },
+				{ castorPosition.x - castor.Size.x / 2, castorPosition.y - castor.Size.y / 2 },
+			};
+			glDisable(GL_BLEND);
+			const float lightRad2 = pointLight.OuterRadius * pointLight.OuterRadius;
+			for (int j = 0; i < 4; i++)
+			{
+				for (int k = 0; j < 4; j++) // This double counts the draws. We only need 6 but were doing 12
+				{
+					if (i == j)
+						continue;
+
+					const glm::vec2& p1 = castorVertices[j];
+					const glm::vec2& p2 = castorVertices[k];
+
+					if (glm::length2(p1 - pos) > lightRad2 || glm::length2(p2 - pos) > lightRad2)
+						continue;
+
+					glm::vec2 q1 = calcPointOnRadius(pos, m_LightRadius, p1);
+					glm::vec2 q2 = calcPointOnRadius(pos, m_LightRadius, p2);
+
+					Renderer2D::DrawCircle(p1, 0.1, { 1, 0, 0, 1 });
+					Renderer2D::DrawCircle(p2, 0.1, { 1, 0, 0, 1 });
+
+					Renderer2D::DrawCircle(q1, 0.1, { 0, 1, 0, 1 });
+					Renderer2D::DrawCircle(q2, 0.1, { 0, 1, 0, 1 });
+					Renderer2D::DrawQuad(p2, p1, q1, q2, { 0, 0, 0, 1 });
+				}
+			}
+			Renderer2D::EndScene();
+			Renderer2D::NextBatch();
+			glEnable(GL_BLEND);
+		}
 	}
 }

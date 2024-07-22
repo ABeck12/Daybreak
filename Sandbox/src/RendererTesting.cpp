@@ -13,12 +13,12 @@ RendererTesting::RendererTesting()
 
 	auto test = m_Scene->CreateEntity("Test");
 	auto& gl = test.AddComponent<Daybreak::GlobalLight2DComponent>();
-	gl.Intensity = 1;
+	gl.Intensity = 0;
 	// gl.Color = { 0, 1, 0 };
-	auto& plTest = test.AddComponent<Daybreak::PointLight2DComponent>();
-	plTest.Color = { 1, 0, 0 };
-	plTest.OuterRadius = 2.5;
-	plTest.Intensity = 0;
+	// auto& plTest = test.AddComponent<Daybreak::PointLight2DComponent>();
+	// plTest.Color = { 1, 0, 0 };
+	// plTest.OuterRadius = 2.5;
+	// plTest.Intensity = 0;
 
 	auto test2 = m_Scene->CreateEntity("Test2");
 	auto& tr = test2.GetComponent<Daybreak::TransformComponent>();
@@ -28,7 +28,10 @@ RendererTesting::RendererTesting()
 	auto& pl = player.AddComponent<Daybreak::PointLight2DComponent>();
 	// pl.Color = { 1, 0, 0 };
 	pl.OuterRadius = 5;
-	pl.Intensity = 0;
+	pl.Intensity = 1;
+
+	auto box = m_Scene->GetEntityByName("Box");
+	auto& shadowCaster = box.AddComponent<Daybreak::ShadowCasterComponent>();
 
 	// Daybreak::Ref<Daybreak::Shader> computeTest = Daybreak::Shader::Create("test compute", "C:\\dev\\Daybreak\\Sandbox\\assets\\shaders\\testCompute.glsl");
 }
@@ -140,6 +143,26 @@ void RendererTesting::OnImGuiRender()
 
 	ImGui::End();
 #endif
+
+	ImGui::Begin("Shadow testing");
+
+	auto& srenderer = m_Scene->m_SceneRenderer;
+	ImGui::DragFloat("Light Radius", &srenderer->m_LightRadius, 0.01, 0.0, FLT_MAX);
+	ImGui::DragFloat2("Light Position", &srenderer->m_LightPos.x, 0.01, -FLT_MAX, FLT_MAX);
+	ImGui::DragFloat2("Castor Position", &srenderer->m_CastorPos.x, 0.01, -FLT_MAX, FLT_MAX);
+	ImGui::DragFloat("Castor Width", &srenderer->m_CastorWidth, 0.01, 0.0, FLT_MAX);
+	ImGui::DragFloat("Castor Height", &srenderer->m_CastorHeight, 0.01, 0.0, FLT_MAX);
+	ImGui::End();
+
+	ImGui::Begin("Light and Final");
+	float width = 1280 / 2.0;
+	float height = 720 / 2.0;
+	ImGui::Text("Light");
+	ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_LightBuffer2D->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
+	// ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_DrawBuffer2D->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
+	ImGui::Text("Final");
+	ImGui::Image((void*)(intptr_t)(m_Scene->m_SceneRenderer->m_FinalBuffer->GetAttachmentRendererID()), { width, height }, { 0, 1 }, { 1, 0 });
+	ImGui::End();
 
 	// float width = 1280;
 	// float height = 720;
