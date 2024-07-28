@@ -475,13 +475,25 @@ namespace Daybreak
 			}
 
 			RenderCommand::SetBlendMode(RenderAPI::BlendModes::One);
+
+			std::vector<std::pair<ShadowCastorComponent, glm::vec3>> castors;
+			for (const auto& e : m_Registry.view<ShadowCastorComponent>())
+			{
+				Entity entity = { e, this };
+				ShadowCastorComponent& sc = entity.GetComponent<ShadowCastorComponent>();
+				TransformComponent& tr = entity.GetComponent<TransformComponent>();
+				std::pair<ShadowCastorComponent, glm::vec3> item = std::make_pair(sc, tr.Position);
+				castors.emplace_back(item);
+			}
+
 			auto pointLightView = m_Registry.view<PointLight2DComponent>();
 			for (auto e : pointLightView)
 			{
 				Entity entity = { e, this };
 				TransformComponent& tr = entity.GetComponent<TransformComponent>();
 				PointLight2DComponent& pl = entity.GetComponent<PointLight2DComponent>();
-				m_SceneRenderer->DrawPointLight2D(tr.Position, pl);
+				// m_SceneRenderer->DrawPointLight2D(tr.Position, pl);
+				m_SceneRenderer->DrawPointLight2DShadows(tr.Position, pl, castors);
 			}
 
 			Renderer2D::EndScene();

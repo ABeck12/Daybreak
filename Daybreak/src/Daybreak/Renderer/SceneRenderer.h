@@ -19,6 +19,9 @@ namespace Daybreak
 
 		void DrawPointLight2D(const glm::vec3& position, const PointLight2DComponent& pointLight);
 		void DrawGlobalLight2D(const GlobalLight2DComponent& globalLight);
+		void DrawPointLight2DShadows(const glm::vec3& position,
+									 const PointLight2DComponent& pointLight,
+									 const std::vector<std::pair<ShadowCastorComponent,glm::vec3>>& shadowCastors);
 
 		const Ref<FrameBuffer>& GetFinalBuffer() const { return m_FinalBuffer; }
 		const Ref<FrameBuffer>& GetDrawBuffer2D() const { return m_DrawBuffer2D; }
@@ -33,7 +36,7 @@ namespace Daybreak
 		uint32_t m_BufferWidth;
 		uint32_t m_BufferHeight;
 
-
+        Ref<FrameBuffer> m_ShadowMapBuffer;
 		Ref<FrameBuffer> m_DrawBuffer2D;
 		Ref<FrameBuffer> m_LightBuffer2D;
 		Ref<FrameBuffer> m_FinalBuffer;
@@ -52,7 +55,7 @@ namespace Daybreak
 		// Ref<Shader> m_BloomBlurDownscaleShader;
 		// Ref<Shader> m_BloomBlurUpscaleShader;
 #endif
-
+        
 		Ref<Shader> m_DefaultDrawShader;
 		Ref<Shader> m_FinalShader;
 

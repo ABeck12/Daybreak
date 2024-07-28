@@ -8,6 +8,8 @@
 #include "Daybreak/Assets/AssetManager/AssetManager.h"
 #include "Daybreak/Renderer/RenderCommand.h"
 
+#include <glm/gtx/norm.hpp>
+
 namespace Daybreak
 {
 	SceneRenderer::SceneRenderer()
@@ -43,6 +45,15 @@ namespace Daybreak
 		bloomBufferSpec.AttachmentTypes = {
 			FrameBufferAttachmentTypes::RGBA32F,
 		};
+
+		FrameBufferSpecifications shadowBufferSpec;
+		shadowBufferSpec.Height = m_BufferHeight;
+		shadowBufferSpec.Width = m_BufferWidth;
+		shadowBufferSpec.ClearColor = { 0, 0, 0, 1 };
+		shadowBufferSpec.AttachmentTypes = {
+			FrameBufferAttachmentTypes::RGBA32F,
+		};
+		m_ShadowMapBuffer = FrameBuffer::Create(shadowBufferSpec);
 
 #if 0
 		m_BloomMask = FrameBuffer::Create(bloomBufferSpec);
@@ -127,6 +138,57 @@ namespace Daybreak
 							   glm::vec4(pointLight.Color.r, pointLight.Color.g, pointLight.Color.b, 1.0f) * pointLight.Intensity,
 							   ((pointLight.OuterRadius - pointLight.InnerRadius) / pointLight.OuterRadius) / pointLight.Intensity,
 							   1.0f);
+	}
+
+	glm::vec2 calcPointOnRadius(const glm::vec2 light, const float radius, const glm::vec2 point)
+	{
+		glm::vec2 direction = glm::normalize(point - light);
+		// return (radius - glm::length(light - point)) * 2 * direction + point;
+		return (radius - glm::length(light - point)) * direction + point;
+	}
+
+	void SceneRenderer::DrawPointLight2DShadows(const glm::vec3& position,
+												const PointLight2DComponent& pointLight,
+												const std::vector<std::pair<ShadowCastorComponent, glm::vec3>>& shadowCastors)
+	{
+		DrawPointLight2D(position, pointLight);
+		const glm::vec2 lightPos = glm::vec2(position);
+
+		for (size_t i = 0; i < shadowCastors.size(); i++)
+		{
+			const auto& [castor, castorPos] = shadowCastors[i];
+
+			const glm::vec2 castorVertices[4] = {
+				{ castorPos.x - castor.Size.x / 2, castorPos.y - castor.Size.y / 2 },
+				{ castorPos.x - castor.Size.x / 2, castorPos.y + castor.Size.y / 2 },
+				{ castorPos.x + castor.Size.x / 2, castorPos.y + castor.Size.y / 2 },
+				{ castorPos.x + castor.Size.x / 2, castorPos.y - castor.Size.y / 2 },
+			};
+
+
+			{
+				int num = 0;
+				for (const glm::vec2& vertex : castorVertices)
+				{
+					Renderer2D::DrawString(std::to_string(num), Font::GetDefault(), { vertex.x, vertex.y, 0 }, { 1, 1 });
+					num++;
+					glm::vec2 circlePoint = calcPointOnRadius({ position.x, position.y },
+															  pointLight.OuterRadius,
+															  vertex);
+
+					Renderer2D::DrawCircle(vertex, 0.05, { 1, 0, 0, 1 });
+					Renderer2D::DrawCircle(calcPointOnRadius({ position.x, position.y },
+															 pointLight.OuterRadius,
+															 vertex),
+										   0.05,
+										   { 0, 1, 0, 1 });
+
+					Renderer2D::DrawLine(vertex, circlePoint, { 0, 0, 1, 1 });
+				}
+			}
+
+			Renderer2D::DrawQuad(castorPos, castor.Size, { 0.2, 0.8, 0.6, 1 });
+		}
 	}
 
 	void SceneRenderer::DrawGlobalLight2D(const GlobalLight2DComponent& globalLight)

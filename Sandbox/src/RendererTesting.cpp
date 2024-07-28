@@ -13,22 +13,25 @@ RendererTesting::RendererTesting()
 
 	auto test = m_Scene->CreateEntity("Test");
 	auto& gl = test.AddComponent<Daybreak::GlobalLight2DComponent>();
-	gl.Intensity = 1;
+	gl.Intensity = 0;
 	// gl.Color = { 0, 1, 0 };
-	auto& plTest = test.AddComponent<Daybreak::PointLight2DComponent>();
-	plTest.Color = { 1, 0, 0 };
-	plTest.OuterRadius = 2.5;
-	plTest.Intensity = 0;
+	// auto& plTest = test.AddComponent<Daybreak::PointLight2DComponent>();
+	// plTest.Color = { 1, 0, 0 };
+	// plTest.OuterRadius = 2.5;
+	// plTest.Intensity = 0;
 
 	auto test2 = m_Scene->CreateEntity("Test2");
 	auto& tr = test2.GetComponent<Daybreak::TransformComponent>();
 	tr.Position = { 0, 5, 0 };
 
+    auto box = m_Scene->GetEntityByName("Box");
+    auto& boxSC = box.AddComponent<Daybreak::ShadowCastorComponent>();
+
 	auto player = m_Scene->GetEntityByName("Player");
 	auto& pl = player.AddComponent<Daybreak::PointLight2DComponent>();
 	// pl.Color = { 1, 0, 0 };
-	pl.OuterRadius = 5;
-	pl.Intensity = 0;
+	pl.OuterRadius = 15;
+	pl.Intensity = 1;
 
 	// Daybreak::Ref<Daybreak::Shader> computeTest = Daybreak::Shader::Create("test compute", "C:\\dev\\Daybreak\\Sandbox\\assets\\shaders\\testCompute.glsl");
 }
